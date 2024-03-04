@@ -5,9 +5,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/itchio/butler/comm"
-	"github.com/itchio/butler/filtering"
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/comm"
+	"github.com/LinuxUserGD/butler/filtering"
+	"github.com/LinuxUserGD/butler/mansion"
 
 	"github.com/itchio/lake/pools"
 	"github.com/itchio/lake/tlc"

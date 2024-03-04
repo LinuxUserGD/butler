@@ -2,8 +2,8 @@ package downloads
 
 import (
 	"crawshaw.io/sqlite"
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/database/models"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/database/models"
 )
 
 func DownloadsList(rc *butlerd.RequestContext, params butlerd.DownloadsListParams) (*butlerd.DownloadsListResult, error) {

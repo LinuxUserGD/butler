@@ -7,10 +7,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/butlerd/messages"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd/messages"
 	itchio "github.com/itchio/go-itchio"
-	"github.com/itchio/hush"
+	"github.com/LinuxUserGD/hush"
 	"github.com/stretchr/testify/assert"
 )
 

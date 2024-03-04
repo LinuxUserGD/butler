@@ -5,13 +5,13 @@ import (
 	"time"
 
 	"xorm.io/builder"
-	"github.com/itchio/butler/butlerd/horror"
+	"github.com/LinuxUserGD/butler/butlerd/horror"
 	"github.com/itchio/hades"
 	"github.com/pkg/errors"
 
 	"crawshaw.io/sqlite"
 	"crawshaw.io/sqlite/sqlitex"
-	"github.com/itchio/butler/database/models"
+	"github.com/LinuxUserGD/butler/database/models"
 	"github.com/itchio/headway/state"
 )
 

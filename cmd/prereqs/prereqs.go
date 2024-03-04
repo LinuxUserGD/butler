@@ -1,9 +1,9 @@
 package prereqs
 
 import (
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/mansion"
-	"github.com/itchio/butler/redist"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/LinuxUserGD/butler/redist"
 )
 
 var installArgs = struct {

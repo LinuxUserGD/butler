@@ -13,8 +13,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/itchio/butler/art"
-	"github.com/itchio/butler/comm"
+	"github.com/LinuxUserGD/butler/art"
+	"github.com/LinuxUserGD/butler/comm"
 	"github.com/itchio/go-itchio"
 	"github.com/pkg/errors"
 )
@@ -122,7 +122,7 @@ func readKeyFile(path string) (string, error) {
 			// windows won't let you 0o600, because it's ACL-based
 			// we can make it 0o644, and go will report 0o666, but
 			// it doesn't matter since other users can't access it anyway.
-			// empirical evidence: https://github.com/itchio/butler/issues/65
+			// empirical evidence: https://github.com/LinuxUserGD/butler/issues/65
 		} else {
 			comm.Logf("[Warning] Key file had wrong permissions (%#o), resetting to %#o\n", stats.Mode()&0o777, keyFileMode)
 			err = os.Chmod(path, keyFileMode)

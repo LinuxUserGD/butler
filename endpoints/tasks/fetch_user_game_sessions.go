@@ -3,9 +3,9 @@ package tasks
 import (
 	"fmt"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/cmd/operate"
-	"github.com/itchio/butler/database/models"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/cmd/operate"
+	"github.com/LinuxUserGD/butler/database/models"
 	itchio "github.com/itchio/go-itchio"
 )
 

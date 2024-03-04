@@ -10,8 +10,8 @@ import (
 
 	"github.com/dchest/safefile"
 
-	"github.com/itchio/hush"
-	"github.com/itchio/hush/bfs"
+	"github.com/LinuxUserGD/hush"
+	"github.com/LinuxUserGD/hush/bfs"
 
 	itchio "github.com/itchio/go-itchio"
 	"github.com/itchio/savior"

@@ -7,11 +7,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/itchio/butler/butlerd/jsonrpc2"
+	"github.com/LinuxUserGD/butler/butlerd/jsonrpc2"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/butlerd/messages"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd/messages"
 	"github.com/itchio/headway/united"
 	"github.com/itchio/mitch"
 )

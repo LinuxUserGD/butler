@@ -2,7 +2,7 @@
 
 package fujicmd
 
-import "github.com/itchio/butler/mansion"
+import "github.com/LinuxUserGD/butler/mansion"
 
 func Register(ctx *mansion.Context) {
 	// don't register anything

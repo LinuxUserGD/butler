@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/butlerd/jsonrpc2"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd/jsonrpc2"
 	"github.com/itchio/headway/state"
 )
 

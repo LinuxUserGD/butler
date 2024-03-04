@@ -3,8 +3,8 @@ package butlerd
 import (
 	"time"
 
-	"github.com/itchio/hush"
-	"github.com/itchio/hush/manifest"
+	"github.com/LinuxUserGD/hush"
+	"github.com/LinuxUserGD/hush/manifest"
 
 	validation "github.com/go-ozzo/ozzo-validation"
 	itchio "github.com/itchio/go-itchio"

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/itchio/butler/manager"
+	"github.com/LinuxUserGD/butler/manager"
 	"github.com/itchio/dash"
-	"github.com/itchio/hush/manifest"
+	"github.com/LinuxUserGD/hush/manifest"
 )
 
 type LaunchTarget struct {

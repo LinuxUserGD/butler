@@ -1,8 +1,8 @@
 package fetch
 
 import (
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/database/models"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/database/models"
 	itchio "github.com/itchio/go-itchio"
 	"github.com/itchio/hades"
 	"github.com/pkg/errors"

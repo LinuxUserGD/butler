@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/itchio/butler/comm"
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/comm"
+	"github.com/LinuxUserGD/butler/mansion"
 	"github.com/itchio/wharf/archiver"
 	"github.com/pkg/errors"
 )

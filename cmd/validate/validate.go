@@ -8,7 +8,7 @@ import (
 
 	"github.com/itchio/ox"
 
-	"github.com/itchio/butler/manager"
+	"github.com/LinuxUserGD/butler/manager"
 
 	"github.com/itchio/dash"
 
@@ -16,12 +16,12 @@ import (
 
 	"github.com/BurntSushi/toml"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/comm"
-	"github.com/itchio/butler/endpoints/launch"
-	"github.com/itchio/butler/mansion"
-	"github.com/itchio/butler/redist"
-	"github.com/itchio/hush/manifest"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/comm"
+	"github.com/LinuxUserGD/butler/endpoints/launch"
+	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/LinuxUserGD/butler/redist"
+	"github.com/LinuxUserGD/hush/manifest"
 
 	"github.com/itchio/httpkit/eos"
 	"github.com/itchio/httpkit/eos/option"

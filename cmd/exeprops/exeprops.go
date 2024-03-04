@@ -5,8 +5,8 @@ import (
 
 	"github.com/itchio/pelican"
 
-	"github.com/itchio/butler/comm"
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/comm"
+	"github.com/LinuxUserGD/butler/mansion"
 	"github.com/itchio/headway/state"
 	"github.com/itchio/httpkit/eos"
 	"github.com/itchio/httpkit/eos/option"

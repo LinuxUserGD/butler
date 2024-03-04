@@ -10,10 +10,10 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/itchio/butler/cmd/extract"
-	"github.com/itchio/butler/comm"
-	"github.com/itchio/butler/mansion"
-	"github.com/itchio/butler/redist"
+	"github.com/LinuxUserGD/butler/cmd/extract"
+	"github.com/LinuxUserGD/butler/comm"
+	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/LinuxUserGD/butler/redist"
 	"github.com/olekukonko/tablewriter"
 	"github.com/pkg/errors"
 )

@@ -3,8 +3,8 @@ package profile
 import (
 	"crawshaw.io/sqlite"
 	"xorm.io/builder"
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/database/models"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/database/models"
 )
 
 func DataPut(rc *butlerd.RequestContext, params butlerd.ProfileDataPutParams) (*butlerd.ProfileDataPutResult, error) {

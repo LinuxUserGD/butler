@@ -1,10 +1,10 @@
 package push
 
 import (
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/mansion"
 	"net/http"
 
-	"github.com/itchio/butler/comm"
+	"github.com/LinuxUserGD/butler/comm"
 	itchio "github.com/itchio/go-itchio"
 	"github.com/pkg/errors"
 )

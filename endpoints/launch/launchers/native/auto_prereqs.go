@@ -8,9 +8,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/itchio/butler/cmd/prereqs"
-	"github.com/itchio/butler/endpoints/launch"
-	"github.com/itchio/butler/redist"
+	"github.com/LinuxUserGD/butler/cmd/prereqs"
+	"github.com/LinuxUserGD/butler/endpoints/launch"
+	"github.com/LinuxUserGD/butler/redist"
 	"github.com/itchio/ox"
 
 	"github.com/itchio/dash"

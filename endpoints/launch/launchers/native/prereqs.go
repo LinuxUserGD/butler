@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/itchio/butler/butlerd/messages"
+	"github.com/LinuxUserGD/butler/butlerd/messages"
 	"github.com/itchio/ox"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/cmd/prereqs"
-	"github.com/itchio/butler/endpoints/launch"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/cmd/prereqs"
+	"github.com/LinuxUserGD/butler/endpoints/launch"
 	"github.com/pkg/errors"
 )
 

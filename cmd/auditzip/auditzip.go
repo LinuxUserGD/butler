@@ -14,9 +14,9 @@ import (
 	itchiozip "github.com/itchio/arkive/zip"
 	"github.com/itchio/headway/united"
 
-	"github.com/itchio/boar"
-	"github.com/itchio/butler/comm"
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/boar"
+	"github.com/LinuxUserGD/butler/comm"
+	"github.com/LinuxUserGD/butler/mansion"
 	"github.com/itchio/headway/state"
 	"github.com/itchio/httpkit/eos"
 	"github.com/itchio/httpkit/eos/option"

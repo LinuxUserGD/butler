@@ -4,9 +4,9 @@ import (
 	"io"
 	"time"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/hush"
-	"github.com/itchio/hush/bfs"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/hush"
+	"github.com/LinuxUserGD/hush/bfs"
 	itchio "github.com/itchio/go-itchio"
 	"github.com/itchio/headway/united"
 	"github.com/itchio/httpkit/eos"

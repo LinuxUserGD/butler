@@ -7,7 +7,7 @@ import (
 	"github.com/itchio/ox"
 	"github.com/itchio/wharf/wtest"
 
-	"github.com/itchio/butler/manager"
+	"github.com/LinuxUserGD/butler/manager"
 	itchio "github.com/itchio/go-itchio"
 	"github.com/stretchr/testify/assert"
 )

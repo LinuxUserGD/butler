@@ -3,8 +3,8 @@ package fetch
 import (
 	"crawshaw.io/sqlite"
 	"xorm.io/builder"
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/database/models"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/database/models"
 )
 
 func FetchExpireAll(rc *butlerd.RequestContext, params butlerd.FetchExpireAllParams) (*butlerd.FetchExpireAllResult, error) {

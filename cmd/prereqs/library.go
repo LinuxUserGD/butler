@@ -3,7 +3,7 @@ package prereqs
 import (
 	"fmt"
 
-	"github.com/itchio/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd"
 	itchio "github.com/itchio/go-itchio"
 	"github.com/itchio/ox"
 	"github.com/pkg/errors"

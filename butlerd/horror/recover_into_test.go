@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/itchio/butler/butlerd/horror"
+	"github.com/LinuxUserGD/butler/butlerd/horror"
 )
 
 func ExampleRecoverInto() {

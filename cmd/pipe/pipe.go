@@ -1,7 +1,7 @@
 package pipe
 
 import (
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/mansion"
 )
 
 var args = struct {

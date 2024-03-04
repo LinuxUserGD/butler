@@ -3,9 +3,9 @@ package which
 import (
 	"os"
 
-	"github.com/itchio/butler/buildinfo"
-	"github.com/itchio/butler/comm"
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/buildinfo"
+	"github.com/LinuxUserGD/butler/comm"
+	"github.com/LinuxUserGD/butler/mansion"
 )
 
 func Register(ctx *mansion.Context) {

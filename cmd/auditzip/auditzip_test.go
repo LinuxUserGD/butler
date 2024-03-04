@@ -3,11 +3,11 @@ package auditzip_test
 import (
 	"testing"
 
-	"github.com/itchio/butler/cmd/auditzip"
+	"github.com/LinuxUserGD/butler/cmd/auditzip"
 	"github.com/itchio/headway/state"
 	"github.com/itchio/wharf/wtest"
 
-	_ "github.com/itchio/boar/lzmasupport"
+	_ "github.com/LinuxUserGD/boar/lzmasupport"
 )
 
 func TestProtoZip(t *testing.T) {

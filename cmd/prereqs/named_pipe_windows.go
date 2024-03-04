@@ -5,8 +5,8 @@ package prereqs
 import (
 	"encoding/json"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/comm"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/comm"
 	"github.com/itchio/headway/state"
 	"github.com/natefinch/npipe"
 	"github.com/pkg/errors"

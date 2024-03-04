@@ -5,20 +5,20 @@ import (
 	"fmt"
 	"path/filepath"
 
-	"github.com/itchio/butler/manager/runlock"
+	"github.com/LinuxUserGD/butler/manager/runlock"
 	itchio "github.com/itchio/go-itchio"
 
 	"crawshaw.io/sqlite"
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/butlerd/messages"
-	"github.com/itchio/butler/database/models"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd/messages"
+	"github.com/LinuxUserGD/butler/database/models"
 	"github.com/itchio/httpkit/eos"
 	"github.com/itchio/httpkit/eos/option"
 	"github.com/itchio/wharf/pwr/patcher"
 
-	"github.com/itchio/hush"
-	"github.com/itchio/hush/download"
-	"github.com/itchio/hush/installers"
+	"github.com/LinuxUserGD/hush"
+	"github.com/LinuxUserGD/hush/download"
+	"github.com/LinuxUserGD/hush/installers"
 
 	"github.com/pkg/errors"
 )

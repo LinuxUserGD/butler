@@ -3,8 +3,8 @@ package butlerd
 import (
 	"os"
 
-	"github.com/itchio/butler/butlerd/jsonrpc2"
-	"github.com/itchio/butler/comm"
+	"github.com/LinuxUserGD/butler/butlerd/jsonrpc2"
+	"github.com/LinuxUserGD/butler/comm"
 	"github.com/itchio/headway/state"
 	"github.com/pkg/errors"
 )

@@ -5,8 +5,8 @@ import (
 	"os"
 	"sort"
 
-	"github.com/itchio/butler/comm"
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/comm"
+	"github.com/LinuxUserGD/butler/mansion"
 	itchio "github.com/itchio/go-itchio"
 	"github.com/itchio/headway/state"
 	"github.com/olekukonko/tablewriter"

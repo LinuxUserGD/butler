@@ -3,8 +3,8 @@ package install
 import (
 	"context"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/cmd/operate"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/cmd/operate"
 	"github.com/pkg/errors"
 )
 

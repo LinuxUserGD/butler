@@ -13,15 +13,15 @@ import (
 	"github.com/itchio/httpkit/neterr"
 	"github.com/itchio/httpkit/timeout"
 
-	"github.com/itchio/butler/butlerd/jsonrpc2"
+	"github.com/LinuxUserGD/butler/butlerd/jsonrpc2"
 
 	"github.com/pkg/errors"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/butlerd/messages"
-	"github.com/itchio/butler/cmd/operate"
-	"github.com/itchio/butler/cmd/wipe"
-	"github.com/itchio/butler/database/models"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd/messages"
+	"github.com/LinuxUserGD/butler/cmd/operate"
+	"github.com/LinuxUserGD/butler/cmd/wipe"
+	"github.com/LinuxUserGD/butler/database/models"
 
 	"crawshaw.io/sqlite"
 	"github.com/itchio/hades"

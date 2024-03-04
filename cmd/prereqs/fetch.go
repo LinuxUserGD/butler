@@ -8,15 +8,15 @@ import (
 
 	"github.com/itchio/httpkit/timeout"
 
-	"github.com/itchio/butler/cmd/operate"
-	"github.com/itchio/butler/cmd/operate/loopbackconn"
-	"github.com/itchio/butler/endpoints/install"
+	"github.com/LinuxUserGD/butler/cmd/operate"
+	"github.com/LinuxUserGD/butler/cmd/operate/loopbackconn"
+	"github.com/LinuxUserGD/butler/endpoints/install"
 	itchio "github.com/itchio/go-itchio"
 
 	"github.com/itchio/headway/state"
 	"github.com/itchio/headway/tracker"
 
-	"github.com/itchio/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd"
 
 	"github.com/pkg/errors"
 )

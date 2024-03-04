@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/itchio/butler/redist"
+	"github.com/LinuxUserGD/butler/redist"
 	"github.com/itchio/ox"
 	"github.com/pkg/errors"
 )

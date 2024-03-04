@@ -12,8 +12,8 @@ import (
 	"github.com/itchio/httpkit/timeout"
 	"github.com/pkg/errors"
 
-	"github.com/itchio/butler/comm"
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/comm"
+	"github.com/LinuxUserGD/butler/mansion"
 	"github.com/itchio/elefant"
 	"github.com/itchio/headway/state"
 	"github.com/itchio/httpkit/eos"

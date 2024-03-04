@@ -1,7 +1,7 @@
 {
-  "name": "@itchio/butler",
+  "name": "@LinuxUserGD/butler",
   "version": "1.0.0",
-  "description": "[![Build Status](https://git.itch.ovh/itchio/butler/badges/master/build.svg)](https://git.itch.ovh/itchio/butler/builds) [![codecov](https://codecov.io/gh/itchio/butler/branch/master/graph/badge.svg)](https://codecov.io/gh/itchio/butler) [![Go Report Card](https://goreportcard.com/badge/github.com/itchio/butler)](https://goreportcard.com/report/github.com/itchio/butler) ![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)",
+  "description": "[![Build Status](https://git.itch.ovh/LinuxUserGD/butler/badges/master/build.svg)](https://git.itch.ovh/LinuxUserGD/butler/builds) [![codecov](https://codecov.io/gh/LinuxUserGD/butler/branch/master/graph/badge.svg)](https://codecov.io/gh/LinuxUserGD/butler) [![Go Report Card](https://goreportcard.com/badge/github.com/LinuxUserGD/butler)](https://goreportcard.com/report/github.com/LinuxUserGD/butler) ![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)",
   "main": "index.js",
   "directories": {
     "doc": "docs"
@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/itchio/butler.git"
+    "url": "git+https://github.com/LinuxUserGD/butler.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/itchio/butler/issues"
+    "url": "https://github.com/LinuxUserGD/butler/issues"
   },
-  "homepage": "https://github.com/itchio/butler#readme",
+  "homepage": "https://github.com/LinuxUserGD/butler#readme",
   "devDependencies": {
     "@itchio/bob": "^2.0.0",
     "@types/node": "^14.0.9"

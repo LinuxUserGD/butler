@@ -8,8 +8,8 @@ import (
 	"os"
 
 	"github.com/itchio/intact"
-	"github.com/itchio/butler/comm"
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/comm"
+	"github.com/LinuxUserGD/butler/mansion"
 	"github.com/itchio/headway/counter"
 	"github.com/itchio/headway/united"
 	"github.com/itchio/httpkit/timeout"

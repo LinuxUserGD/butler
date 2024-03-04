@@ -12,9 +12,9 @@ import (
 	"syscall"
 
 	validation "github.com/go-ozzo/ozzo-validation"
-	"github.com/itchio/butler/buildinfo"
-	"github.com/itchio/butler/manager"
-	"github.com/itchio/butler/shell/loggerwriter"
+	"github.com/LinuxUserGD/butler/buildinfo"
+	"github.com/LinuxUserGD/butler/manager"
+	"github.com/LinuxUserGD/butler/shell/loggerwriter"
 	"github.com/itchio/headway/state"
 	"github.com/itchio/httpkit/eos"
 	"github.com/itchio/httpkit/eos/option"

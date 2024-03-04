@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/butlerd/messages"
-	"github.com/itchio/hush"
-	"github.com/itchio/hush/bfs"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd/messages"
+	"github.com/LinuxUserGD/hush"
+	"github.com/LinuxUserGD/hush/bfs"
 
 	"github.com/itchio/savior/seeksource"
 

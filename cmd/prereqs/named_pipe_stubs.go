@@ -3,8 +3,8 @@
 package prereqs
 
 import (
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/comm"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/comm"
 	"github.com/itchio/headway/state"
 )
 

@@ -9,14 +9,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/itchio/butler/redist"
+	"github.com/LinuxUserGD/butler/redist"
 	"github.com/itchio/ox"
 
 	"github.com/itchio/headway/state"
 
-	"github.com/itchio/butler/cmd/msi"
-	"github.com/itchio/butler/shell"
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/cmd/msi"
+	"github.com/LinuxUserGD/butler/shell"
+	"github.com/LinuxUserGD/butler/mansion"
 	"github.com/pkg/errors"
 )
 

@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/itchio/butler/buildinfo"
-	"github.com/itchio/butler/comm"
+	"github.com/LinuxUserGD/butler/buildinfo"
+	"github.com/LinuxUserGD/butler/comm"
 	itchio "github.com/itchio/go-itchio"
 	"github.com/itchio/httpkit/timeout"
 	"github.com/itchio/wharf/pwr"

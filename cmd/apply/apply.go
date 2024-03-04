@@ -10,9 +10,9 @@ import (
 	"github.com/itchio/wharf/pwr"
 
 	"github.com/dchest/safefile"
-	"github.com/itchio/butler/cmd/sizeof"
-	"github.com/itchio/butler/comm"
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/cmd/sizeof"
+	"github.com/LinuxUserGD/butler/comm"
+	"github.com/LinuxUserGD/butler/mansion"
 	"github.com/itchio/headway/state"
 	"github.com/itchio/headway/united"
 	"github.com/itchio/httpkit/eos/option"

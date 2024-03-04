@@ -2,7 +2,7 @@ package operate
 
 import (
 	itchio "github.com/itchio/go-itchio"
-	"github.com/itchio/hush"
+	"github.com/LinuxUserGD/hush"
 )
 
 type InstallSubcontextState struct {

@@ -1,7 +1,7 @@
 package operate
 
 import (
-	"github.com/itchio/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd"
 	itchio "github.com/itchio/go-itchio"
 	"github.com/itchio/headway/state"
 )

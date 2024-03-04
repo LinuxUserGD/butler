@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"crawshaw.io/sqlite"
-	"github.com/itchio/butler/butlerd/messages"
-	"github.com/itchio/butler/endpoints/fetch"
+	"github.com/LinuxUserGD/butler/butlerd/messages"
+	"github.com/LinuxUserGD/butler/endpoints/fetch"
 	itchio "github.com/itchio/go-itchio"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/cmd/operate"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/cmd/operate"
 	"github.com/pkg/errors"
 )
 

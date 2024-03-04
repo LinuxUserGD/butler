@@ -10,7 +10,7 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/itchio/butler/win32"
+	"github.com/LinuxUserGD/butler/win32"
 	"github.com/natefinch/npipe"
 	"github.com/pkg/errors"
 )

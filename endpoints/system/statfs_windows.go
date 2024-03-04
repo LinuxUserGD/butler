@@ -5,7 +5,7 @@ package system
 import (
 	"syscall"
 
-	"github.com/itchio/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd"
 	"github.com/itchio/ox/syscallex"
 	"github.com/pkg/errors"
 )

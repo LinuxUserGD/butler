@@ -3,8 +3,8 @@ package integrate
 import (
 	"testing"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/butlerd/messages"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd/messages"
 	"github.com/itchio/mitch"
 	"github.com/stretchr/testify/assert"
 )

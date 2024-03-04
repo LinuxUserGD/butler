@@ -10,7 +10,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/mansion"
 	"github.com/natefinch/npipe"
 	"github.com/pkg/errors"
 )

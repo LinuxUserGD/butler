@@ -3,8 +3,8 @@ package tests
 import (
 	"time"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/butlerd/messages"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd/messages"
 	"github.com/pkg/errors"
 )
 

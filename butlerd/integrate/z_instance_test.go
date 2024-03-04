@@ -14,9 +14,9 @@ import (
 
 	"github.com/fatih/color"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/butlerd/jsonrpc2"
-	"github.com/itchio/butler/butlerd/messages"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/butlerd/jsonrpc2"
+	"github.com/LinuxUserGD/butler/butlerd/messages"
 	"github.com/itchio/headway/state"
 	"github.com/itchio/mitch"
 	"github.com/pkg/errors"

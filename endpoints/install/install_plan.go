@@ -8,19 +8,19 @@ import (
 
 	itchio "github.com/itchio/go-itchio"
 
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/cmd/operate"
-	"github.com/itchio/butler/database/models"
-	"github.com/itchio/butler/endpoints/fetch"
-	"github.com/itchio/butler/manager"
-	"github.com/itchio/butler/butlerd/jsonrpc2"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/cmd/operate"
+	"github.com/LinuxUserGD/butler/database/models"
+	"github.com/LinuxUserGD/butler/endpoints/fetch"
+	"github.com/LinuxUserGD/butler/manager"
+	"github.com/LinuxUserGD/butler/butlerd/jsonrpc2"
 
 	"github.com/itchio/hades"
 	"github.com/itchio/httpkit/eos"
 	"github.com/itchio/httpkit/eos/option"
 
-	"github.com/itchio/hush"
-	"github.com/itchio/hush/bfs"
+	"github.com/LinuxUserGD/hush"
+	"github.com/LinuxUserGD/hush/bfs"
 
 	"github.com/pkg/errors"
 	"xorm.io/builder"

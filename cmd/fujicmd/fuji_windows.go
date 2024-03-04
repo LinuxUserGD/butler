@@ -16,12 +16,12 @@ import (
 
 	"github.com/itchio/ox/syscallex"
 
-	"github.com/itchio/butler/comm"
+	"github.com/LinuxUserGD/butler/comm"
 	"github.com/itchio/ox/winox"
 	"github.com/itchio/headway/state"
 	"github.com/pkg/errors"
 
-	"github.com/itchio/butler/mansion"
+	"github.com/LinuxUserGD/butler/mansion"
 )
 
 var setfilepermissionsArgs = struct {

@@ -2,8 +2,8 @@ package fetch
 
 import (
 	"crawshaw.io/sqlite"
-	"github.com/itchio/butler/butlerd"
-	"github.com/itchio/butler/database/models"
+	"github.com/LinuxUserGD/butler/butlerd"
+	"github.com/LinuxUserGD/butler/database/models"
 )
 
 func FetchCave(rc *butlerd.RequestContext, params butlerd.FetchCaveParams) (*butlerd.FetchCaveResult, error) {

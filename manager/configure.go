@@ -1,7 +1,7 @@
 package manager
 
 import (
-	"github.com/itchio/butler/cmd/configure"
+	"github.com/LinuxUserGD/butler/cmd/configure"
 	"github.com/itchio/dash"
 	"github.com/itchio/headway/state"
 	"github.com/itchio/ox"
