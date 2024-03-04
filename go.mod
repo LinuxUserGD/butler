@@ -13,7 +13,7 @@ require (
 	github.com/fatih/structtag v1.2.0
 	github.com/getlantern/mtime v0.0.0-20200417132445-23682092d1f7 // indirect
 	github.com/getlantern/ops v0.0.0-20200403153110-8476b16edcd6 // indirect
-	github.com/go-ole/go-ole v1.2.4
+	github.com/go-ole/go-ole v1.3.0
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/gops v0.3.10
@@ -56,7 +56,7 @@ require (
 	golang.org/x/crypto v0.0.0-20200604202706-70a84ac30bf9
 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9 // indirect
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a
-	golang.org/x/sys v0.0.0-20200615200032-f1bc736245b1
+	golang.org/x/sys v0.1.0
 	golang.org/x/text v0.3.3
 	golang.org/x/time v0.0.0-20200416051211-89c76fbcd5d1
 	google.golang.org/protobuf v1.24.0 // indirect
