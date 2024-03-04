@@ -17,7 +17,7 @@ require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/golang/protobuf v1.4.2 // indirect
 	github.com/google/gops v0.3.10
-	github.com/google/uuid v1.1.1
+	github.com/google/uuid v1.6.0
 	github.com/helloeave/json v1.13.0
 	github.com/itchio/arkive v0.0.0-20200618123031-1a30392a8cfe
 	github.com/itchio/boar v0.0.0-20200305195307-d2befc01fa9e
