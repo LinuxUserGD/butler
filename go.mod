@@ -48,7 +48,7 @@ require (
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/stretchr/testify v1.9.0
 	golang.org/x/crypto v0.22.0
-	golang.org/x/sync v0.6.0
+	golang.org/x/sync v0.7.0
 	golang.org/x/sys v0.19.0
 	golang.org/x/text v0.14.0
 	golang.org/x/time v0.5.0
