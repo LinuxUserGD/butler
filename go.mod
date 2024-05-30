@@ -6,7 +6,7 @@ toolchain go1.22.0
 
 require (
 	crawshaw.io/sqlite v0.3.2
-	github.com/BurntSushi/toml v1.3.2
+	github.com/BurntSushi/toml v1.4.0
 	github.com/LinuxUserGD/boar v0.0.0-20240305014643-ba715896792c
 	github.com/LinuxUserGD/hush v0.0.0-20240305015206-7e8b754f0006
 	github.com/arbovm/levenshtein v0.0.0-20160628152529-48b4e1c0c4d0
