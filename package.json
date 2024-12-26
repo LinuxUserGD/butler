@@ -1,7 +1,7 @@
 {
   "name": "@LinuxUserGD/butler",
   "version": "1.0.0",
-  "description": "[![Build Status](https://git.itch.ovh/LinuxUserGD/butler/badges/master/build.svg)](https://git.itch.ovh/LinuxUserGD/butler/builds) [![codecov](https://codecov.io/gh/LinuxUserGD/butler/branch/master/graph/badge.svg)](https://codecov.io/gh/LinuxUserGD/butler) [![Go Report Card](https://goreportcard.com/badge/github.com/LinuxUserGD/butler)](https://goreportcard.com/report/github.com/LinuxUserGD/butler) ![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)",
+  "description": "The itch.io command line tool",
   "main": "index.js",
   "directories": {
     "doc": "docs"

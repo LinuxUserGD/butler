@@ -21,7 +21,8 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/homelight/json v1.18.5
 	github.com/itchio/arkive v0.0.0-20200618123031-1a30392a8cfe
-	github.com/itchio/dash v0.0.0-20221120052447-7320435e1835
+	github.com/itchio/boar v0.0.0-20241212231610-4b0ac4400297
+	github.com/itchio/dash v0.0.0-20200305193527-478357e813a2
 	github.com/itchio/elefant v0.0.0-20200305193251-d52333c6ec90
 	github.com/itchio/go-itchio v0.0.0-20220331180553-1811474a71ea
 	github.com/itchio/hades v0.0.0-20200218173536-5021c7c6d6e4
@@ -111,4 +112,5 @@ require (
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
+	xorm.io/builder v0.3.7
 )
