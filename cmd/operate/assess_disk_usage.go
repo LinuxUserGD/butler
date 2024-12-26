@@ -4,8 +4,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/LinuxUserGD/hush"
-	"github.com/LinuxUserGD/hush/bfs"
+	"github.com/itchio/hush"
+	"github.com/itchio/hush/bfs"
 	"github.com/itchio/httpkit/eos"
 	"github.com/pkg/errors"
 )

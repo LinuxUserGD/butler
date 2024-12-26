@@ -7,9 +7,9 @@ import (
 	"crawshaw.io/sqlite"
 	"xorm.io/builder"
 
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/database/models"
-	"github.com/LinuxUserGD/butler/manager"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/database/models"
+	"github.com/itchio/butler/manager"
 
 	"github.com/itchio/hades"
 	"github.com/itchio/headway/state"

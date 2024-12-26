@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/LinuxUserGD/butler/redist"
+	"github.com/itchio/butler/redist"
 )
 
 type entriesByArch struct {

@@ -2,9 +2,9 @@ package fetch
 
 import (
 	"crawshaw.io/sqlite"
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/database/models"
-	"github.com/LinuxUserGD/butler/endpoints/fetch/lazyfetch"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/database/models"
+	"github.com/itchio/butler/endpoints/fetch/lazyfetch"
 	itchio "github.com/itchio/go-itchio"
 )
 

@@ -9,11 +9,11 @@ import (
 
 	"golang.org/x/sync/singleflight"
 
-	"github.com/LinuxUserGD/butler/buildinfo"
-	"github.com/LinuxUserGD/butler/butlerd/horror"
-	"github.com/LinuxUserGD/butler/butlerd/jsonrpc2"
-	"github.com/LinuxUserGD/butler/comm"
-	"github.com/LinuxUserGD/butler/database/models"
+	"github.com/itchio/butler/buildinfo"
+	"github.com/itchio/butler/butlerd/horror"
+	"github.com/itchio/butler/butlerd/jsonrpc2"
+	"github.com/itchio/butler/comm"
+	"github.com/itchio/butler/database/models"
 	itchio "github.com/itchio/go-itchio"
 	"github.com/itchio/headway/state"
 	"github.com/itchio/headway/tracker"
@@ -23,7 +23,7 @@ import (
 
 	"crawshaw.io/sqlite"
 	"crawshaw.io/sqlite/sqlitex"
-	"github.com/homelight/json"
+	"github.com/helloeave/json"
 
 	"github.com/pkg/errors"
 )

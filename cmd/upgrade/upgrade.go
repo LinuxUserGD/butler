@@ -5,9 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/LinuxUserGD/boar"
-	"github.com/LinuxUserGD/butler/comm"
-	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/itchio/boar"
+	"github.com/itchio/butler/comm"
+	"github.com/itchio/butler/mansion"
 	"github.com/pkg/errors"
 )
 

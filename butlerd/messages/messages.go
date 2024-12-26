@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"github.com/pkg/errors"
 
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/butlerd/jsonrpc2"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/butlerd/jsonrpc2"
 )
 
 type router interface {

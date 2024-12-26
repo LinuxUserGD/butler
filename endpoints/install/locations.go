@@ -8,9 +8,9 @@ import (
 
 	"xorm.io/builder"
 	"github.com/google/uuid"
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/database/models"
-	"github.com/LinuxUserGD/butler/endpoints/fetch"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/database/models"
+	"github.com/itchio/butler/endpoints/fetch"
 	"github.com/itchio/hades"
 	"github.com/pkg/errors"
 )

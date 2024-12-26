@@ -14,10 +14,10 @@ import (
 
 	"github.com/itchio/pelican"
 
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/cmd/elevate"
-	"github.com/LinuxUserGD/butler/endpoints/launch"
-	"github.com/LinuxUserGD/butler/shell"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/cmd/elevate"
+	"github.com/itchio/butler/endpoints/launch"
+	"github.com/itchio/butler/shell"
 	"github.com/itchio/dash"
 	"github.com/itchio/ox/winox"
 	"github.com/pkg/errors"

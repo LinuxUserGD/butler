@@ -11,15 +11,15 @@ import (
 	"crawshaw.io/sqlite"
 	"xorm.io/builder"
 
-	"github.com/LinuxUserGD/butler/butlerd/messages"
-	"github.com/LinuxUserGD/butler/cmd/operate"
-	"github.com/LinuxUserGD/butler/manager"
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/database/models"
+	"github.com/itchio/butler/butlerd/messages"
+	"github.com/itchio/butler/cmd/operate"
+	"github.com/itchio/butler/manager"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/database/models"
 
 	itchio "github.com/itchio/go-itchio"
 
-	"github.com/LinuxUserGD/hush/bfs"
+	"github.com/itchio/hush/bfs"
 	"github.com/itchio/hades"
 	"github.com/itchio/ox"
 

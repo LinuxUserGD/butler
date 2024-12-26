@@ -2,9 +2,9 @@ package database
 
 import (
 	"crawshaw.io/sqlite"
-	"github.com/LinuxUserGD/butler/butlerd/horror"
-	"github.com/LinuxUserGD/butler/database/models"
-	"github.com/LinuxUserGD/butler/database/models/migrations"
+	"github.com/itchio/butler/butlerd/horror"
+	"github.com/itchio/butler/database/models"
+	"github.com/itchio/butler/database/models/migrations"
 	"github.com/itchio/headway/state"
 	"github.com/pkg/errors"
 )

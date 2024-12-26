@@ -3,9 +3,9 @@ package fetch
 import (
 	"crawshaw.io/sqlite"
 	"xorm.io/builder"
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/database/models"
-	"github.com/LinuxUserGD/butler/endpoints/system"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/database/models"
+	"github.com/itchio/butler/endpoints/system"
 	"github.com/itchio/hades"
 	"github.com/itchio/headway/state"
 )

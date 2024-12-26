@@ -6,17 +6,17 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/LinuxUserGD/butler/butlerd/horror"
+	"github.com/itchio/butler/butlerd/horror"
 
 	"crawshaw.io/sqlite/sqlitex"
 	"github.com/google/gops/agent"
 	"github.com/google/uuid"
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/database"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/database"
 	"github.com/itchio/headway/state"
 
-	"github.com/LinuxUserGD/butler/comm"
-	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/itchio/butler/comm"
+	"github.com/itchio/butler/mansion"
 	"github.com/pkg/errors"
 )
 

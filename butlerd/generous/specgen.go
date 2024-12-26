@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"strings"
 
-	"github.com/LinuxUserGD/butler/butlerd/generous/spec"
+	"github.com/itchio/butler/butlerd/generous/spec"
 	"github.com/pkg/errors"
 )
 

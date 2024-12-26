@@ -6,8 +6,8 @@ import (
 
 	"crawshaw.io/sqlite"
 	"xorm.io/builder"
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/database/models"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/database/models"
 	itchio "github.com/itchio/go-itchio"
 	"github.com/itchio/hades"
 	"github.com/itchio/httpkit/neterr"

@@ -4,9 +4,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/butlerd/messages"
-	"github.com/LinuxUserGD/hush"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/butlerd/messages"
+	"github.com/itchio/hush"
 	"github.com/itchio/mitch"
 	"github.com/itchio/screw"
 	"github.com/stretchr/testify/assert"

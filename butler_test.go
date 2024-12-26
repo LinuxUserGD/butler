@@ -15,11 +15,11 @@ import (
 
 	"github.com/itchio/headway/united"
 
-	"github.com/LinuxUserGD/butler/cmd/apply"
-	"github.com/LinuxUserGD/butler/cmd/diff"
-	"github.com/LinuxUserGD/butler/cmd/ditto"
-	"github.com/LinuxUserGD/butler/cmd/sign"
-	"github.com/LinuxUserGD/butler/comm"
+	"github.com/itchio/butler/cmd/apply"
+	"github.com/itchio/butler/cmd/diff"
+	"github.com/itchio/butler/cmd/ditto"
+	"github.com/itchio/butler/cmd/sign"
+	"github.com/itchio/butler/comm"
 	"github.com/itchio/httpkit/eos"
 	"github.com/itchio/savior/seeksource"
 	"github.com/itchio/wharf/pwr"

@@ -12,7 +12,7 @@ When someone refers to **the itch.io command-line tools**, they're talking about
 butler is easily integrated into an automated build/deploy pipeline. Like most
 of the itch.io delivery infrastructure, it is open-source (MIT licensed):
 
-  * <https://github.com/LinuxUserGD/butler>
+  * <https://github.com/itchio/butler>
 
 It is also a good showcase of the *Wharf open specification*, using only
 openly documented algorithms and file formats, encouraging the development

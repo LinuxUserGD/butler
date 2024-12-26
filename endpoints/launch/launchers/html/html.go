@@ -3,10 +3,10 @@ package html
 import (
 	"path/filepath"
 
-	"github.com/LinuxUserGD/butler/butlerd/messages"
+	"github.com/itchio/butler/butlerd/messages"
 
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/endpoints/launch"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/endpoints/launch"
 	"github.com/pkg/errors"
 )
 

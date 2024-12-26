@@ -2,9 +2,9 @@ package utilities
 
 import (
 	"github.com/efarrer/iothrottler"
-	"github.com/LinuxUserGD/butler/buildinfo"
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/butlerd/messages"
+	"github.com/itchio/butler/buildinfo"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/butlerd/messages"
 	"github.com/itchio/httpkit/timeout"
 )
 

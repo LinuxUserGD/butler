@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/LinuxUserGD/butler/manager/runlock"
+	"github.com/itchio/butler/manager/runlock"
 	"github.com/itchio/headway/state"
 	"github.com/itchio/wharf/wtest"
 	"github.com/stretchr/testify/assert"

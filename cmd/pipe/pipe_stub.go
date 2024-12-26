@@ -5,7 +5,7 @@ package pipe
 import (
 	"fmt"
 
-	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/itchio/butler/mansion"
 )
 
 func Do(ctx *mansion.Context, command []string, stdin string, stdout string, stderr string) error {

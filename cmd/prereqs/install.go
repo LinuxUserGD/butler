@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/cmd/elevate"
-	"github.com/LinuxUserGD/butler/shell"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/cmd/elevate"
+	"github.com/itchio/butler/shell"
 	"github.com/itchio/ox"
 	"github.com/mitchellh/mapstructure"
 	"github.com/pkg/errors"

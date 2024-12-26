@@ -1,8 +1,8 @@
 package system
 
 import (
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/butlerd/messages"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/butlerd/messages"
 	"github.com/itchio/headway/united"
 	"github.com/pkg/errors"
 )

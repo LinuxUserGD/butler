@@ -2,9 +2,9 @@ package downloads
 
 import (
 	"crawshaw.io/sqlite"
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/cmd/operate"
-	"github.com/LinuxUserGD/butler/database/models"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/cmd/operate"
+	"github.com/itchio/butler/database/models"
 	"github.com/pkg/errors"
 )
 

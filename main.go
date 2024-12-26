@@ -14,11 +14,11 @@ import (
 
 	"github.com/efarrer/iothrottler"
 
-	"github.com/LinuxUserGD/butler/buildinfo"
-	"github.com/LinuxUserGD/butler/cmd/elevate"
-	"github.com/LinuxUserGD/butler/comm"
-	"github.com/LinuxUserGD/butler/filtering"
-	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/itchio/butler/buildinfo"
+	"github.com/itchio/butler/cmd/elevate"
+	"github.com/itchio/butler/comm"
+	"github.com/itchio/butler/filtering"
+	"github.com/itchio/butler/mansion"
 
 	"github.com/itchio/go-itchio/itchfs"
 

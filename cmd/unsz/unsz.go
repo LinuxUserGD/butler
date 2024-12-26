@@ -8,10 +8,10 @@ import (
 
 	"github.com/itchio/savior"
 
-	"github.com/LinuxUserGD/boar/szextractor"
+	"github.com/itchio/boar/szextractor"
 
-	"github.com/LinuxUserGD/butler/comm"
-	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/itchio/butler/comm"
+	"github.com/itchio/butler/mansion"
 
 	"github.com/itchio/headway/state"
 	"github.com/itchio/headway/united"

@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"crawshaw.io/sqlite"
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/database/models"
-	"github.com/LinuxUserGD/butler/endpoints/install/shortcut"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/database/models"
+	"github.com/itchio/butler/endpoints/install/shortcut"
 )
 
 func InstallCreateShortcut(rc *butlerd.RequestContext, params butlerd.InstallCreateShortcutParams) (*butlerd.InstallCreateShortcutResult, error) {

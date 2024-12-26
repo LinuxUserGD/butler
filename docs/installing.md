@@ -46,7 +46,7 @@ libraries related to 7-zip, which grant butler extra functionality. They're
 not strictly required for `butler push`, however, they shouldn't hurt either.
 
 If you need help integrating butler in your CI pipeline, butler's GitHub issue
-tracker is a good place to ask: https://github.com/LinuxUserGD/butler/issues/
+tracker is a good place to ask: https://github.com/itchio/butler/issues/
 
 ## Adding butler to your path
 

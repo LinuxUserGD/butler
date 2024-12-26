@@ -208,7 +208,7 @@ However, because it is hard to resist feature requests, butler supports the
 Here are the rules:
 
   * The pattern syntax is described in https://godoc.org/path/filepath#Match
-  * Default ignore patterns are [listed here](https://github.com/LinuxUserGD/butler/blob/544e1b8609f8dab386cc67cd06bf999e47029b28/filtering/filtering.go#L8-L17)
+  * Default ignore patterns are [listed here](https://github.com/itchio/butler/blob/544e1b8609f8dab386cc67cd06bf999e47029b28/filtering/filtering.go#L8-L17)
   * You can use `--ignore` multiple times, once per pattern
 
 For example, if you wanted to ignore all `.pdb` and `.dSYM` files, you would

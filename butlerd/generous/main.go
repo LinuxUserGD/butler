@@ -30,7 +30,7 @@ func main() {
 	}
 	mode := os.Args[1]
 
-	baseDir := getGoPackageDir("github.com/LinuxUserGD/butler/butlerd/generous")
+	baseDir := getGoPackageDir("github.com/itchio/butler/butlerd/generous")
 	log.Printf("Base dir: (%s)", baseDir)
 
 	_, err := os.Stat(baseDir)

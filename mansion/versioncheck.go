@@ -7,8 +7,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/LinuxUserGD/butler/buildinfo"
-	"github.com/LinuxUserGD/butler/comm"
+	"github.com/itchio/butler/buildinfo"
+	"github.com/itchio/butler/comm"
 	itchio "github.com/itchio/go-itchio"
 )
 

@@ -3,8 +3,8 @@ package walk
 import (
 	"time"
 
-	"github.com/LinuxUserGD/butler/comm"
-	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/itchio/butler/comm"
+	"github.com/itchio/butler/mansion"
 	"github.com/itchio/headway/united"
 	"github.com/itchio/lake/tlc"
 	"github.com/pkg/errors"

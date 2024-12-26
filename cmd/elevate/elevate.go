@@ -4,7 +4,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/itchio/butler/mansion"
 	"github.com/pkg/errors"
 )
 

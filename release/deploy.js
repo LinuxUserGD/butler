@@ -52,7 +52,7 @@ async function main(_args) {
         `push`,
         `--userversion "${userVersion}"`,
         `./${variant}`,
-        `LinuxUserGD/butler:${channelName}`,
+        `itchio/butler:${channelName}`,
       ];
       $(`${toolsDir}/butler ${args.join(" ")}`);
     }

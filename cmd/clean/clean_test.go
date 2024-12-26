@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/LinuxUserGD/butler/cmd/clean"
+	"github.com/itchio/butler/cmd/clean"
 	"github.com/itchio/wharf/wtest"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"

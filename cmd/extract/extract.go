@@ -3,13 +3,13 @@ package extract
 import (
 	"time"
 
-	"github.com/LinuxUserGD/boar"
-	"github.com/LinuxUserGD/boar/szextractor"
+	"github.com/itchio/boar"
+	"github.com/itchio/boar/szextractor"
 
 	"github.com/itchio/savior"
 
-	"github.com/LinuxUserGD/butler/comm"
-	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/itchio/butler/comm"
+	"github.com/itchio/butler/mansion"
 	"github.com/itchio/httpkit/eos"
 	"github.com/itchio/httpkit/eos/option"
 

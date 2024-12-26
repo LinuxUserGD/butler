@@ -18,8 +18,8 @@ func (bc *generousContext) generateGoCode() error {
 	doc.line("	%q", "encoding/json")
 	doc.line("	%q", "github.com/pkg/errors")
 	doc.line("")
-	doc.line("	%q", "github.com/LinuxUserGD/butler/butlerd")
-	doc.line("	%q", "github.com/LinuxUserGD/butler/butlerd/jsonrpc2")
+	doc.line("	%q", "github.com/itchio/butler/butlerd")
+	doc.line("	%q", "github.com/itchio/butler/butlerd/jsonrpc2")
 	doc.line(")")
 	doc.line("")
 
@@ -30,7 +30,7 @@ func (bc *generousContext) generateGoCode() error {
 	doc.line("")
 
 	scope := newScope(bc)
-	must(scope.assimilate("github.com/LinuxUserGD/butler/butlerd", "types.go"))
+	must(scope.assimilate("github.com/itchio/butler/butlerd", "types.go"))
 
 	var clientRequests []string
 

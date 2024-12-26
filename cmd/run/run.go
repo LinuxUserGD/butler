@@ -5,7 +5,7 @@ import (
 	"os/exec"
 	"syscall"
 
-	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/itchio/butler/mansion"
 	"github.com/pkg/errors"
 )
 

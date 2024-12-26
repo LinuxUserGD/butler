@@ -5,10 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/LinuxUserGD/butler/butlerd/messages"
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/cmd/sizeof"
-	"github.com/LinuxUserGD/butler/cmd/wipe"
+	"github.com/itchio/butler/butlerd/messages"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/cmd/sizeof"
+	"github.com/itchio/butler/cmd/wipe"
 
 	"github.com/itchio/headway/united"
 )

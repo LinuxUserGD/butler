@@ -165,7 +165,7 @@ async function main(args) {
     version = process.env.CI_COMMIT_REF_NAME;
   }
 
-  let bi = `github.com/LinuxUserGD/butler/buildinfo`;
+  let bi = `github.com/itchio/butler/buildinfo`;
 
   let ldflags = [
     `-X ${bi}.Version=${version}`,

@@ -5,10 +5,10 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/LinuxUserGD/boar"
+	"github.com/itchio/boar"
 
-	"github.com/LinuxUserGD/butler/comm"
-	"github.com/LinuxUserGD/butler/mansion"
+	"github.com/itchio/butler/comm"
+	"github.com/itchio/butler/mansion"
 	itchio "github.com/itchio/go-itchio"
 	"github.com/pkg/errors"
 )

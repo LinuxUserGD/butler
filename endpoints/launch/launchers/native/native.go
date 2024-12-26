@@ -17,15 +17,15 @@ import (
 
 	"github.com/itchio/dash"
 
-	"github.com/LinuxUserGD/butler/butlerd/messages"
-	"github.com/LinuxUserGD/butler/filtering"
-	"github.com/LinuxUserGD/butler/mansion"
-	"github.com/LinuxUserGD/butler/shell"
+	"github.com/itchio/butler/butlerd/messages"
+	"github.com/itchio/butler/filtering"
+	"github.com/itchio/butler/mansion"
+	"github.com/itchio/butler/shell"
 
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/cmd/elevate"
-	"github.com/LinuxUserGD/butler/cmd/wipe"
-	"github.com/LinuxUserGD/butler/endpoints/launch"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/cmd/elevate"
+	"github.com/itchio/butler/cmd/wipe"
+	"github.com/itchio/butler/endpoints/launch"
 	"github.com/itchio/smaug/runner"
 	"github.com/pkg/errors"
 )

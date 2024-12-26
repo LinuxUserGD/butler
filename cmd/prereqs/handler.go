@@ -10,9 +10,9 @@ import (
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation"
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/manager"
-	"github.com/LinuxUserGD/butler/redist"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/manager"
+	"github.com/itchio/butler/redist"
 	"github.com/itchio/headway/state"
 	"github.com/itchio/httpkit/eos"
 	"github.com/itchio/httpkit/eos/option"

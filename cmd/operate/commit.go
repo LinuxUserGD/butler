@@ -1,12 +1,12 @@
 package operate
 
 import (
-	"github.com/LinuxUserGD/butler/butlerd"
-	"github.com/LinuxUserGD/butler/butlerd/messages"
-	"github.com/LinuxUserGD/butler/manager"
+	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/butlerd/messages"
+	"github.com/itchio/butler/manager"
 	itchio "github.com/itchio/go-itchio"
-	"github.com/LinuxUserGD/hush"
-	"github.com/LinuxUserGD/hush/bfs"
+	"github.com/itchio/hush"
+	"github.com/itchio/hush/bfs"
 	"github.com/itchio/ox"
 	"github.com/pkg/errors"
 )
