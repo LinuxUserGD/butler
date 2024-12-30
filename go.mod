@@ -16,7 +16,7 @@ require (
 	github.com/go-ole/go-ole v1.2.4
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/google/gops v0.3.10
-	github.com/google/uuid v1.1.1
+	github.com/google/uuid v1.6.0
 	github.com/helloeave/json v1.13.0
 	github.com/itchio/arkive v0.0.0-20200618123031-1a30392a8cfe
 	github.com/itchio/boar v0.0.0-20241212231610-4b0ac4400297
