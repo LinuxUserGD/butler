@@ -9,7 +9,7 @@ require (
 	github.com/dchest/safefile v0.0.0-20151022103144-855e8d98f185
 	github.com/dustinkirkland/golang-petname v0.0.0-20191129215211-8e5a1ed0cff0
 	github.com/efarrer/iothrottler v0.0.1
-	github.com/fatih/color v1.9.0
+	github.com/fatih/color v1.18.0
 	github.com/fatih/structtag v1.2.0
 	github.com/getlantern/mtime v0.0.0-20200417132445-23682092d1f7 // indirect
 	github.com/getlantern/ops v0.0.0-20200403153110-8476b16edcd6 // indirect
@@ -40,7 +40,6 @@ require (
 	github.com/itchio/wizardry v0.0.0-20200301161332-e8c8c4a5a488
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 	github.com/klauspost/compress v1.10.9 // indirect
-	github.com/mattn/go-colorable v0.1.6 // indirect
 	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/mitchellh/mapstructure v1.3.2
 	github.com/natefinch/npipe v0.0.0-20160621034901-c1b8fa8bdcce
