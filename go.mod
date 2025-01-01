@@ -13,9 +13,9 @@ require (
 	github.com/fatih/structtag v1.2.0
 	github.com/getlantern/mtime v0.0.0-20200417132445-23682092d1f7 // indirect
 	github.com/getlantern/ops v0.0.0-20200403153110-8476b16edcd6 // indirect
-	github.com/go-ole/go-ole v1.2.4
+	github.com/go-ole/go-ole v1.2.6
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
-	github.com/google/gops v0.3.10
+	github.com/google/gops v0.3.28
 	github.com/google/uuid v1.6.0
 	github.com/helloeave/json v1.13.0
 	github.com/itchio/arkive v0.0.0-20200618123031-1a30392a8cfe
@@ -50,7 +50,7 @@ require (
 	github.com/scjalliance/comshim v0.0.0-20190308082608-cf06d2532c4e
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
-	github.com/stretchr/testify v1.6.1
+	github.com/stretchr/testify v1.8.4
 	golang.org/x/crypto v0.31.0
 	golang.org/x/net v0.32.0 // indirect
 	golang.org/x/sync v0.10.0
@@ -60,6 +60,5 @@ require (
 	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
-	gopkg.in/yaml.v3 v3.0.1 // indirect
 	xorm.io/builder v0.3.13
 )
