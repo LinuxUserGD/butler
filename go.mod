@@ -8,7 +8,7 @@ require (
 	github.com/arbovm/levenshtein v0.0.0-20160628152529-48b4e1c0c4d0
 	github.com/dchest/safefile v0.0.0-20151022103144-855e8d98f185
 	github.com/dustinkirkland/golang-petname v0.0.0-20191129215211-8e5a1ed0cff0
-	github.com/efarrer/iothrottler v0.0.1
+	github.com/efarrer/iothrottler v0.0.3
 	github.com/fatih/color v1.18.0
 	github.com/fatih/structtag v1.2.0
 	github.com/getlantern/mtime v0.0.0-20200417132445-23682092d1f7 // indirect
