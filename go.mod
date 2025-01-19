@@ -40,11 +40,10 @@ require (
 	github.com/itchio/wizardry v0.0.0-20200301161332-e8c8c4a5a488
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 	github.com/klauspost/compress v1.10.9 // indirect
-	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/mitchellh/mapstructure v1.3.2
 	github.com/natefinch/npipe v0.0.0-20160621034901-c1b8fa8bdcce
 	github.com/nightlyone/lockfile v1.0.0 // indirect
-	github.com/olekukonko/tablewriter v0.0.4
+	github.com/olekukonko/tablewriter v0.0.5
 	github.com/pkg/errors v0.9.1
 	github.com/russross/blackfriday v2.0.0+incompatible
 	github.com/scjalliance/comshim v0.0.0-20190308082608-cf06d2532c4e
