@@ -1,7 +1,6 @@
 module github.com/itchio/butler
 
 go 1.23
-
 require (
 	crawshaw.io/sqlite v0.3.2
 	github.com/BurntSushi/toml v1.4.0
@@ -49,7 +48,7 @@ require (
 	golang.org/x/sync v0.11.0
 	golang.org/x/sys v0.30.0
 	golang.org/x/text v0.22.0
-	golang.org/x/time v0.10.0
+	golang.org/x/time v0.11.0
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	xorm.io/builder v0.3.13
 )
