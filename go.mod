@@ -50,7 +50,7 @@ require (
 	golang.org/x/crypto v0.36.0
 	golang.org/x/sync v0.13.0
 	golang.org/x/sys v0.31.0
-	golang.org/x/text v0.23.0
+	golang.org/x/text v0.24.0
 	golang.org/x/time v0.11.0
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	xorm.io/builder v0.3.13
