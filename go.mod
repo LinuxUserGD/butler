@@ -17,7 +17,7 @@ require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/google/gops v0.3.28
 	github.com/google/uuid v1.6.0
-	github.com/helloeave/json v1.15.3
+	github.com/homelight/json v1.15.3
 	github.com/itchio/arkive v0.0.0-20200618123031-1a30392a8cfe
 	github.com/itchio/boar v0.0.0-20241212231610-4b0ac4400297
 	github.com/itchio/dash v0.0.0-20221120052447-7320435e1835
