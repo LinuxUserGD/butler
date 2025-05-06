@@ -143,8 +143,8 @@ github.com/gorilla/mux v1.7.4/go.mod h1:DVbg23sWSpFRCP0SfiEN6jmj59UnW/n46BH5rLB7
 github.com/hashicorp/golang-lru v0.5.4/go.mod h1:iADmTwqILo4mZ8BN3D2Q6+9jd8WM5uGBxy+E8yxSoD4=
 github.com/hashicorp/golang-lru v1.0.2 h1:dV3g9Z/unq5DpblPpw+Oqcv4dU/1omnb4Ok8iPY6p1c=
 github.com/hashicorp/golang-lru v1.0.2/go.mod h1:iADmTwqILo4mZ8BN3D2Q6+9jd8WM5uGBxy+E8yxSoD4=
-github.com/helloeave/json v1.15.3 h1:roUxUEGhsSvhuhi80c4qmLiW633d5uf0mkzUGzBMfX8=
-github.com/helloeave/json v1.15.3/go.mod h1:uTHhuUsgnrpm9cc7Gi3tfIUwgf1dq/7+uLfpUFLBFEQ=
+github.com/homelight/json v1.15.3 h1:roUxUEGhsSvhuhi80c4qmLiW633d5uf0mkzUGzBMfX8=
+github.com/homelight/json v1.15.3/go.mod h1:uTHhuUsgnrpm9cc7Gi3tfIUwgf1dq/7+uLfpUFLBFEQ=
 github.com/itchio/arkive v0.0.0-20200301155608-aeded25a0494/go.mod h1:EcWY5f3+D6wMuNE1T+zuixVjXN8o1n9dWaRjHEvFd70=
 github.com/itchio/arkive v0.0.0-20200618123031-1a30392a8cfe h1:/Ah2KhQIStcm+a/Ha/RlxVhpQUgVdcS3AEz7fLTm0tU=
 github.com/itchio/arkive v0.0.0-20200618123031-1a30392a8cfe/go.mod h1:EcWY5f3+D6wMuNE1T+zuixVjXN8o1n9dWaRjHEvFd70=
