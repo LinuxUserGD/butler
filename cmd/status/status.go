@@ -48,7 +48,7 @@ func Do(ctx *mansion.Context, specStr string, showAllFiles bool) error {
 	}
 
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Channel", "Upload", "Build", "Version"})
+	table.Header([]string{"Channel", "Upload", "Build", "Version"})
 
 	found := false
 

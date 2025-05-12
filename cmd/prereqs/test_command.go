@@ -15,6 +15,7 @@ import (
 	"github.com/itchio/butler/mansion"
 	"github.com/itchio/butler/redist"
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/tw"
 	"github.com/pkg/errors"
 )
 
@@ -44,12 +45,20 @@ func Test(ctx *mansion.Context, prereqs []string) error {
 	if len(prereqs) == 0 {
 		comm.Logf("")
 		comm.Statf("No prereqs specified, here are those we know about: \n")
-
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetAutoFormatHeaders(false)
-		table.SetColWidth(60)
-		table.SetHeader([]string{"Name", "Arch", "Description", "Version"})
-
+		table := tablewriter.NewTable(os.Stdout,
+			tablewriter.WithConfig(tablewriter.Config{
+				Row: tw.CellConfig{
+					Formatting: tw.CellFormatting{
+						AutoWrap:  tw.WrapNone,
+						Alignment: tw.AlignLeft,
+					},
+					Padding: tw.CellPadding{
+						Global: tw.Padding{Left: "", Right: "X"},
+					},
+				},
+			}),
+		)
+		table.Header([]string{"Name", "Arch", "Description", "Version"})
 		var entries []*NamedRedistEntry
 		for name, v := range registry.Entries {
 			entries = append(entries, &NamedRedistEntry{name, v})
