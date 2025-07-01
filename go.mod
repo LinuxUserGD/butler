@@ -81,6 +81,7 @@ require (
 	github.com/gorilla/handlers v1.4.2 // indirect
 	github.com/gorilla/mux v1.7.4 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
+	github.com/homelight/json v1.18.5 // indirect
 	github.com/itchio/dmcunrar-go v0.0.0-20241212230744-bd86d6b265e9 // indirect
 	github.com/itchio/dskompress v0.0.0-20190702113811-5e6f499be697 // indirect
 	github.com/itchio/go-brotli v0.0.0-20190702114328-3f28d645a45c // indirect
