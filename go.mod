@@ -18,7 +18,6 @@ require (
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/google/gops v0.3.28
 	github.com/google/uuid v1.6.0
-	github.com/helloeave/json v1.15.3
 	github.com/homelight/json v1.18.5
 	github.com/itchio/arkive v0.0.0-20200618123031-1a30392a8cfe
 	github.com/itchio/boar v0.0.0-20241212231610-4b0ac4400297
@@ -58,7 +57,6 @@ require (
 )
 
 require (
-	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 // indirect
 	github.com/alecthomas/units v0.0.0-20240927000941-0f3dac36c52b // indirect
 	github.com/basgys/goxml2json v1.1.0 // indirect
 	github.com/certifi/gocertifi v0.0.0-20210507211836-431795d63e8d // indirect
