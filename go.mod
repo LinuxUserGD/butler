@@ -1,6 +1,6 @@
 module github.com/itchio/butler
 
-go 1.23.0
+go 1.24.0
 
 toolchain go1.24.1
 
@@ -50,7 +50,7 @@ require (
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/crypto v0.41.0
 	golang.org/x/sync v0.16.0
-	golang.org/x/sys v0.35.0
+	golang.org/x/sys v0.36.0
 	golang.org/x/text v0.28.0
 	golang.org/x/time v0.12.0
 	xorm.io/builder v0.3.13
