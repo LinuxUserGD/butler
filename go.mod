@@ -42,7 +42,7 @@ require (
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/natefinch/npipe v0.0.0-20160621034901-c1b8fa8bdcce
-	github.com/olekukonko/tablewriter v1.0.9
+	github.com/olekukonko/tablewriter v1.1.0
 	github.com/pkg/errors v0.9.1
 	github.com/russross/blackfriday v2.0.0+incompatible
 	github.com/scjalliance/comshim v0.0.0-20250111221056-b2ef9d8d7e0f
