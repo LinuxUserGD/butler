@@ -20,10 +20,10 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/homelight/json v1.18.5
 	github.com/itchio/arkive v0.0.0-20200618123031-1a30392a8cfe
-	github.com/itchio/boar v0.0.0-20241212231610-4b0ac4400297
 	github.com/itchio/dash v0.0.0-20221120052447-7320435e1835
+	github.com/itchio/boar v0.0.0-20251211225247-f3b18cabd7b3
 	github.com/itchio/elefant v0.0.0-20200305193251-d52333c6ec90
-	github.com/itchio/go-itchio v0.0.0-20220331180553-1811474a71ea
+	github.com/itchio/go-itchio v0.0.0-20251211231208-3880793bdd63
 	github.com/itchio/hades v0.0.0-20200218173536-5021c7c6d6e4
 	github.com/itchio/headway v0.0.0-20200301160421-e15721f23905
 	github.com/itchio/httpkit v0.0.0-20200618110940-5044e418b971
