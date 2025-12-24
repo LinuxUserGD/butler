@@ -1,8 +1,6 @@
 module github.com/itchio/butler
 
-go 1.24.0
-
-toolchain go1.24.1
+go 1.25.3
 
 require (
 	crawshaw.io/sqlite v0.3.2
@@ -23,7 +21,7 @@ require (
 	github.com/itchio/boar v0.0.0-20251211225247-f3b18cabd7b3
 	github.com/itchio/dash v0.0.0-20221120052447-7320435e1835
 	github.com/itchio/elefant v0.0.0-20200305193251-d52333c6ec90
-	github.com/itchio/go-itchio v0.0.0-20251211231208-3880793bdd63
+	github.com/itchio/go-itchio v0.0.0-20251213014929-fd4661ad4f90
 	github.com/itchio/hades v0.0.0-20200218173536-5021c7c6d6e4
 	github.com/itchio/headway v0.0.0-20200301160421-e15721f23905
 	github.com/itchio/httpkit v0.0.0-20200618110940-5044e418b971
@@ -45,7 +43,7 @@ require (
 	github.com/olekukonko/tablewriter v1.1.2
 	github.com/pkg/errors v0.9.1
 	github.com/russross/blackfriday v2.0.0+incompatible
-	github.com/scjalliance/comshim v0.0.0-20250111221056-b2ef9d8d7e0f
+	github.com/scjalliance/comshim v0.0.0-20251021001035-b69f3cdad6f3
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/crypto v0.46.0
@@ -60,7 +58,8 @@ require (
 	github.com/alecthomas/units v0.0.0-20240927000941-0f3dac36c52b // indirect
 	github.com/basgys/goxml2json v1.1.0 // indirect
 	github.com/certifi/gocertifi v0.0.0-20210507211836-431795d63e8d // indirect
-	github.com/clipperhouse/displaywidth v0.6.0 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/clipperhouse/displaywidth v0.6.2 // indirect
 	github.com/clipperhouse/stringish v0.1.1 // indirect
 	github.com/clipperhouse/uax29/v2 v2.3.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -71,9 +70,8 @@ require (
 	github.com/getlantern/hex v0.0.0-20220104173244-ad7e4b9194dc // indirect
 	github.com/getlantern/hidden v0.0.0-20220104173330-f221c5a24770 // indirect
 	github.com/getlantern/idletiming v0.0.0-20231030193830-6767b09f86db // indirect
-	github.com/getlantern/iptool v0.0.0-20230112135223-c00e863b2696 // indirect
 	github.com/getlantern/mtime v0.0.0-20200417132445-23682092d1f7 // indirect
-	github.com/getlantern/netx v0.0.0-20240830183145-c257516187f0 // indirect
+	github.com/getlantern/netx v0.0.0-20251021221514-279deb2cfd40 // indirect
 	github.com/getlantern/ops v0.0.0-20231025133620-f368ab734534 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -89,10 +87,10 @@ require (
 	github.com/itchio/kompress v0.0.0-20200301155538-5c2eecce9e51 // indirect
 	github.com/itchio/lzma v0.0.0-20190703113020-d3e24e3e3d49 // indirect
 	github.com/itchio/randsource v0.0.0-20190703104731-3f6d22f91927 // indirect
-	github.com/itchio/sevenzip-go v0.0.0-20251211223017-abb980fcfad0 // indirect
+	github.com/itchio/sevenzip-go v0.0.0-20251211223907-deaa375308d8 // indirect
 	github.com/jgallagher/gosaca v0.0.0-20130226042358-754749770f08 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/klauspost/compress v1.18.0 // indirect
+	github.com/klauspost/compress v1.18.2 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
@@ -106,15 +104,15 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/xhit/go-str2duration/v2 v2.1.0 // indirect
-	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
-	go.opentelemetry.io/otel v1.38.0 // indirect
-	go.opentelemetry.io/otel/metric v1.38.0 // indirect
-	go.opentelemetry.io/otel/trace v1.38.0 // indirect
+	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
+	go.opentelemetry.io/otel v1.39.0 // indirect
+	go.opentelemetry.io/otel/metric v1.39.0 // indirect
+	go.opentelemetry.io/otel/trace v1.39.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/net v0.47.0 // indirect
+	go.uber.org/zap v1.27.1 // indirect
+	golang.org/x/net v0.48.0 // indirect
 	golang.org/x/term v0.38.0 // indirect
-	google.golang.org/protobuf v1.36.9 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
