@@ -20,8 +20,8 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/homelight/json v1.18.5
 	github.com/itchio/arkive v0.0.0-20200618123031-1a30392a8cfe
-	github.com/itchio/dash v0.0.0-20221120052447-7320435e1835
 	github.com/itchio/boar v0.0.0-20251211225247-f3b18cabd7b3
+	github.com/itchio/dash v0.0.0-20221120052447-7320435e1835
 	github.com/itchio/elefant v0.0.0-20200305193251-d52333c6ec90
 	github.com/itchio/go-itchio v0.0.0-20251211231208-3880793bdd63
 	github.com/itchio/hades v0.0.0-20200218173536-5021c7c6d6e4
@@ -89,7 +89,7 @@ require (
 	github.com/itchio/kompress v0.0.0-20200301155538-5c2eecce9e51 // indirect
 	github.com/itchio/lzma v0.0.0-20190703113020-d3e24e3e3d49 // indirect
 	github.com/itchio/randsource v0.0.0-20190703104731-3f6d22f91927 // indirect
-	github.com/itchio/sevenzip-go v0.0.0-20190703112252-e327cec6c376 // indirect
+	github.com/itchio/sevenzip-go v0.0.0-20251211223017-abb980fcfad0 // indirect
 	github.com/jgallagher/gosaca v0.0.0-20130226042358-754749770f08 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect

@@ -158,6 +158,7 @@ github.com/itchio/arkive v0.0.0-20200618123031-1a30392a8cfe/go.mod h1:EcWY5f3+D6
 github.com/itchio/boar v0.0.0-20200305195307-d2befc01fa9e/go.mod h1:vA899hvhYA1wBwEvssCBtuBFdlKLIfxWw+vvr8TT7MI=
 github.com/itchio/boar v0.0.0-20251211225247-f3b18cabd7b3 h1:JGmIvgSSj0GRRdcM0ErOlSSZWSHnav2ZHzqBdf7IHsc=
 github.com/itchio/boar v0.0.0-20251211225247-f3b18cabd7b3/go.mod h1:7yZNdo3qm8sInTUt4qJWV8xdWxaFNAi3qu1oqq9zqyY=
+github.com/itchio/dash v0.0.0-20200305193527-478357e813a2/go.mod h1:f27hhErRVUtpFG1vshSnKgj2RC1EGlhQy0+6CdTjaiA=
 github.com/itchio/dash v0.0.0-20221120052447-7320435e1835 h1:uchyS8AGfh+l//ZdZ1O7u4MbNElsdMKFFD1C7vMTfS8=
 github.com/itchio/dash v0.0.0-20221120052447-7320435e1835/go.mod h1:f27hhErRVUtpFG1vshSnKgj2RC1EGlhQy0+6CdTjaiA=
 github.com/itchio/dmcunrar-go v0.0.0-20200301160520-3f7579536695/go.mod h1:rUrDMGTBACKKDvlSJludmw2F3+vsyYHyhF2YM4E0Mrc=
