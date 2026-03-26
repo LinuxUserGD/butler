@@ -10,7 +10,7 @@ require (
 	github.com/dchest/safefile v0.0.0-20151022103144-855e8d98f185
 	github.com/dustinkirkland/golang-petname v0.0.0-20191129215211-8e5a1ed0cff0
 	github.com/efarrer/iothrottler v0.0.3
-	github.com/fatih/color v1.18.0
+	github.com/fatih/color v1.19.0
 	github.com/fatih/structtag v1.2.0
 	github.com/go-ole/go-ole v1.3.0
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
