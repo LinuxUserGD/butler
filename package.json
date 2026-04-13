@@ -22,6 +22,6 @@
   "homepage": "https://github.com/itchio/butler#readme",
   "devDependencies": {
     "@itchio/bob": "^2.1.0",
-    "@types/node": "^25.5.2"
+    "@types/node": "^25.6.0"
   }
 }
