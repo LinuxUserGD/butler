@@ -6,6 +6,7 @@ import (
 	"github.com/itchio/butler/comm"
 	"github.com/itchio/butler/filtering"
 	"github.com/itchio/butler/mansion"
+	"github.com/itchio/butler/walkutil"
 
 	itchio "github.com/itchio/go-itchio"
 
@@ -21,6 +22,7 @@ var previewArgs = struct {
 	dereference bool
 	fixPerms    bool
 	autoWrap    bool
+	autoUnzip   bool
 }{}
 
 // RegisterPreview wires up `butler push-preview`, a no-side-effects companion
@@ -35,19 +37,24 @@ func RegisterPreview(ctx *mansion.Context) {
 	cmd.Flag("dereference", "Dereference symlinks").Default("false").BoolVar(&previewArgs.dereference)
 	cmd.Flag("fix-permissions", "Detect Mac & Linux executables and adjust their permissions automatically").Default("true").BoolVar(&previewArgs.fixPerms)
 	cmd.Flag("auto-wrap", "Apply workaround for https://github.com/itchio/itch/issues/2147").Default("true").BoolVar(&previewArgs.autoWrap)
+	cmd.Flag("auto-unzip", "If src is a directory containing a single .zip file, compare the zip's contents instead of the zip-as-a-blob").Default("true").BoolVar(&previewArgs.autoUnzip)
 	ctx.Register(cmd, doPreview)
 }
 
 func doPreview(ctx *mansion.Context) {
-	ctx.Must(DoPreview(ctx, previewArgs.src, previewArgs.target, previewArgs.changesOnly, previewArgs.fixPerms, previewArgs.dereference, previewArgs.autoWrap))
+	ctx.Must(DoPreview(ctx, previewArgs.src, previewArgs.target, previewArgs.changesOnly, previewArgs.fixPerms, previewArgs.dereference, previewArgs.autoWrap, previewArgs.autoUnzip))
 }
 
 // DoPreview runs the comparison flow: walk the source, fetch the channel's
 // previous-build signature, hash the source, classify per file, and print
 // the result. Mirrors what cmd/push.Do does for a real push but without
 // creating a build or uploading anything.
-func DoPreview(ctx *mansion.Context, buildPath string, specStr string, changesOnly bool, fixPerms bool, dereference bool, wrap bool) error {
+func DoPreview(ctx *mansion.Context, buildPath string, specStr string, changesOnly bool, fixPerms bool, dereference bool, wrap bool, autoUnzip bool) error {
 	consumer := comm.NewStateConsumer()
+
+	if autoUnzip {
+		buildPath = walkutil.ResolveSingleZipDir(buildPath, filtering.FilterPaths)
+	}
 
 	sourceContainerChan := make(chan walkResult)
 	walkErrs := make(chan error)
@@ -136,15 +143,23 @@ func DoPreview(ctx *mansion.Context, buildPath string, specStr string, changesOn
 		comm.Statf("All %d entries are new (no previous build)", result.Counts.New)
 	}
 
-	previewResult(spec.Channel, hasParent, parentID, &result.Counts)
+	previewResult(spec.Channel, hasParent, parentID, walkies.container.Size, &result.Counts, topChangedFiles(result))
 	return nil
 }
 
-func previewResult(channel string, hasParent bool, parentBuildID int64, comparison *pushComparisonCounts) {
+func previewResult(channel string, hasParent bool, parentBuildID int64, sourceSize int64, comparison *pushComparisonCounts, topChanged []topChangedFileEntry) {
+	// Always emit the field as a non-nil array — clients can then treat
+	// `topChangedFiles: []` as the "no changes / all SAME" case without a
+	// nil check.
+	if topChanged == nil {
+		topChanged = []topChangedFileEntry{}
+	}
 	out := map[string]interface{}{
-		"channel":    channel,
-		"hasParent":  hasParent,
-		"comparison": comparison,
+		"channel":         channel,
+		"hasParent":       hasParent,
+		"sourceSize":      sourceSize,
+		"comparison":      comparison,
+		"topChangedFiles": topChanged,
 	}
 	if hasParent {
 		out["parentBuildId"] = parentBuildID
