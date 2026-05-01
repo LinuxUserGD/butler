@@ -2255,7 +2255,7 @@
     },
     {
       "method": "Wharf.Push",
-      "doc": "Pushes a new build to itch.io for a given target+channel. Heavy lifting\n(walk, diff, upload) runs in a `butler push` worker subprocess that butlerd\nspawns; butlerd brokers progress over WharfPushProgress notifications and\nkills the worker if the RPC's context is cancelled.",
+      "doc": "Pushes a new build to itch.io for a given target+channel. Heavy lifting\n(walk, diff, upload) runs in a `butler push` worker subprocess that butlerd\nspawns; butlerd brokers progress over WharfPushProgress notifications and\nkills the worker if the RPC's context is cancelled.\n\nFor a no-side-effects \"what would change?\" preview, call Wharf.PushPreview\ninstead.",
       "caller": "client",
       "params": {
         "fields": [
@@ -2295,9 +2295,67 @@
             "type": "boolean"
           },
           {
-            "name": "dryRun",
-            "doc": "Walk and report what would be pushed without uploading",
+            "name": "dereference",
+            "doc": "Dereference symlinks during walk",
             "type": "boolean"
+          },
+          {
+            "name": "fixPermissions",
+            "doc": "When non-nil, overrides butler's default (--fix-permissions, default true)",
+            "type": "boolean"
+          },
+          {
+            "name": "autoWrap",
+            "doc": "When non-nil, overrides butler's default (--auto-wrap, default true)",
+            "type": "boolean"
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "buildId",
+            "doc": "ID of the build that was created (0 if skipped)",
+            "type": "number"
+          },
+          {
+            "name": "channel",
+            "doc": "",
+            "type": "string"
+          },
+          {
+            "name": "skipped",
+            "doc": "True when no build was created because ifChanged found no diff",
+            "type": "boolean"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Wharf.PushPreview",
+      "doc": "Reports what would change if Src were pushed to the given channel,\nwithout creating a build or uploading anything. Hashes the source; same\ncost as the diffing pass of a real push.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "profileId",
+            "doc": "itch.io profile to authenticate as",
+            "type": "number"
+          },
+          {
+            "name": "src",
+            "doc": "Source path: directory or zip archive",
+            "type": "string"
+          },
+          {
+            "name": "target",
+            "doc": "Push target in user/slug or numeric form, e.g. \"leafo/x-moon\"",
+            "type": "string"
+          },
+          {
+            "name": "channel",
+            "doc": "Channel name, e.g. \"win-64\"",
+            "type": "string"
           },
           {
             "name": "dereference",
@@ -2319,29 +2377,24 @@
       "result": {
         "fields": [
           {
-            "name": "buildId",
-            "doc": "ID of the build that was created (0 if dryRun or skipped)",
-            "type": "number"
-          },
-          {
             "name": "channel",
             "doc": "",
             "type": "string"
           },
           {
-            "name": "dryRun",
-            "doc": "True when no build was created because this was a dry run",
+            "name": "hasParent",
+            "doc": "False when the channel has no previous build to compare against;\nin that case every entry in the source is treated as new.",
             "type": "boolean"
           },
           {
-            "name": "skipped",
-            "doc": "True when no build was created because ifChanged found no diff",
-            "type": "boolean"
+            "name": "parentBuildId",
+            "doc": "ID of the build the preview compared against. Absent when !HasParent.",
+            "type": "number"
           },
           {
-            "name": "reason",
-            "doc": "Machine-readable reason for a no-op result, empty when a build was created",
-            "type": "string"
+            "name": "comparison",
+            "doc": "Per-entry change counts (files, dirs, symlinks combined).",
+            "type": "WharfPushComparison"
           }
         ]
       }
@@ -2431,6 +2484,64 @@
             "name": "build",
             "doc": "",
             "type": "Build"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Wharf.ListBuilds",
+      "doc": "Lists builds across every game the current user develops or admins,\npowering the app's \"Uploads\" view. Results are fetched live from the\nitch.io API on every call (no local caching) so build state always\nreflects the server's current view.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "profileId",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "page",
+            "doc": "Page number, 1-based. Defaults to 1.",
+            "type": "number"
+          },
+          {
+            "name": "perPage",
+            "doc": "Page size. Server-capped at 100.",
+            "type": "number"
+          },
+          {
+            "name": "state",
+            "doc": "State filter. One of \"live\", \"processing\", \"failed\". Empty for all.",
+            "type": "string"
+          },
+          {
+            "name": "includeTotals",
+            "doc": "If set, include aggregate totals in the response.",
+            "type": "boolean"
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "builds",
+            "doc": "Builds for the requested page, ordered newest first. Each carries\nnested game and upload context.",
+            "type": "Build[]"
+          },
+          {
+            "name": "page",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "perPage",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "totals",
+            "doc": "Counts across the unfiltered set, for tab badges. Only populated when\nrequested with includeTotals.",
+            "type": "WharfBuildTotals"
           }
         ]
       }
@@ -2735,17 +2846,37 @@
         "fields": [
           {
             "name": "progress",
-            "doc": "0..1",
+            "doc": "0..1; conservative estimate based on uploaded vs source size, since\npatch size isn't known until the diff is fully written.",
             "type": "number"
           },
           {
             "name": "eta",
-            "doc": "Estimated seconds remaining (0 if unknown)",
+            "doc": "Estimated seconds remaining (0 if unknown). Refers to the upload, so\nit's only meaningful once bytes are actually flowing to itch.io.",
             "type": "number"
           },
           {
             "name": "bps",
-            "doc": "Bytes per second (0 if unknown)",
+            "doc": "Upload bytes per second (0 if unknown). This is wire throughput, not\ndisk read speed.",
+            "type": "number"
+          },
+          {
+            "name": "readBytes",
+            "doc": "Bytes read from the source container so far while computing the\npatch. Compare to TotalBytes for diff-pass progress, which can\noutpace UploadedBytes since reused/compressed-away bytes never hit\nthe wire.",
+            "type": "number"
+          },
+          {
+            "name": "totalBytes",
+            "doc": "Total bytes in the source container.",
+            "type": "number"
+          },
+          {
+            "name": "uploadedBytes",
+            "doc": "Bytes of the patch uploaded to itch.io so far.",
+            "type": "number"
+          },
+          {
+            "name": "patchBytes",
+            "doc": "Compressed patch size produced so far. Equals UploadedBytes once\nupload catches up; the gap between them is the in-flight buffer.",
             "type": "number"
           }
         ]
@@ -4261,7 +4392,7 @@
       "fields": [
         {
           "name": "buildId",
-          "doc": "ID of the build that was created (0 if dryRun or skipped)",
+          "doc": "ID of the build that was created (0 if skipped)",
           "type": "number"
         },
         {
@@ -4270,19 +4401,61 @@
           "type": "string"
         },
         {
-          "name": "dryRun",
-          "doc": "True when no build was created because this was a dry run",
-          "type": "boolean"
-        },
-        {
           "name": "skipped",
           "doc": "True when no build was created because ifChanged found no diff",
           "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "WharfPushPreviewResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "channel",
+          "doc": "",
+          "type": "string"
         },
         {
-          "name": "reason",
-          "doc": "Machine-readable reason for a no-op result, empty when a build was created",
-          "type": "string"
+          "name": "hasParent",
+          "doc": "False when the channel has no previous build to compare against;\nin that case every entry in the source is treated as new.",
+          "type": "boolean"
+        },
+        {
+          "name": "parentBuildId",
+          "doc": "ID of the build the preview compared against. Absent when !HasParent.",
+          "type": "number"
+        },
+        {
+          "name": "comparison",
+          "doc": "Per-entry change counts (files, dirs, symlinks combined).",
+          "type": "WharfPushComparison"
+        }
+      ]
+    },
+    {
+      "name": "WharfPushComparison",
+      "doc": "WharfPushComparison summarises how the source compares to the channel's\nprevious build. Counts cover files, dirs, and symlinks together.",
+      "fields": [
+        {
+          "name": "new",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "modified",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "deleted",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "same",
+          "doc": "",
+          "type": "number"
         }
       ]
     },
@@ -4347,6 +4520,63 @@
           "name": "build",
           "doc": "",
           "type": "Build"
+        }
+      ]
+    },
+    {
+      "name": "WharfBuildTotals",
+      "doc": "Per-state counts plus editable project count, so the client can render\nfilter-tab badges (All / Live / Processing / Failed) without re-querying.",
+      "fields": [
+        {
+          "name": "all",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "live",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "processing",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "failed",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "projectCount",
+          "doc": "",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "WharfListBuildsResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "builds",
+          "doc": "Builds for the requested page, ordered newest first. Each carries\nnested game and upload context.",
+          "type": "Build[]"
+        },
+        {
+          "name": "page",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "perPage",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "totals",
+          "doc": "Counts across the unfiltered set, for tab badges. Only populated when\nrequested with includeTotals.",
+          "type": "WharfBuildTotals"
         }
       ]
     },
@@ -5043,13 +5273,28 @@
         },
         {
           "name": "parentBuildId",
-          "doc": "Identifier of the build before this one on the same channel,\nor 0 if this is the initial build.",
+          "doc": "Identifier of the build before this one on the same channel,\nor -1 if this is the initial build.",
           "type": "number"
         },
         {
           "name": "state",
           "doc": "State of the build: started, processing, etc.",
           "type": "BuildState"
+        },
+        {
+          "name": "uploadId",
+          "doc": "Upload this build belongs to",
+          "type": "number"
+        },
+        {
+          "name": "gameId",
+          "doc": "Game this build belongs to",
+          "type": "number"
+        },
+        {
+          "name": "userId",
+          "doc": "User who pushed the build",
+          "type": "number"
         },
         {
           "name": "version",
@@ -5070,6 +5315,16 @@
           "name": "user",
           "doc": "User who pushed the build",
           "type": "User"
+        },
+        {
+          "name": "upload",
+          "doc": "Upload this build belongs to (only populated by endpoints that nest it)",
+          "type": "Upload"
+        },
+        {
+          "name": "game",
+          "doc": "Game this build belongs to (only populated by endpoints that nest it)",
+          "type": "Game"
         },
         {
           "name": "createdAt",

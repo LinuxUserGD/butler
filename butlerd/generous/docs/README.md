@@ -7397,6 +7397,9 @@ use <code class="typename"><span class="type">Test.DoubleTwice</span></code> in 
 spawns; butlerd brokers progress over WharfPushProgress notifications and
 kills the worker if the RPC&rsquo;s context is cancelled.</p>
 
+<p>For a no-side-effects &ldquo;what would change?&rdquo; preview, call Wharf.PushPreview
+instead.</p>
+
 </p>
 
 <p>
@@ -7448,12 +7451,6 @@ kills the worker if the RPC&rsquo;s context is cancelled.</p>
 </td>
 </tr>
 <tr>
-<td><code>dryRun</code></td>
-<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
-<td><p><span class="tag">Optional</span> Walk and report what would be pushed without uploading</p>
-</td>
-</tr>
-<tr>
 <td><code>dereference</code></td>
 <td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
 <td><p><span class="tag">Optional</span> Dereference symlinks during walk</p>
@@ -7484,7 +7481,7 @@ kills the worker if the RPC&rsquo;s context is cancelled.</p>
 <tr>
 <td><code>buildId</code></td>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
-<td><p>ID of the build that was created (0 if dryRun or skipped)</p>
+<td><p>ID of the build that was created (0 if skipped)</p>
 </td>
 </tr>
 <tr>
@@ -7493,21 +7490,9 @@ kills the worker if the RPC&rsquo;s context is cancelled.</p>
 <td></td>
 </tr>
 <tr>
-<td><code>dryRun</code></td>
-<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
-<td><p>True when no build was created because this was a dry run</p>
-</td>
-</tr>
-<tr>
 <td><code>skipped</code></td>
 <td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
 <td><p>True when no build was created because ifChanged found no diff</p>
-</td>
-</tr>
-<tr>
-<td><code>reason</code></td>
-<td><code class="typename"><span class="type builtin-type">string</span></code></td>
-<td><p>Machine-readable reason for a no-op result, empty when a build was created</p>
 </td>
 </tr>
 </table>
@@ -7521,6 +7506,9 @@ kills the worker if the RPC&rsquo;s context is cancelled.</p>
 (walk, diff, upload) runs in a <code>butler push</code> worker subprocess that butlerd
 spawns; butlerd brokers progress over WharfPushProgress notifications and
 kills the worker if the RPC&rsquo;s context is cancelled.</p>
+
+<p>For a no-side-effects &ldquo;what would change?&rdquo; preview, call Wharf.PushPreview
+instead.</p>
 
 </p>
 
@@ -7554,10 +7542,6 @@ kills the worker if the RPC&rsquo;s context is cancelled.</p>
 <td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
 </tr>
 <tr>
-<td><code>dryRun</code></td>
-<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
-</tr>
-<tr>
 <td><code>dereference</code></td>
 <td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
 </tr>
@@ -7588,16 +7572,172 @@ kills the worker if the RPC&rsquo;s context is cancelled.</p>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
 </tr>
 <tr>
-<td><code>dryRun</code></td>
-<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
-</tr>
-<tr>
 <td><code>skipped</code></td>
 <td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
 </tr>
+</table>
+
+</div>
+
+### Wharf.PushPreview (client request)
+
+
+<p>
+<p>Reports what would change if Src were pushed to the given channel,
+without creating a build or uploading anything. Hashes the source; same
+cost as the diffing pass of a real push.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
 <tr>
-<td><code>reason</code></td>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>itch.io profile to authenticate as</p>
+</td>
+</tr>
+<tr>
+<td><code>src</code></td>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>Source path: directory or zip archive</p>
+</td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>Push target in user/slug or numeric form, e.g. &ldquo;leafo/x-moon&rdquo;</p>
+</td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>Channel name, e.g. &ldquo;win-64&rdquo;</p>
+</td>
+</tr>
+<tr>
+<td><code>dereference</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> Dereference symlinks during walk</p>
+</td>
+</tr>
+<tr>
+<td><code>fixPermissions</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> When non-nil, overrides butler&rsquo;s default (&ndash;fix-permissions, default true)</p>
+</td>
+</tr>
+<tr>
+<td><code>autoWrap</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> When non-nil, overrides butler&rsquo;s default (&ndash;auto-wrap, default true)</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>hasParent</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p>False when the channel has no previous build to compare against;
+in that case every entry in the source is treated as new.</p>
+</td>
+</tr>
+<tr>
+<td><code>parentBuildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>ID of the build the preview compared against. Absent when !HasParent.</p>
+</td>
+</tr>
+<tr>
+<td><code>comparison</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#WharfPushComparison__TypeHint">WharfPushComparison</span></code></td>
+<td><p>Per-entry change counts (files, dirs, symlinks combined).</p>
+</td>
+</tr>
+</table>
+
+
+<div id="WharfPushPreviewParams__TypeHint" class="tip-content">
+<p>Wharf.PushPreview (client request) <a href="#/?id=wharfpushpreview-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Reports what would change if Src were pushed to the given channel,
+without creating a build or uploading anything. Hashes the source; same
+cost as the diffing pass of a real push.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>src</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>dereference</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>fixPermissions</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>autoWrap</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="WharfPushPreviewResult__TypeHint" class="tip-content">
+<p>WharfPushPreview  <a href="#/?id=wharfpushpreview-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>hasParent</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>parentBuildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>comparison</code></td>
+<td><code class="typename"><span class="type">WharfPushComparison</span></code></td>
 </tr>
 </table>
 
@@ -7620,19 +7760,50 @@ kills the worker if the RPC&rsquo;s context is cancelled.</p>
 <tr>
 <td><code>progress</code></td>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
-<td><p>0..1</p>
+<td><p>0..1; conservative estimate based on uploaded vs source size, since
+patch size isn&rsquo;t known until the diff is fully written.</p>
 </td>
 </tr>
 <tr>
 <td><code>eta</code></td>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
-<td><p>Estimated seconds remaining (0 if unknown)</p>
+<td><p>Estimated seconds remaining (0 if unknown). Refers to the upload, so
+it&rsquo;s only meaningful once bytes are actually flowing to itch.io.</p>
 </td>
 </tr>
 <tr>
 <td><code>bps</code></td>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
-<td><p>Bytes per second (0 if unknown)</p>
+<td><p>Upload bytes per second (0 if unknown). This is wire throughput, not
+disk read speed.</p>
+</td>
+</tr>
+<tr>
+<td><code>readBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Bytes read from the source container so far while computing the
+patch. Compare to TotalBytes for diff-pass progress, which can
+outpace UploadedBytes since reused/compressed-away bytes never hit
+the wire.</p>
+</td>
+</tr>
+<tr>
+<td><code>totalBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Total bytes in the source container.</p>
+</td>
+</tr>
+<tr>
+<td><code>uploadedBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Bytes of the patch uploaded to itch.io so far.</p>
+</td>
+</tr>
+<tr>
+<td><code>patchBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Compressed patch size produced so far. Equals UploadedBytes once
+upload catches up; the gap between them is the in-flight buffer.</p>
 </td>
 </tr>
 </table>
@@ -7657,6 +7828,22 @@ kills the worker if the RPC&rsquo;s context is cancelled.</p>
 </tr>
 <tr>
 <td><code>bps</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>readBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>totalBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>uploadedBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>patchBytes</code></td>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
 </tr>
 </table>
@@ -7899,6 +8086,151 @@ kills the worker if the RPC&rsquo;s context is cancelled.</p>
 <tr>
 <td><code>build</code></td>
 <td><code class="typename"><span class="type">Build</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Wharf.ListBuilds (client request)
+
+
+<p>
+<p>Lists builds across every game the current user develops or admins,
+powering the app&rsquo;s &ldquo;Uploads&rdquo; view. Results are fetched live from the
+itch.io API on every call (no local caching) so build state always
+reflects the server&rsquo;s current view.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> Page number, 1-based. Defaults to 1.</p>
+</td>
+</tr>
+<tr>
+<td><code>perPage</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> Page size. Server-capped at 100.</p>
+</td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> State filter. One of &ldquo;live&rdquo;, &ldquo;processing&rdquo;, &ldquo;failed&rdquo;. Empty for all.</p>
+</td>
+</tr>
+<tr>
+<td><code>includeTotals</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> If set, include aggregate totals in the response.</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>builds</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#Build__TypeHint">Build</span>[]</code></td>
+<td><p>Builds for the requested page, ordered newest first. Each carries
+nested game and upload context.</p>
+</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>perPage</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>totals</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#WharfBuildTotals__TypeHint">WharfBuildTotals</span></code></td>
+<td><p><span class="tag">Optional</span> Counts across the unfiltered set, for tab badges. Only populated when
+requested with includeTotals.</p>
+</td>
+</tr>
+</table>
+
+
+<div id="WharfListBuildsParams__TypeHint" class="tip-content">
+<p>Wharf.ListBuilds (client request) <a href="#/?id=wharflistbuilds-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Lists builds across every game the current user develops or admins,
+powering the app&rsquo;s &ldquo;Uploads&rdquo; view. Results are fetched live from the
+itch.io API on every call (no local caching) so build state always
+reflects the server&rsquo;s current view.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>perPage</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>state</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>includeTotals</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="WharfListBuildsResult__TypeHint" class="tip-content">
+<p>WharfListBuilds  <a href="#/?id=wharflistbuilds-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>builds</code></td>
+<td><code class="typename"><span class="type">Build</span>[]</code></td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>perPage</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>totals</code></td>
+<td><code class="typename"><span class="type">WharfBuildTotals</span></code></td>
 </tr>
 </table>
 
@@ -10115,6 +10447,74 @@ can be part of an issue report if something goes wrong.</p>
 
 </div>
 
+### WharfPushComparison (struct)
+
+
+<p>
+<p>WharfPushComparison summarises how the source compares to the channel&rsquo;s
+previous build. Counts cover files, dirs, and symlinks together.</p>
+
+</p>
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>new</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>deleted</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>same</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="WharfPushComparison__TypeHint" class="tip-content">
+<p>WharfPushComparison (struct) <a href="#/?id=wharfpushcomparison-struct">(Go to definition)</a></p>
+
+<p>
+<p>WharfPushComparison summarises how the source compares to the channel&rsquo;s
+previous build. Counts cover files, dirs, and symlinks together.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>new</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>deleted</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>same</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+</table>
+
+</div>
+
 ### WharfChannel (struct)
 
 
@@ -10194,6 +10594,83 @@ in go-itchio/endpoints_wharf.go, which is not part of the assimilated set).</p>
 <tr>
 <td><code>pending</code></td>
 <td><code class="typename"><span class="type">Build</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### WharfBuildTotals (struct)
+
+
+<p>
+<p>Per-state counts plus editable project count, so the client can render
+filter-tab badges (All / Live / Processing / Failed) without re-querying.</p>
+
+</p>
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>all</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>live</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>processing</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>projectCount</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="WharfBuildTotals__TypeHint" class="tip-content">
+<p>WharfBuildTotals (struct) <a href="#/?id=wharfbuildtotals-struct">(Go to definition)</a></p>
+
+<p>
+<p>Per-state counts plus editable project count, so the client can render
+filter-tab badges (All / Live / Processing / Failed) without re-querying.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>all</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>live</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>processing</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>failed</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>projectCount</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
 </tr>
 </table>
 
@@ -12569,13 +13046,31 @@ for free. It can also be generated by other means.</p>
 <td><code>parentBuildId</code></td>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
 <td><p>Identifier of the build before this one on the same channel,
-or 0 if this is the initial build.</p>
+or -1 if this is the initial build.</p>
 </td>
 </tr>
 <tr>
 <td><code>state</code></td>
 <td><code class="typename"><span class="type" data-tip-selector="#BuildState__TypeHint">BuildState</span></code></td>
 <td><p>State of the build: started, processing, etc.</p>
+</td>
+</tr>
+<tr>
+<td><code>uploadId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Upload this build belongs to</p>
+</td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Game this build belongs to</p>
+</td>
+</tr>
+<tr>
+<td><code>userId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>User who pushed the build</p>
 </td>
 </tr>
 <tr>
@@ -12603,6 +13098,18 @@ is still processing or if processing has failed.</p>
 <td><code>user</code></td>
 <td><code class="typename"><span class="type" data-tip-selector="#User__TypeHint">User</span></code></td>
 <td><p>User who pushed the build</p>
+</td>
+</tr>
+<tr>
+<td><code>upload</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#Upload__TypeHint">Upload</span></code></td>
+<td><p>Upload this build belongs to (only populated by endpoints that nest it)</p>
+</td>
+</tr>
+<tr>
+<td><code>game</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#Game__TypeHint">Game</span></code></td>
+<td><p>Game this build belongs to (only populated by endpoints that nest it)</p>
 </td>
 </tr>
 <tr>
@@ -12642,6 +13149,18 @@ is still processing or if processing has failed.</p>
 <td><code class="typename"><span class="type">BuildState</span></code></td>
 </tr>
 <tr>
+<td><code>uploadId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>userId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
 <td><code>version</code></td>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
 </tr>
@@ -12656,6 +13175,14 @@ is still processing or if processing has failed.</p>
 <tr>
 <td><code>user</code></td>
 <td><code class="typename"><span class="type">User</span></code></td>
+</tr>
+<tr>
+<td><code>upload</code></td>
+<td><code class="typename"><span class="type">Upload</span></code></td>
+</tr>
+<tr>
+<td><code>game</code></td>
+<td><code class="typename"><span class="type">Game</span></code></td>
 </tr>
 <tr>
 <td><code>createdAt</code></td>

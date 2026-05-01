@@ -2938,6 +2938,9 @@ const (
 // spawns; butlerd brokers progress over WharfPushProgress notifications and
 // kills the worker if the RPC's context is cancelled.
 //
+// For a no-side-effects "what would change?" preview, call Wharf.PushPreview
+// instead.
+//
 // @name Wharf.Push
 // @category Wharf
 // @caller client
@@ -2960,9 +2963,6 @@ type WharfPushParams struct {
 	// Skip push if the source matches the previous build
 	// @optional
 	IfChanged bool `json:"ifChanged"`
-	// Walk and report what would be pushed without uploading
-	// @optional
-	DryRun bool `json:"dryRun"`
 	// Dereference symlinks during walk
 	// @optional
 	Dereference bool `json:"dereference"`
@@ -2984,15 +2984,68 @@ func (p WharfPushParams) Validate() error {
 }
 
 type WharfPushResult struct {
-	// ID of the build that was created (0 if dryRun or skipped)
+	// ID of the build that was created (0 if skipped)
 	BuildID int64  `json:"buildId"`
 	Channel string `json:"channel"`
-	// True when no build was created because this was a dry run
-	DryRun bool `json:"dryRun"`
 	// True when no build was created because ifChanged found no diff
 	Skipped bool `json:"skipped"`
-	// Machine-readable reason for a no-op result, empty when a build was created
-	Reason string `json:"reason"`
+}
+
+// Reports what would change if Src were pushed to the given channel,
+// without creating a build or uploading anything. Hashes the source; same
+// cost as the diffing pass of a real push.
+//
+// @name Wharf.PushPreview
+// @category Wharf
+// @caller client
+type WharfPushPreviewParams struct {
+	// itch.io profile to authenticate as
+	ProfileID int64 `json:"profileId"`
+	// Source path: directory or zip archive
+	Src string `json:"src"`
+	// Push target in user/slug or numeric form, e.g. "leafo/x-moon"
+	Target string `json:"target"`
+	// Channel name, e.g. "win-64"
+	Channel string `json:"channel"`
+
+	// Dereference symlinks during walk
+	// @optional
+	Dereference bool `json:"dereference"`
+	// When non-nil, overrides butler's default (--fix-permissions, default true)
+	// @optional
+	FixPermissions *bool `json:"fixPermissions"`
+	// When non-nil, overrides butler's default (--auto-wrap, default true)
+	// @optional
+	AutoWrap *bool `json:"autoWrap"`
+}
+
+func (p WharfPushPreviewParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ProfileID, validation.Required),
+		validation.Field(&p.Src, validation.Required),
+		validation.Field(&p.Target, validation.Required),
+		validation.Field(&p.Channel, validation.Required),
+	)
+}
+
+type WharfPushPreviewResult struct {
+	Channel string `json:"channel"`
+	// False when the channel has no previous build to compare against;
+	// in that case every entry in the source is treated as new.
+	HasParent bool `json:"hasParent"`
+	// ID of the build the preview compared against. Absent when !HasParent.
+	ParentBuildID int64 `json:"parentBuildId,omitempty"`
+	// Per-entry change counts (files, dirs, symlinks combined).
+	Comparison WharfPushComparison `json:"comparison"`
+}
+
+// WharfPushComparison summarises how the source compares to the channel's
+// previous build. Counts cover files, dirs, and symlinks together.
+type WharfPushComparison struct {
+	New      int `json:"new"`
+	Modified int `json:"modified"`
+	Deleted  int `json:"deleted"`
+	Same     int `json:"same"`
 }
 
 // Periodic progress update emitted while a Wharf.Push is in flight.
@@ -3000,12 +3053,27 @@ type WharfPushResult struct {
 // @name Wharf.Push.Progress
 // @category Wharf
 type WharfPushProgressNotification struct {
-	// 0..1
+	// 0..1; conservative estimate based on uploaded vs source size, since
+	// patch size isn't known until the diff is fully written.
 	Progress float64 `json:"progress"`
-	// Estimated seconds remaining (0 if unknown)
+	// Estimated seconds remaining (0 if unknown). Refers to the upload, so
+	// it's only meaningful once bytes are actually flowing to itch.io.
 	ETA float64 `json:"eta"`
-	// Bytes per second (0 if unknown)
+	// Upload bytes per second (0 if unknown). This is wire throughput, not
+	// disk read speed.
 	BPS float64 `json:"bps"`
+	// Bytes read from the source container so far while computing the
+	// patch. Compare to TotalBytes for diff-pass progress, which can
+	// outpace UploadedBytes since reused/compressed-away bytes never hit
+	// the wire.
+	ReadBytes int64 `json:"readBytes"`
+	// Total bytes in the source container.
+	TotalBytes int64 `json:"totalBytes"`
+	// Bytes of the patch uploaded to itch.io so far.
+	UploadedBytes int64 `json:"uploadedBytes"`
+	// Compressed patch size produced so far. Equals UploadedBytes once
+	// upload catches up; the gap between them is the in-flight buffer.
+	PatchBytes int64 `json:"patchBytes"`
 }
 
 // Lists all channels for a given push target via the wharf API.
@@ -3091,6 +3159,65 @@ func (p WharfGetBuildParams) Validate() error {
 
 type WharfGetBuildResult struct {
 	Build *itchio.Build `json:"build"`
+}
+
+// Lists builds across every game the current user develops or admins,
+// powering the app's "Uploads" view. Results are fetched live from the
+// itch.io API on every call (no local caching) so build state always
+// reflects the server's current view.
+//
+// @name Wharf.ListBuilds
+// @category Wharf
+// @caller client
+type WharfListBuildsParams struct {
+	ProfileID int64 `json:"profileId"`
+
+	// Page number, 1-based. Defaults to 1.
+	// @optional
+	Page int64 `json:"page"`
+
+	// Page size. Server-capped at 100.
+	// @optional
+	PerPage int64 `json:"perPage"`
+
+	// State filter. One of "live", "processing", "failed". Empty for all.
+	// @optional
+	State string `json:"state"`
+
+	// If set, include aggregate totals in the response.
+	// @optional
+	IncludeTotals bool `json:"includeTotals"`
+}
+
+func (p WharfListBuildsParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ProfileID, validation.Required),
+		validation.Field(&p.State, validation.In("live", "processing", "failed")),
+	)
+}
+
+// Per-state counts plus editable project count, so the client can render
+// filter-tab badges (All / Live / Processing / Failed) without re-querying.
+type WharfBuildTotals struct {
+	All          int64 `json:"all"`
+	Live         int64 `json:"live"`
+	Processing   int64 `json:"processing"`
+	Failed       int64 `json:"failed"`
+	ProjectCount int64 `json:"projectCount"`
+}
+
+type WharfListBuildsResult struct {
+	// Builds for the requested page, ordered newest first. Each carries
+	// nested game and upload context.
+	Builds []*itchio.Build `json:"builds"`
+
+	Page    int64 `json:"page"`
+	PerPage int64 `json:"perPage"`
+
+	// Counts across the unfiltered set, for tab badges. Only populated when
+	// requested with includeTotals.
+	// @optional
+	Totals *WharfBuildTotals `json:"totals,omitempty"`
 }
 
 // Dates
