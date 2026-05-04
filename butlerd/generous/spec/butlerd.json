@@ -2408,8 +2408,8 @@
           },
           {
             "name": "topChangedFiles",
-            "doc": "Up to 20 changed files (NEW, MODIFIED, or DELETED), sorted by size\ndescending. Dirs and symlinks are excluded — they have no meaningful\nsize. Empty when nothing changed.",
-            "type": "PublishPushPreviewEntry[]"
+            "doc": "Per-category top changed files. Each list holds up to 20 entries\nsorted by size descending (path ascending as tie-breaker). Dirs and\nsymlinks are excluded — they have no meaningful size. Unchanged\nentries are never included. Each sub-slice is non-nil (empty when\nthe category has no changes); the renderer reconstructs the\ncross-category \"biggest changes overall\" view by merging them.",
+            "type": "PublishPushTopChangedFiles"
           }
         ]
       }
@@ -2533,6 +2533,11 @@
             "name": "includeTotals",
             "doc": "If set, include aggregate totals in the response.",
             "type": "boolean"
+          },
+          {
+            "name": "startedBuildIds",
+            "doc": "Build IDs in the \"started\" state to surface in the listing. Started\nbuilds are normally hidden (most are abandoned pushes); naming them\nhere opts them in for the default and \"processing\" views, so the\ndashboard can show its own in-flight pushes without leaking other\nstale started builds. Server-capped at 100 IDs.",
+            "type": "number[]"
           }
         ]
       },
@@ -2540,7 +2545,7 @@
         "fields": [
           {
             "name": "builds",
-            "doc": "Builds for the requested page, ordered newest first. Each carries\nnested game and upload context.",
+            "doc": "Builds for the requested page, ordered newest first. Each carries\nnested game, upload, and user context.",
             "type": "Build[]"
           },
           {
@@ -2852,6 +2857,47 @@
       "doc": "Sent during @@LaunchParams, when all prereqs have finished installing (successfully or not)\n\nAfter this is received, it's safe to close any UI element showing prereq task state.",
       "params": {
         "fields": null
+      }
+    },
+    {
+      "method": "Publish.Push.BuildAssigned",
+      "doc": "Emitted once, as soon as the worker has obtained a build ID from the\nitch.io API (i.e. after CreateBuild succeeds, before any data flows).\nLets the caller associate its in-flight push with the server-side\nbuild before the upload completes.",
+      "params": {
+        "fields": [
+          {
+            "name": "buildId",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "channel",
+            "doc": "",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.Push.BuildFailed",
+      "doc": "Emitted if Publish.Push errors out after a build was assigned and the\nworker successfully marked the build as failed on the server. Lets the\ncaller update its local view of the build to \"failed\" without having\nto poll. If the push fails before a build was assigned, no notification\nis emitted (only the RPC error is surfaced).",
+      "params": {
+        "fields": [
+          {
+            "name": "buildId",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "channel",
+            "doc": "",
+            "type": "string"
+          },
+          {
+            "name": "message",
+            "doc": "Error message that was reported to the server.",
+            "type": "string"
+          }
+        ]
       }
     },
     {
@@ -4453,7 +4499,28 @@
         },
         {
           "name": "topChangedFiles",
-          "doc": "Up to 20 changed files (NEW, MODIFIED, or DELETED), sorted by size\ndescending. Dirs and symlinks are excluded — they have no meaningful\nsize. Empty when nothing changed.",
+          "doc": "Per-category top changed files. Each list holds up to 20 entries\nsorted by size descending (path ascending as tie-breaker). Dirs and\nsymlinks are excluded — they have no meaningful size. Unchanged\nentries are never included. Each sub-slice is non-nil (empty when\nthe category has no changes); the renderer reconstructs the\ncross-category \"biggest changes overall\" view by merging them.",
+          "type": "PublishPushTopChangedFiles"
+        }
+      ]
+    },
+    {
+      "name": "PublishPushTopChangedFiles",
+      "doc": "PublishPushTopChangedFiles groups the largest changed files in a push\npreview by status. See PublishPushPreviewResult.TopChangedFiles for the\nguarantees on each list.",
+      "fields": [
+        {
+          "name": "new",
+          "doc": "",
+          "type": "PublishPushPreviewEntry[]"
+        },
+        {
+          "name": "modified",
+          "doc": "",
+          "type": "PublishPushPreviewEntry[]"
+        },
+        {
+          "name": "deleted",
+          "doc": "",
           "type": "PublishPushPreviewEntry[]"
         }
       ]
@@ -4626,7 +4693,7 @@
       "fields": [
         {
           "name": "builds",
-          "doc": "Builds for the requested page, ordered newest first. Each carries\nnested game and upload context.",
+          "doc": "Builds for the requested page, ordered newest first. Each carries\nnested game, upload, and user context.",
           "type": "Build[]"
         },
         {

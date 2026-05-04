@@ -7691,10 +7691,13 @@ context for the comparison summary.</p>
 </tr>
 <tr>
 <td><code>topChangedFiles</code></td>
-<td><code class="typename"><span class="type" data-tip-selector="#PublishPushPreviewEntry__TypeHint">PublishPushPreviewEntry</span>[]</code></td>
-<td><p>Up to 20 changed files (NEW, MODIFIED, or DELETED), sorted by size
-descending. Dirs and symlinks are excluded — they have no meaningful
-size. Empty when nothing changed.</p>
+<td><code class="typename"><span class="type" data-tip-selector="#PublishPushTopChangedFiles__TypeHint">PublishPushTopChangedFiles</span></code></td>
+<td><p>Per-category top changed files. Each list holds up to 20 entries
+sorted by size descending (path ascending as tie-breaker). Dirs and
+symlinks are excluded — they have no meaningful size. Unchanged
+entries are never included. Each sub-slice is non-nil (empty when
+the category has no changes); the renderer reconstructs the
+cross-category &ldquo;biggest changes overall&rdquo; view by merging them.</p>
 </td>
 </tr>
 </table>
@@ -7771,7 +7774,127 @@ cost as the diffing pass of a real push.</p>
 </tr>
 <tr>
 <td><code>topChangedFiles</code></td>
-<td><code class="typename"><span class="type">PublishPushPreviewEntry</span>[]</code></td>
+<td><code class="typename"><span class="type">PublishPushTopChangedFiles</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.Push.BuildAssigned (notification)
+
+
+<p>
+<p>Emitted once, as soon as the worker has obtained a build ID from the
+itch.io API (i.e. after CreateBuild succeeds, before any data flows).
+Lets the caller associate its in-flight push with the server-side
+build before the upload completes.</p>
+
+</p>
+
+<p>
+<span class="header">Payload</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishPushBuildAssignedNotification__TypeHint" class="tip-content">
+<p>Publish.Push.BuildAssigned (notification) <a href="#/?id=publishpushbuildassigned-notification">(Go to definition)</a></p>
+
+<p>
+<p>Emitted once, as soon as the worker has obtained a build ID from the
+itch.io API (i.e. after CreateBuild succeeds, before any data flows).
+Lets the caller associate its in-flight push with the server-side
+build before the upload completes.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.Push.BuildFailed (notification)
+
+
+<p>
+<p>Emitted if Publish.Push errors out after a build was assigned and the
+worker successfully marked the build as failed on the server. Lets the
+caller update its local view of the build to &ldquo;failed&rdquo; without having
+to poll. If the push fails before a build was assigned, no notification
+is emitted (only the RPC error is surfaced).</p>
+
+</p>
+
+<p>
+<span class="header">Payload</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>Error message that was reported to the server.</p>
+</td>
+</tr>
+</table>
+
+
+<div id="PublishPushBuildFailedNotification__TypeHint" class="tip-content">
+<p>Publish.Push.BuildFailed (notification) <a href="#/?id=publishpushbuildfailed-notification">(Go to definition)</a></p>
+
+<p>
+<p>Emitted if Publish.Push errors out after a build was assigned and the
+worker successfully marked the build as failed on the server. Lets the
+caller update its local view of the build to &ldquo;failed&rdquo; without having
+to poll. If the push fails before a build was assigned, no notification
+is emitted (only the RPC error is surfaced).</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
 </tr>
 </table>
 
@@ -8171,6 +8294,16 @@ reflects the server&rsquo;s current view.</p>
 <td><p><span class="tag">Optional</span> If set, include aggregate totals in the response.</p>
 </td>
 </tr>
+<tr>
+<td><code>startedBuildIds</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Build IDs in the &ldquo;started&rdquo; state to surface in the listing. Started
+builds are normally hidden (most are abandoned pushes); naming them
+here opts them in for the default and &ldquo;processing&rdquo; views, so the
+dashboard can show its own in-flight pushes without leaking other
+stale started builds. Server-capped at 100 IDs.</p>
+</td>
+</tr>
 </table>
 
 
@@ -8185,7 +8318,7 @@ reflects the server&rsquo;s current view.</p>
 <td><code>builds</code></td>
 <td><code class="typename"><span class="type" data-tip-selector="#Build__TypeHint">Build</span>[]</code></td>
 <td><p>Builds for the requested page, ordered newest first. Each carries
-nested game and upload context.</p>
+nested game, upload, and user context.</p>
 </td>
 </tr>
 <tr>
@@ -8239,6 +8372,10 @@ reflects the server&rsquo;s current view.</p>
 <tr>
 <td><code>includeTotals</code></td>
 <td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>startedBuildIds</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span>[]</code></td>
 </tr>
 </table>
 
@@ -10479,6 +10616,67 @@ can be part of an issue report if something goes wrong.</p>
 </tr>
 <tr>
 <td><code>19000</code></td>
+</tr>
+</table>
+
+</div>
+
+### PublishPushTopChangedFiles (struct)
+
+
+<p>
+<p>PublishPushTopChangedFiles groups the largest changed files in a push
+preview by status. See PublishPushPreviewResult.TopChangedFiles for the
+guarantees on each list.</p>
+
+</p>
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>new</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#PublishPushPreviewEntry__TypeHint">PublishPushPreviewEntry</span>[]</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#PublishPushPreviewEntry__TypeHint">PublishPushPreviewEntry</span>[]</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>deleted</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#PublishPushPreviewEntry__TypeHint">PublishPushPreviewEntry</span>[]</code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishPushTopChangedFiles__TypeHint" class="tip-content">
+<p>PublishPushTopChangedFiles (struct) <a href="#/?id=publishpushtopchangedfiles-struct">(Go to definition)</a></p>
+
+<p>
+<p>PublishPushTopChangedFiles groups the largest changed files in a push
+preview by status. See PublishPushPreviewResult.TopChangedFiles for the
+guarantees on each list.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>new</code></td>
+<td><code class="typename"><span class="type">PublishPushPreviewEntry</span>[]</code></td>
+</tr>
+<tr>
+<td><code>modified</code></td>
+<td><code class="typename"><span class="type">PublishPushPreviewEntry</span>[]</code></td>
+</tr>
+<tr>
+<td><code>deleted</code></td>
+<td><code class="typename"><span class="type">PublishPushPreviewEntry</span>[]</code></td>
 </tr>
 </table>
 

@@ -25,14 +25,18 @@ type pushResult struct {
 	HasParent       bool                              `json:"hasParent"`
 	ParentBuildID   int64                             `json:"parentBuildId"`
 	SourceSize      int64                             `json:"sourceSize"`
-	Comparison      *butlerd.PublishPushComparison    `json:"comparison,omitempty"`
-	TopChangedFiles []butlerd.PublishPushPreviewEntry `json:"topChangedFiles,omitempty"`
+	Comparison      *butlerd.PublishPushComparison     `json:"comparison,omitempty"`
+	TopChangedFiles butlerd.PublishPushTopChangedFiles `json:"topChangedFiles"`
 }
 
 // pushEvent is a discriminated union of every JSON message the butler push
 // worker emits over stdout. Fields not relevant to a given Type stay zero.
 type pushEvent struct {
-	Type          string     `json:"type"`
+	Type string `json:"type"`
+	// BuildID and Channel are populated on "buildCreated" events, emitted
+	// once the worker has obtained a build ID from the API.
+	BuildID       int64      `json:"buildId"`
+	Channel       string     `json:"channel"`
 	Progress      float64    `json:"progress"`
 	ETA           float64    `json:"eta"`
 	BPS           float64    `json:"bps"`
@@ -168,6 +172,17 @@ func scanStdout(rc *butlerd.RequestContext, stdout io.Reader, result *pushResult
 			continue
 		}
 		switch ev.Type {
+		case "buildCreated":
+			_ = messages.PublishPushBuildAssigned.Notify(rc, butlerd.PublishPushBuildAssignedNotification{
+				BuildID: ev.BuildID,
+				Channel: ev.Channel,
+			})
+		case "buildFailed":
+			_ = messages.PublishPushBuildFailed.Notify(rc, butlerd.PublishPushBuildFailedNotification{
+				BuildID: ev.BuildID,
+				Channel: ev.Channel,
+				Message: ev.Message,
+			})
 		case "progress":
 			_ = messages.PublishPushProgress.Notify(rc, butlerd.PublishPushProgressNotification{
 				Progress:      ev.Progress,

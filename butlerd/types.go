@@ -3057,10 +3057,22 @@ type PublishPushPreviewResult struct {
 	SourceSize int64 `json:"sourceSize"`
 	// Per-entry change counts (files, dirs, symlinks combined).
 	Comparison PublishPushComparison `json:"comparison"`
-	// Up to 20 changed files (NEW, MODIFIED, or DELETED), sorted by size
-	// descending. Dirs and symlinks are excluded — they have no meaningful
-	// size. Empty when nothing changed.
-	TopChangedFiles []PublishPushPreviewEntry `json:"topChangedFiles"`
+	// Per-category top changed files. Each list holds up to 20 entries
+	// sorted by size descending (path ascending as tie-breaker). Dirs and
+	// symlinks are excluded — they have no meaningful size. Unchanged
+	// entries are never included. Each sub-slice is non-nil (empty when
+	// the category has no changes); the renderer reconstructs the
+	// cross-category "biggest changes overall" view by merging them.
+	TopChangedFiles PublishPushTopChangedFiles `json:"topChangedFiles"`
+}
+
+// PublishPushTopChangedFiles groups the largest changed files in a push
+// preview by status. See PublishPushPreviewResult.TopChangedFiles for the
+// guarantees on each list.
+type PublishPushTopChangedFiles struct {
+	New      []PublishPushPreviewEntry `json:"new"`
+	Modified []PublishPushPreviewEntry `json:"modified"`
+	Deleted  []PublishPushPreviewEntry `json:"deleted"`
 }
 
 // PublishPushPreviewEntry is a single row in the "biggest changes" listing
@@ -3091,6 +3103,33 @@ type PublishPushComparison struct {
 	ModifiedBytes int64 `json:"modifiedBytes"`
 	DeletedBytes  int64 `json:"deletedBytes"`
 	SameBytes     int64 `json:"sameBytes"`
+}
+
+// Emitted once, as soon as the worker has obtained a build ID from the
+// itch.io API (i.e. after CreateBuild succeeds, before any data flows).
+// Lets the caller associate its in-flight push with the server-side
+// build before the upload completes.
+//
+// @name Publish.Push.BuildAssigned
+// @category Publish
+type PublishPushBuildAssignedNotification struct {
+	BuildID int64  `json:"buildId"`
+	Channel string `json:"channel"`
+}
+
+// Emitted if Publish.Push errors out after a build was assigned and the
+// worker successfully marked the build as failed on the server. Lets the
+// caller update its local view of the build to "failed" without having
+// to poll. If the push fails before a build was assigned, no notification
+// is emitted (only the RPC error is surfaced).
+//
+// @name Publish.Push.BuildFailed
+// @category Publish
+type PublishPushBuildFailedNotification struct {
+	BuildID int64  `json:"buildId"`
+	Channel string `json:"channel"`
+	// Error message that was reported to the server.
+	Message string `json:"message"`
 }
 
 // Periodic progress update emitted while a Publish.Push is in flight.
@@ -3232,6 +3271,14 @@ type PublishListBuildsParams struct {
 	// If set, include aggregate totals in the response.
 	// @optional
 	IncludeTotals bool `json:"includeTotals"`
+
+	// Build IDs in the "started" state to surface in the listing. Started
+	// builds are normally hidden (most are abandoned pushes); naming them
+	// here opts them in for the default and "processing" views, so the
+	// dashboard can show its own in-flight pushes without leaking other
+	// stale started builds. Server-capped at 100 IDs.
+	// @optional
+	StartedBuildIDs []int64 `json:"startedBuildIds"`
 }
 
 func (p PublishListBuildsParams) Validate() error {
@@ -3253,7 +3300,7 @@ type PublishBuildTotals struct {
 
 type PublishListBuildsResult struct {
 	// Builds for the requested page, ordered newest first. Each carries
-	// nested game and upload context.
+	// nested game, upload, and user context.
 	Builds []*itchio.Build `json:"builds"`
 
 	Page    int64 `json:"page"`
