@@ -17,12 +17,12 @@ require (
 	github.com/google/gops v0.3.29
 	github.com/google/uuid v1.6.0
 	github.com/homelight/json v1.18.5
-	github.com/itchio/arkive v0.0.0-20260424164943-5eabdbdce5c8
-	github.com/itchio/boar v0.0.0-20260413210554-997228649976
+	github.com/itchio/arkive v0.0.0-20260428180635-32e8e9c72151
+	github.com/itchio/boar v0.0.0-20260417011146-418a6ee74f35
 	github.com/itchio/dash v0.0.0-20260128225838-1643ccf89aea
 	github.com/itchio/elefant v0.0.0-20260515053942-17c52347bcf4
-	github.com/itchio/go-itchio v0.0.0-20260508212529-127b57c39d4a
-	github.com/itchio/hades v0.0.0-20260219080741-55750b20dd32
+	github.com/itchio/go-itchio v0.0.0-20260515034518-c81f950ec3c4
+	github.com/itchio/hades v0.0.0-20260710055636-aea3bcf3b1ba
 	github.com/itchio/headway v0.0.0-20251229214354-da882c8b5dd4
 	github.com/itchio/httpkit v0.0.0-20260213231528-25109ada88c9
 	github.com/itchio/hush v0.0.0-20260123230201-fb8be8976347
@@ -30,7 +30,7 @@ require (
 	github.com/itchio/lake v0.0.0-20260609175358-7830e8bc546a
 	github.com/itchio/mitch v0.0.0-20200305160145-f3a01c4897c9
 	github.com/itchio/ox v0.0.0-20260212201121-1e6be0bfd382
-	github.com/itchio/pelican v0.0.0-20200626221820-739b3d7708d2
+	github.com/itchio/pelican v0.0.0-20260515051627-03ecc612cf1c
 	github.com/itchio/savior v0.0.0-20260128212141-556ab9757054
 	github.com/itchio/screw v0.0.0-20260221011136-e674b460b040
 	github.com/itchio/sevenzip-go v0.0.0-20260201233743-2dbe441fd43c
@@ -50,7 +50,7 @@ require (
 	golang.org/x/crypto v0.53.0
 	golang.org/x/sync v0.21.0
 	golang.org/x/sys v0.46.0
-	golang.org/x/text v0.38.0
+	golang.org/x/text v0.39.0
 	golang.org/x/time v0.15.0
 	xorm.io/builder v0.3.13
 )
@@ -81,7 +81,7 @@ require (
 	github.com/gorilla/handlers v1.4.2 // indirect
 	github.com/gorilla/mux v1.7.4 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
-	github.com/itchio/dmcunrar-go v0.0.0-20260128194444-1ffa7219a4a2 // indirect
+	github.com/itchio/dmcunrar-go v0.0.0-20260417004436-431599c00729 // indirect
 	github.com/itchio/dskompress v0.0.0-20190702113811-5e6f499be697 // indirect
 	github.com/itchio/go-brotli v0.0.0-20190702114328-3f28d645a45c // indirect
 	github.com/itchio/kompress v0.0.0-20200301155538-5c2eecce9e51 // indirect
