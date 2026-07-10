@@ -328,6 +328,16 @@ func (s *scope) assimilate(pkg string, file string) error {
 									doc = append(doc, line)
 								}
 
+								// omitempty fields may be absent from the wire
+								// format entirely, so they are optional even
+								// without an @optional tag. pointer-ness alone is
+								// NOT treated as optional: most pointer fields are
+								// always populated and only use a pointer as a Go
+								// convention for struct references.
+								if jsonTag.HasOption("omitempty") {
+									optional = true
+								}
+
 								e.structFields = append(e.structFields, &structField{
 									goName:     sf.Names[0].Name,
 									name:       jsonTag.Name,

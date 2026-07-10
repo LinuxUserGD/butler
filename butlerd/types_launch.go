@@ -29,7 +29,8 @@ type StrategyResult struct {
 	FullTargetPath string `json:"fullTargetPath"`
 
 	// If a local file, result of dash configure
-	Candidate *dash.Candidate `json:"candidate"`
+	// @optional
+	Candidate *dash.Candidate `json:"candidate,omitempty"`
 }
 
 func (sr *StrategyResult) String() string {

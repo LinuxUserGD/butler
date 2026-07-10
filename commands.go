@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/itchio/butler/cmd/apply"
 	"github.com/itchio/butler/cmd/auditzip"
-	"github.com/itchio/butler/cmd/clean"
 	"github.com/itchio/butler/cmd/configure"
 	"github.com/itchio/butler/cmd/cp"
 	"github.com/itchio/butler/cmd/daemon"
@@ -29,7 +28,6 @@ import (
 	"github.com/itchio/butler/cmd/prereqs"
 	"github.com/itchio/butler/cmd/probe"
 	"github.com/itchio/butler/cmd/push"
-	"github.com/itchio/butler/cmd/ratetest"
 	"github.com/itchio/butler/cmd/rediff"
 	"github.com/itchio/butler/cmd/repack"
 	"github.com/itchio/butler/cmd/run"
@@ -86,7 +84,6 @@ func registerCommands(ctx *mansion.Context) {
 	ditto.Register(ctx)
 	probe.Register(ctx)
 
-	clean.Register(ctx)
 	walk.Register(ctx)
 
 	prereqs.Register(ctx)
@@ -118,6 +115,5 @@ func registerCommands(ctx *mansion.Context) {
 	rediff.Register(ctx)
 	mkzip.Register(ctx)
 
-	ratetest.Register(ctx)
 	diag.Register(ctx)
 }

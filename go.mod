@@ -21,11 +21,11 @@ require (
 	github.com/itchio/boar v0.0.0-20260417011146-418a6ee74f35
 	github.com/itchio/dash v0.0.0-20260128225838-1643ccf89aea
 	github.com/itchio/elefant v0.0.0-20260515053942-17c52347bcf4
-	github.com/itchio/go-itchio v0.0.0-20260515034518-c81f950ec3c4
+	github.com/itchio/go-itchio v0.0.0-20260710194225-a8581d36bf19
 	github.com/itchio/hades v0.0.0-20260710055636-aea3bcf3b1ba
 	github.com/itchio/headway v0.0.0-20251229214354-da882c8b5dd4
 	github.com/itchio/httpkit v0.0.0-20260213231528-25109ada88c9
-	github.com/itchio/hush v0.0.0-20260123230201-fb8be8976347
+	github.com/itchio/hush v0.0.0-20260710191509-8882c242cb2b
 	github.com/itchio/intact v0.0.0-20200301161822-f8c4a3336c2a
 	github.com/itchio/lake v0.0.0-20260609175358-7830e8bc546a
 	github.com/itchio/mitch v0.0.0-20200305160145-f3a01c4897c9
@@ -109,6 +109,7 @@ require (
 	go.uber.org/zap v1.27.1 // indirect
 	golang.org/x/net v0.55.0 // indirect
 	golang.org/x/term v0.44.0 // indirect
+	golang.org/x/time v0.15.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

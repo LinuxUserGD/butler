@@ -507,8 +507,9 @@ func (p FetchGameParams) IsFresh() bool {
 }
 
 type FetchGameResult struct {
-	// Game info
-	Game *itchio.Game `json:"game"`
+	// Game info, null if the game is not known locally (yet)
+	// @optional
+	Game *itchio.Game `json:"game,omitempty"`
 
 	// Marks that a request should be issued afterwards with 'Fresh' set
 	// @optional
@@ -705,7 +706,9 @@ func (p FetchDownloadKeyParams) IsFresh() bool {
 }
 
 type FetchDownloadKeyResult struct {
-	DownloadKey *itchio.DownloadKey `json:"downloadKey"`
+	// Download key info, null if the profile owns no key for the game
+	// @optional
+	DownloadKey *itchio.DownloadKey `json:"downloadKey,omitempty"`
 
 	// Marks that a request should be issued afterwards with 'Fresh' set
 	// @optional
@@ -833,8 +836,9 @@ func (p FetchUserParams) IsFresh() bool {
 }
 
 type FetchUserResult struct {
-	// User info
-	User *itchio.User `json:"user"`
+	// User info, null if the user is not known locally (yet)
+	// @optional
+	User *itchio.User `json:"user,omitempty"`
 
 	// Marks that a request should be issued
 	// afterwards with 'Fresh' set
@@ -865,7 +869,7 @@ func (p FetchSaleParams) Validate() error {
 
 type FetchSaleResult struct {
 	// @optional
-	Sale *itchio.Sale `json:"sale"`
+	Sale *itchio.Sale `json:"sale,omitempty"`
 }
 
 // Fetch a collection's title, gamesCount, etc.
@@ -899,8 +903,9 @@ func (p FetchCollectionParams) IsFresh() bool {
 }
 
 type FetchCollectionResult struct {
-	// Collection info
-	Collection *itchio.Collection `json:"collection"`
+	// Collection info, null if the collection is not known locally (yet)
+	// @optional
+	Collection *itchio.Collection `json:"collection,omitempty"`
 
 	// True if the info was from local DB and
 	// it should be re-queried using "Fresh"
@@ -1582,7 +1587,8 @@ type DownloadKeySummary struct {
 	GameID int64 `json:"gameId"`
 
 	// Date this key was created at (often coincides with purchase time)
-	CreatedAt *time.Time `json:"createdAt"`
+	// @optional
+	CreatedAt *time.Time `json:"createdAt,omitempty"`
 }
 
 type CaveSummary struct {
@@ -1590,7 +1596,9 @@ type CaveSummary struct {
 
 	GameID int64 `json:"gameId"`
 
-	LastTouchedAt *time.Time `json:"lastTouchedAt"`
+	// Null if the cave was never played
+	// @optional
+	LastTouchedAt *time.Time `json:"lastTouchedAt,omitempty"`
 	SecondsRun    int64      `json:"secondsRun"`
 	InstalledSize int64      `json:"installedSize"`
 }
@@ -1610,7 +1618,7 @@ type Cave struct {
 	Upload *itchio.Upload `json:"upload"`
 	// Build that's installed in this cave, if the upload is wharf-powered
 	// @optional
-	Build *itchio.Build `json:"build"`
+	Build *itchio.Build `json:"build,omitempty"`
 
 	// Stats about cave usage and first install
 	Stats *CaveStats `json:"stats"`
@@ -1620,9 +1628,12 @@ type Cave struct {
 
 // CaveStats contains stats about cave usage and first install
 type CaveStats struct {
-	// Time the cave was first installed
-	InstalledAt   *time.Time `json:"installedAt"`
-	LastTouchedAt *time.Time `json:"lastTouchedAt"`
+	// Time the cave was first installed, null while the install is still pending
+	// @optional
+	InstalledAt *time.Time `json:"installedAt,omitempty"`
+	// Null if the cave was never played
+	// @optional
+	LastTouchedAt *time.Time `json:"lastTouchedAt,omitempty"`
 	SecondsRun    int64      `json:"secondsRun"`
 }
 
@@ -1671,9 +1682,9 @@ type InstallLocationSummary struct {
 	ID string `json:"id"`
 	// Absolute path on disk for this install location
 	Path string `json:"path"`
-	// Information about the size used and available at this install location
-	// @optional
-	SizeInfo *InstallLocationSizeInfo `json:"sizeInfo,omitempty"`
+	// Information about the size used and available at this install location.
+	// Sizes that could not be determined are -1.
+	SizeInfo *InstallLocationSizeInfo `json:"sizeInfo"`
 }
 
 type InstallLocationSizeInfo struct {
@@ -1772,7 +1783,9 @@ func (p FetchCaveParams) Validate() error {
 }
 
 type FetchCaveResult struct {
-	Cave *Cave `json:"cave"`
+	// Cave info, null if there is no cave with the given ID
+	// @optional
+	Cave *Cave `json:"cave,omitempty"`
 }
 
 // Mark all local data as stale.
@@ -1857,19 +1870,19 @@ type InstallQueueParams struct {
 	//
 	// If unspecified and caveId is specified, the same game will be used.
 	// @optional
-	Game *itchio.Game `json:"game"`
+	Game *itchio.Game `json:"game,omitempty"`
 
 	// Which upload to install.
 	//
 	// If unspecified and caveId is specified, the same upload will be used.
 	// @optional
-	Upload *itchio.Upload `json:"upload"`
+	Upload *itchio.Upload `json:"upload,omitempty"`
 
 	// Which build to install
 	//
 	// If unspecified and caveId is specified, the same build will be used.
 	// @optional
-	Build *itchio.Build `json:"build"`
+	Build *itchio.Build `json:"build,omitempty"`
 
 	// If true, do not run windows installers, just extract
 	// whatever to the install folder.
@@ -1904,15 +1917,17 @@ func (p InstallQueueParams) Validate() error {
 }
 
 type InstallQueueResult struct {
-	ID                string         `json:"id"`
-	Reason            DownloadReason `json:"reason"`
-	CaveID            string         `json:"caveId"`
-	Game              *itchio.Game   `json:"game"`
-	Upload            *itchio.Upload `json:"upload"`
-	Build             *itchio.Build  `json:"build"`
-	InstallFolder     string         `json:"installFolder"`
-	StagingFolder     string         `json:"stagingFolder"`
-	InstallLocationID string         `json:"installLocationId"`
+	ID     string         `json:"id"`
+	Reason DownloadReason `json:"reason"`
+	CaveID string         `json:"caveId"`
+	Game   *itchio.Game   `json:"game"`
+	Upload *itchio.Upload `json:"upload"`
+	// Build that will be installed, null for non-wharf uploads
+	// @optional
+	Build             *itchio.Build `json:"build,omitempty"`
+	InstallFolder     string        `json:"installFolder"`
+	StagingFolder     string        `json:"stagingFolder"`
+	InstallLocationID string        `json:"installLocationId"`
 }
 
 // @deprecated Install.Plan can take a long time calculating space requirements and can't be canceled. Use Install.GetUploads to quickly list available uploads, then Install.PlanUpload to calculate extraction details for a specific upload (with cancellation support).
@@ -1943,7 +1958,9 @@ func (p InstallPlanParams) Validate() error {
 type InstallPlanResult struct {
 	Game    *itchio.Game     `json:"game"`
 	Uploads []*itchio.Upload `json:"uploads"`
-	Info    *InstallPlanInfo `json:"info"`
+	// Null when the game has no compatible uploads
+	// @optional
+	Info *InstallPlanInfo `json:"info,omitempty"`
 }
 
 // Returns the list of available uploads for a game, narrowed by platform/format.
@@ -2000,10 +2017,15 @@ type InstallPlanUploadResult struct {
 }
 
 type InstallPlanInfo struct {
-	Upload    *itchio.Upload `json:"upload"`
-	Build     *itchio.Build  `json:"build"`
-	Type      string         `json:"type"`
-	DiskUsage *DiskUsageInfo `json:"diskUsage"`
+	Upload *itchio.Upload `json:"upload"`
+	// Null for non-wharf uploads
+	// @optional
+	Build *itchio.Build `json:"build,omitempty"`
+	Type  string        `json:"type"`
+	// Null when planning failed before disk usage could be assessed
+	// (see Error / ErrorCode)
+	// @optional
+	DiskUsage *DiskUsageInfo `json:"diskUsage,omitempty"`
 
 	// @optional
 	Error string `json:"error,omitempty"`
@@ -2300,10 +2322,12 @@ type TaskStartedNotification struct {
 	Reason TaskReason `json:"reason"`
 	// Is this task a download? An install?
 	Type TaskType `json:"type"`
-	// The game this task is dealing with
-	Game *itchio.Game `json:"game"`
-	// The upload this task is dealing with
-	Upload *itchio.Upload `json:"upload"`
+	// The game this task is dealing with, absent for uninstall tasks
+	// @optional
+	Game *itchio.Game `json:"game,omitempty"`
+	// The upload this task is dealing with, absent for uninstall tasks
+	// @optional
+	Upload *itchio.Upload `json:"upload,omitempty"`
 	// The build this task is dealing with (if any)
 	// @optional
 	Build *itchio.Build `json:"build,omitempty"`
@@ -2336,7 +2360,7 @@ type InstallResult struct {
 	Upload *itchio.Upload `json:"upload"`
 	// The build we installed
 	// @optional
-	Build *itchio.Build `json:"build"`
+	Build *itchio.Build `json:"build,omitempty"`
 	// TODO: verdict ?
 }
 
@@ -2374,7 +2398,9 @@ func (p InstallLocationsAddParams) Validate() error {
 }
 
 type InstallLocationsAddResult struct {
-	InstallLocation *InstallLocationSummary `json:"installLocation"`
+	// Null when the install location already existed at the same path
+	// @optional
+	InstallLocation *InstallLocationSummary `json:"installLocation,omitempty"`
 }
 
 // @name Install.Locations.Remove
@@ -2619,19 +2645,29 @@ const (
 // Represents a download queued, which will be
 // performed whenever @@DownloadsDriveParams is called.
 type Download struct {
-	ID            string         `json:"id"`
-	Error         *string        `json:"error"`
-	ErrorMessage  *string        `json:"errorMessage"`
-	ErrorCode     *int64         `json:"errorCode"`
-	Reason        DownloadReason `json:"reason"`
-	Position      int64          `json:"position"`
-	CaveID        string         `json:"caveId"`
-	Game          *itchio.Game   `json:"game"`
-	Upload        *itchio.Upload `json:"upload"`
-	Build         *itchio.Build  `json:"build"`
-	StartedAt     *time.Time     `json:"startedAt"`
-	FinishedAt    *time.Time     `json:"finishedAt"`
-	StagingFolder string         `json:"stagingFolder"`
+	ID string `json:"id"`
+	// Only set if the download errored
+	// @optional
+	Error *string `json:"error,omitempty"`
+	// Only set if the download errored
+	// @optional
+	ErrorMessage *string `json:"errorMessage,omitempty"`
+	// Only set if the download errored
+	// @optional
+	ErrorCode *int64         `json:"errorCode,omitempty"`
+	Reason    DownloadReason `json:"reason"`
+	Position  int64          `json:"position"`
+	CaveID    string         `json:"caveId"`
+	Game      *itchio.Game   `json:"game"`
+	Upload    *itchio.Upload `json:"upload"`
+	// Null for non-wharf uploads
+	// @optional
+	Build     *itchio.Build `json:"build,omitempty"`
+	StartedAt *time.Time    `json:"startedAt"`
+	// Null until the download finishes or errors
+	// @optional
+	FinishedAt    *time.Time `json:"finishedAt,omitempty"`
+	StagingFolder string     `json:"stagingFolder"`
 }
 
 type DownloadProgress struct {
@@ -2749,8 +2785,9 @@ type GameUpdate struct {
 type GameUpdateChoice struct {
 	// Upload to be installed
 	Upload *itchio.Upload `json:"upload"`
-	// Build to be installed (may be nil)
-	Build *itchio.Build `json:"build"`
+	// Build to be installed, null for non-wharf uploads
+	// @optional
+	Build *itchio.Build `json:"build,omitempty"`
 	// How confident we are that this is the right upgrade
 	Confidence float64 `json:"confidence"`
 }
@@ -3350,10 +3387,10 @@ type PublishPushParams struct {
 	Dereference bool `json:"dereference"`
 	// When non-nil, overrides butler's default (--fix-permissions, default true)
 	// @optional
-	FixPermissions *bool `json:"fixPermissions"`
+	FixPermissions *bool `json:"fixPermissions,omitempty"`
 	// When non-nil, overrides butler's default (--auto-wrap, default true)
 	// @optional
-	AutoWrap *bool `json:"autoWrap"`
+	AutoWrap *bool `json:"autoWrap,omitempty"`
 	// Tags the originating client for analytics (e.g. "app").
 	// Defaults to "butlerd" if unset.
 	// @optional
@@ -3399,10 +3436,10 @@ type PublishPushPreviewParams struct {
 	Dereference bool `json:"dereference"`
 	// When non-nil, overrides butler's default (--fix-permissions, default true)
 	// @optional
-	FixPermissions *bool `json:"fixPermissions"`
+	FixPermissions *bool `json:"fixPermissions,omitempty"`
 	// When non-nil, overrides butler's default (--auto-wrap, default true)
 	// @optional
-	AutoWrap *bool `json:"autoWrap"`
+	AutoWrap *bool `json:"autoWrap,omitempty"`
 }
 
 func (p PublishPushPreviewParams) Validate() error {
@@ -3562,13 +3599,13 @@ type PublishChannel struct {
 	Tags string `json:"tags"`
 	// Latest upload tied to this channel
 	// @optional
-	Upload *itchio.Upload `json:"upload"`
+	Upload *itchio.Upload `json:"upload,omitempty"`
 	// Most recent successfully-processed build, if any
 	// @optional
-	Head *itchio.Build `json:"head"`
+	Head *itchio.Build `json:"head,omitempty"`
 	// In-flight build that hasn't finished processing, if any
 	// @optional
-	Pending *itchio.Build `json:"pending"`
+	Pending *itchio.Build `json:"pending,omitempty"`
 }
 
 // Returns information about a single channel.
@@ -3591,7 +3628,9 @@ func (p PublishGetChannelParams) Validate() error {
 }
 
 type PublishGetChannelResult struct {
-	Channel *PublishChannel `json:"channel"`
+	// Null if the channel does not exist
+	// @optional
+	Channel *PublishChannel `json:"channel,omitempty"`
 }
 
 // Returns information about a single build by ID.
