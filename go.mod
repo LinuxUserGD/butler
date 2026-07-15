@@ -22,7 +22,7 @@ require (
 	github.com/itchio/dash v0.0.0-20260128225838-1643ccf89aea
 	github.com/itchio/elefant v0.0.0-20260515053942-17c52347bcf4
 	github.com/itchio/go-itchio v0.0.0-20260710194225-a8581d36bf19
-	github.com/itchio/hades v0.0.0-20260710055636-aea3bcf3b1ba
+	github.com/itchio/hades v0.0.0-20260711210423-80ab837c55cd
 	github.com/itchio/headway v0.0.0-20251229214354-da882c8b5dd4
 	github.com/itchio/httpkit v0.0.0-20260213231528-25109ada88c9
 	github.com/itchio/hush v0.0.0-20260710191509-8882c242cb2b
@@ -34,7 +34,7 @@ require (
 	github.com/itchio/savior v0.0.0-20260128212141-556ab9757054
 	github.com/itchio/screw v0.0.0-20260221011136-e674b460b040
 	github.com/itchio/sevenzip-go v0.0.0-20260201233743-2dbe441fd43c
-	github.com/itchio/smaug v0.0.0-20260221030659-51a9124f1310
+	github.com/itchio/smaug v0.0.0-20260713192329-3859079146ba
 	github.com/itchio/spellbook v0.0.0-20200301161431-a4bdbea6b725
 	github.com/itchio/wharf v0.0.0-20260314032032-5343a90f618c
 	github.com/itchio/wizardry v0.0.0-20200301161332-e8c8c4a5a488

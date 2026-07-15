@@ -959,7 +959,9 @@ type FetchCollectionGamesParams struct {
 }
 
 type CollectionGamesFilters struct {
-	Installed      bool                      `json:"installed"`
+	Installed bool `json:"installed"`
+
+	// @optional
 	Classification itchio.GameClassification `json:"classification"`
 
 	// Only include games with a download tagged for this platform
@@ -1123,7 +1125,12 @@ type FetchProfileGamesParams struct {
 }
 
 type ProfileGameFilters struct {
+	// "draft" or "published"; absent means both
+	// @optional
 	Visibility string `json:"visibility"`
+
+	// "paid" or "free"; absent means both
+	// @optional
 	PaidStatus string `json:"paidStatus"`
 }
 
@@ -1221,7 +1228,9 @@ type FetchProfileOwnedKeysParams struct {
 }
 
 type ProfileOwnedKeysFilters struct {
-	Installed      bool                      `json:"installed"`
+	Installed bool `json:"installed"`
+
+	// @optional
 	Classification itchio.GameClassification `json:"classification"`
 
 	// Only include games with a download tagged for this platform
@@ -1392,7 +1401,9 @@ type FetchBundleGamesParams struct {
 }
 
 type BundleGamesFilters struct {
-	Installed      bool                      `json:"installed"`
+	Installed bool `json:"installed"`
+
+	// @optional
 	Classification itchio.GameClassification `json:"classification"`
 
 	// Only include games with a download tagged for this platform
@@ -1660,7 +1671,7 @@ type CaveSettings struct {
 	// @optional
 	Sandbox *bool `json:"sandbox,omitempty"`
 
-	// Override sandbox runner type (bubblewrap, firejail, flatpak, fuji, auto).
+	// Override sandbox runner type (bubblewrap, firejail, fuji, auto).
 	// @optional
 	SandboxType *SandboxType `json:"sandboxType,omitempty"`
 
@@ -1672,9 +1683,11 @@ type CaveSettings struct {
 	// @optional
 	SandboxAllowEnv *[]string `json:"sandboxAllowEnv,omitempty"`
 
-	// Additional command-line arguments appended after manifest action args.
+	// Command template applied to native launches. Use %command% as a standalone
+	// token to place the resolved game command. Without it, tokens are appended
+	// as arguments to the resolved command.
 	// @optional
-	ExtraArgs []string `json:"extraArgs,omitempty"`
+	CommandTemplate string `json:"commandTemplate,omitempty"`
 }
 
 type InstallLocationSummary struct {
@@ -1988,6 +2001,12 @@ func (p InstallGetUploadsParams) Validate() error {
 type InstallGetUploadsResult struct {
 	Game    *itchio.Game     `json:"game"`
 	Uploads []*itchio.Upload `json:"uploads"`
+
+	// Uploads that were filtered out as not compatible with the current
+	// runtime — untagged, or tagged for other platforms. They can still be
+	// installed by explicitly passing them to @@InstallQueueParams.
+	// @optional
+	IncompatibleUploads []*itchio.Upload `json:"incompatibleUploads,omitempty"`
 }
 
 // Returns installer type and disk usage info for a specific upload.
@@ -2834,17 +2853,20 @@ type LaunchParams struct {
 	// @optional
 	ForcePrereqs bool `json:"forcePrereqs,omitempty"`
 
-	// Enable sandbox (regardless of manifest opt-in)
+	// Sandbox preference for this launch. When omitted, the manifest may enable
+	// sandboxing. An explicit value overrides the manifest preference.
 	// @optional
-	Sandbox bool `json:"sandbox,omitempty"`
+	Sandbox *bool `json:"sandbox,omitempty"`
 
 	// Sandbox configuration options. Only applied when sandbox is enabled.
 	// @optional
 	SandboxOptions *SandboxOptions `json:"sandboxOptions,omitempty"`
 
-	// Additional command-line arguments appended after manifest action args.
+	// Command template applied to native launches. Use %command% as a standalone
+	// token to place the resolved game command. Without it, tokens are appended
+	// as arguments to the resolved command.
 	// @optional
-	ExtraArgs []string `json:"extraArgs,omitempty"`
+	CommandTemplate string `json:"commandTemplate,omitempty"`
 }
 
 type SandboxType string
@@ -2853,7 +2875,6 @@ const (
 	SandboxTypeAuto       SandboxType = "auto"
 	SandboxTypeBubblewrap SandboxType = "bubblewrap"
 	SandboxTypeFirejail   SandboxType = "firejail"
-	SandboxTypeFlatpak    SandboxType = "flatpak"
 	SandboxTypeFuji       SandboxType = "fuji"
 )
 
@@ -2861,7 +2882,6 @@ var SandboxTypeList = []interface{}{
 	SandboxTypeAuto,
 	SandboxTypeBubblewrap,
 	SandboxTypeFirejail,
-	SandboxTypeFlatpak,
 	SandboxTypeFuji,
 }
 
@@ -2881,13 +2901,19 @@ type SandboxOptions struct {
 }
 
 func validateCaveSettings(settings *CaveSettings) error {
-	if settings == nil || settings.SandboxType == nil || *settings.SandboxType == "" {
+	if settings == nil {
 		return nil
 	}
 
-	err := validation.Validate(*settings.SandboxType, validation.In(SandboxTypeList...))
-	if err != nil {
-		return fmt.Errorf("settings.sandboxType: %w", err)
+	if settings.SandboxType != nil && *settings.SandboxType != "" {
+		err := validation.Validate(*settings.SandboxType, validation.In(SandboxTypeList...))
+		if err != nil {
+			return fmt.Errorf("settings.sandboxType: %w", err)
+		}
+	}
+
+	if err := ValidateCommandTemplate(settings.CommandTemplate); err != nil {
+		return fmt.Errorf("settings.commandTemplate: %w", err)
 	}
 
 	return nil
@@ -2906,6 +2932,9 @@ func (p LaunchParams) Validate() error {
 		if err != nil {
 			return fmt.Errorf("sandboxOptions.type: %w", err)
 		}
+	}
+	if err := ValidateCommandTemplate(p.CommandTemplate); err != nil {
+		return fmt.Errorf("commandTemplate: %w", err)
 	}
 	return nil
 }

@@ -1752,6 +1752,12 @@
             "name": "uploads",
             "doc": "",
             "type": "Upload[]"
+          },
+          {
+            "name": "incompatibleUploads",
+            "doc": "Uploads that were filtered out as not compatible with the current\nruntime — untagged, or tagged for other platforms. They can still be\ninstalled by explicitly passing them to @@InstallQueueParams.",
+            "type": "Upload[]",
+            "optional": true
           }
         ]
       }
@@ -2366,7 +2372,7 @@
           },
           {
             "name": "sandbox",
-            "doc": "Enable sandbox (regardless of manifest opt-in)",
+            "doc": "Sandbox preference for this launch. When omitted, the manifest may enable\nsandboxing. An explicit value overrides the manifest preference.",
             "type": "boolean",
             "optional": true
           },
@@ -2377,9 +2383,9 @@
             "optional": true
           },
           {
-            "name": "extraArgs",
-            "doc": "Additional command-line arguments appended after manifest action args.",
-            "type": "string[]",
+            "name": "commandTemplate",
+            "doc": "Command template applied to native launches. Use %command% as a standalone\ntoken to place the resolved game command. Without it, tokens are appended\nas arguments to the resolved command.",
+            "type": "string",
             "optional": true
           }
         ]
@@ -3875,7 +3881,8 @@
         {
           "name": "classification",
           "doc": "",
-          "type": "GameClassification"
+          "type": "GameClassification",
+          "optional": true
         },
         {
           "name": "platform",
@@ -3937,13 +3944,15 @@
       "fields": [
         {
           "name": "visibility",
-          "doc": "",
-          "type": "string"
+          "doc": "\"draft\" or \"published\"; absent means both",
+          "type": "string",
+          "optional": true
         },
         {
           "name": "paidStatus",
-          "doc": "",
-          "type": "string"
+          "doc": "\"paid\" or \"free\"; absent means both",
+          "type": "string",
+          "optional": true
         }
       ]
     },
@@ -4013,7 +4022,8 @@
         {
           "name": "classification",
           "doc": "",
-          "type": "GameClassification"
+          "type": "GameClassification",
+          "optional": true
         },
         {
           "name": "platform",
@@ -4081,7 +4091,8 @@
         {
           "name": "classification",
           "doc": "",
-          "type": "GameClassification"
+          "type": "GameClassification",
+          "optional": true
         },
         {
           "name": "platform",
@@ -4345,7 +4356,7 @@
         },
         {
           "name": "sandboxType",
-          "doc": "Override sandbox runner type (bubblewrap, firejail, flatpak, fuji, auto).",
+          "doc": "Override sandbox runner type (bubblewrap, firejail, fuji, auto).",
           "type": "SandboxType",
           "optional": true
         },
@@ -4362,9 +4373,9 @@
           "optional": true
         },
         {
-          "name": "extraArgs",
-          "doc": "Additional command-line arguments appended after manifest action args.",
-          "type": "string[]",
+          "name": "commandTemplate",
+          "doc": "Command template applied to native launches. Use %command% as a standalone\ntoken to place the resolved game command. Without it, tokens are appended\nas arguments to the resolved command.",
+          "type": "string",
           "optional": true
         }
       ]
@@ -4567,6 +4578,12 @@
           "name": "uploads",
           "doc": "",
           "type": "Upload[]"
+        },
+        {
+          "name": "incompatibleUploads",
+          "doc": "Uploads that were filtered out as not compatible with the current\nruntime — untagged, or tagged for other platforms. They can still be\ninstalled by explicitly passing them to @@InstallQueueParams.",
+          "type": "Upload[]",
+          "optional": true
         }
       ]
     },
@@ -6966,11 +6983,6 @@
           "name": "Firejail",
           "doc": "",
           "value": "firejail"
-        },
-        {
-          "name": "Flatpak",
-          "doc": "",
-          "value": "flatpak"
         },
         {
           "name": "Fuji",

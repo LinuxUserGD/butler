@@ -114,18 +114,23 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 		env["ITCHIO_APP"] = "1"
 
 		args = append(args, target.Action.Args...)
-		args = append(args, params.ExtraArgs...)
 		fullTargetPath := target.Strategy.FullTargetPath
+		if params.CommandTemplate != "" && target.Strategy.Strategy != butlerd.LaunchStrategyNative {
+			consumer.Warnf("Custom command template does not apply to %s launches", target.Strategy.Strategy)
+		}
 
 		err = requestAPIKeyIfNecessary(rc, target.Action, game, access, env)
 		if err != nil {
 			return errors.WithMessage(err, "While requesting API key")
 		}
 
-		sandbox := params.Sandbox
+		sandbox := resolveSandbox(params.Sandbox, target.Action.Sandbox)
 		if target.Action.Sandbox {
-			consumer.Infof("Enabling sandbox because of manifest opt-in")
-			sandbox = true
+			if sandbox {
+				consumer.Infof("Enabling sandbox because of manifest opt-in")
+			} else {
+				consumer.Infof("Ignoring manifest sandbox opt-in: sandbox explicitly disabled for this game")
+			}
 		}
 
 		crashed := false
@@ -259,6 +264,7 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 			WorkingDirectory: workingDirectory,
 			Args:             args,
 			Env:              env,
+			CommandTemplate:  params.CommandTemplate,
 
 			PrereqsDir:    params.PrereqsDir,
 			ForcePrereqs:  params.ForcePrereqs,

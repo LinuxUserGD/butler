@@ -4477,6 +4477,14 @@ game). When zero, falls back to any suitable profile.</p>
 <td><code class="typename"><span class="type" data-tip-selector="#Upload__TypeHint">Upload</span>[]</code></td>
 <td></td>
 </tr>
+<tr>
+<td><code>incompatibleUploads</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#Upload__TypeHint">Upload</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Uploads that were filtered out as not compatible with the current
+runtime — untagged, or tagged for other platforms. They can still be
+installed by explicitly passing them to <code class="typename"><span class="type" data-tip-selector="#InstallQueueParams__TypeHint">Install.Queue</span></code>.</p>
+</td>
+</tr>
 </table>
 
 
@@ -4514,6 +4522,10 @@ This is the fast part of install planning (no file I/O).</p>
 </tr>
 <tr>
 <td><code>uploads</code></td>
+<td><code class="typename"><span class="type">Upload</span>[]</code></td>
+</tr>
+<tr>
+<td><code>incompatibleUploads</code></td>
 <td><code class="typename"><span class="type">Upload</span>[]</code></td>
 </tr>
 </table>
@@ -6806,7 +6818,8 @@ cave identifier.</p>
 <tr>
 <td><code>sandbox</code></td>
 <td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
-<td><p><span class="tag">Optional</span> Enable sandbox (regardless of manifest opt-in)</p>
+<td><p><span class="tag">Optional</span> Sandbox preference for this launch. When omitted, the manifest may enable
+sandboxing. An explicit value overrides the manifest preference.</p>
 </td>
 </tr>
 <tr>
@@ -6816,9 +6829,11 @@ cave identifier.</p>
 </td>
 </tr>
 <tr>
-<td><code>extraArgs</code></td>
-<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
-<td><p><span class="tag">Optional</span> Additional command-line arguments appended after manifest action args.</p>
+<td><code>commandTemplate</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Command template applied to native launches. Use %command% as a standalone
+token to place the resolved game command. Without it, tokens are appended
+as arguments to the resolved command.</p>
 </td>
 </tr>
 </table>
@@ -6860,8 +6875,8 @@ cave identifier.</p>
 <td><code class="typename"><span class="type">SandboxOptions</span></code></td>
 </tr>
 <tr>
-<td><code>extraArgs</code></td>
-<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><code>commandTemplate</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
 </tr>
 </table>
 
@@ -9546,7 +9561,8 @@ ie. that we can connect as, etc.</p>
 <tr>
 <td><code>classification</code></td>
 <td><code class="typename"><span class="type" data-tip-selector="#GameClassification__TypeHint">GameClassification</span></code></td>
-<td></td>
+<td><p><span class="tag">Optional</span></p>
+</td>
 </tr>
 <tr>
 <td><code>platform</code></td>
@@ -9592,12 +9608,14 @@ ie. that we can connect as, etc.</p>
 <tr>
 <td><code>visibility</code></td>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
-<td></td>
+<td><p><span class="tag">Optional</span> &ldquo;draft&rdquo; or &ldquo;published&rdquo;; absent means both</p>
+</td>
 </tr>
 <tr>
 <td><code>paidStatus</code></td>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
-<td></td>
+<td><p><span class="tag">Optional</span> &ldquo;paid&rdquo; or &ldquo;free&rdquo;; absent means both</p>
+</td>
 </tr>
 </table>
 
@@ -9704,7 +9722,8 @@ ie. that we can connect as, etc.</p>
 <tr>
 <td><code>classification</code></td>
 <td><code class="typename"><span class="type" data-tip-selector="#GameClassification__TypeHint">GameClassification</span></code></td>
-<td></td>
+<td><p><span class="tag">Optional</span></p>
+</td>
 </tr>
 <tr>
 <td><code>platform</code></td>
@@ -9755,7 +9774,8 @@ ie. that we can connect as, etc.</p>
 <tr>
 <td><code>classification</code></td>
 <td><code class="typename"><span class="type" data-tip-selector="#GameClassification__TypeHint">GameClassification</span></code></td>
-<td></td>
+<td><p><span class="tag">Optional</span></p>
+</td>
 </tr>
 <tr>
 <td><code>platform</code></td>
@@ -10209,7 +10229,7 @@ nil = inherit global, true = force on, false = force off</p>
 <tr>
 <td><code>sandboxType</code></td>
 <td><code class="typename"><span class="type" data-tip-selector="#SandboxType__TypeHint">SandboxType</span></code></td>
-<td><p><span class="tag">Optional</span> Override sandbox runner type (bubblewrap, firejail, flatpak, fuji, auto).</p>
+<td><p><span class="tag">Optional</span> Override sandbox runner type (bubblewrap, firejail, fuji, auto).</p>
 </td>
 </tr>
 <tr>
@@ -10225,9 +10245,11 @@ nil = inherit global, true = force on, false = force off</p>
 </td>
 </tr>
 <tr>
-<td><code>extraArgs</code></td>
-<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
-<td><p><span class="tag">Optional</span> Additional command-line arguments appended after manifest action args.</p>
+<td><code>commandTemplate</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Command template applied to native launches. Use %command% as a standalone
+token to place the resolved game command. Without it, tokens are appended
+as arguments to the resolved command.</p>
 </td>
 </tr>
 </table>
@@ -10259,8 +10281,8 @@ nil = inherit global, true = force on, false = force off</p>
 <td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
 </tr>
 <tr>
-<td><code>extraArgs</code></td>
-<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><code>commandTemplate</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
 </tr>
 </table>
 
@@ -11157,10 +11179,6 @@ performed whenever <code class="typename"><span class="type">Downloads.Drive</sp
 <td></td>
 </tr>
 <tr>
-<td><code>"flatpak"</code></td>
-<td></td>
-</tr>
-<tr>
 <td><code>"fuji"</code></td>
 <td></td>
 </tr>
@@ -11180,9 +11198,6 @@ performed whenever <code class="typename"><span class="type">Downloads.Drive</sp
 </tr>
 <tr>
 <td><code>"firejail"</code></td>
-</tr>
-<tr>
-<td><code>"flatpak"</code></td>
 </tr>
 <tr>
 <td><code>"fuji"</code></td>
