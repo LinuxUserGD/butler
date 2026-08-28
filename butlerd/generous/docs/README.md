@@ -1350,7 +1350,7 @@ two-factor authentication enabled.</p>
 ### Search.Games (client request)
 
 <div class="deprecation-notice">
-<strong>Deprecated:</strong> <p>Use Search.Local instead. It searches the same locally-cached games, and also returns the profile&rsquo;s owned bundles and collections.</p>
+<strong>Deprecated:</strong> <p>Use Search.Local instead. It scopes games to the profile&rsquo;s library, and also returns the profile&rsquo;s owned bundles and collections.</p>
 
 </div>
 
@@ -1518,9 +1518,10 @@ two-factor authentication enabled.</p>
 <p>Searches butler&rsquo;s local database for games, bundles, and collections.
 Does not perform any API requests.</p>
 
-<p>Games are searched across everything locally cached. Bundles and
-collections are scoped to the given profile: only bundles the profile
-owns and collections in the profile&rsquo;s collection list are returned.</p>
+<p>Results are scoped to the given profile: games in the profile&rsquo;s library
+(owned, in an owned bundle, in one of their collections, on their
+dashboard, or installed), bundles the profile owns, and collections in
+the profile&rsquo;s collection list.</p>
 
 </p>
 
@@ -1533,7 +1534,7 @@ owns and collections in the profile&rsquo;s collection list are returned.</p>
 <tr>
 <td><code>profileId</code></td>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
-<td><p>Profile whose owned bundles and collections are searched</p>
+<td><p>Profile whose library, bundles, and collections are searched</p>
 </td>
 </tr>
 <tr>
@@ -1554,7 +1555,7 @@ owns and collections in the profile&rsquo;s collection list are returned.</p>
 <tr>
 <td><code>games</code></td>
 <td><code class="typename"><span class="type" data-tip-selector="#Game__TypeHint">Game</span>[]</code></td>
-<td><p>Locally-cached games matching the query</p>
+<td><p>Games in the profile&rsquo;s library matching the query</p>
 </td>
 </tr>
 <tr>
@@ -1579,9 +1580,10 @@ owns and collections in the profile&rsquo;s collection list are returned.</p>
 <p>Searches butler&rsquo;s local database for games, bundles, and collections.
 Does not perform any API requests.</p>
 
-<p>Games are searched across everything locally cached. Bundles and
-collections are scoped to the given profile: only bundles the profile
-owns and collections in the profile&rsquo;s collection list are returned.</p>
+<p>Results are scoped to the given profile: games in the profile&rsquo;s library
+(owned, in an owned bundle, in one of their collections, on their
+dashboard, or installed), bundles the profile owns, and collections in
+the profile&rsquo;s collection list.</p>
 
 </p>
 
@@ -3660,8 +3662,18 @@ Returns only counts; does not return bundle game rows.</p>
 
 
 <p>
-<span class="header">Parameters</span> <em>none</em>
+<span class="header">Parameters</span> 
 </p>
+
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> When set, each cave summary carries this profile&rsquo;s interaction summary.</p>
+</td>
+</tr>
+</table>
 
 
 
@@ -3691,6 +3703,14 @@ Returns only counts; does not return bundle game rows.</p>
 
 <div id="FetchCommonsParams__TypeHint" class="tip-content">
 <p>Fetch.Commons (client request) <a href="#/?id=fetchcommons-client-request">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+</table>
 
 </div>
 
@@ -3766,6 +3786,14 @@ Returns only counts; does not return bundle game rows.</p>
 <td><p><span class="tag">Optional</span> Used for pagination, if specified</p>
 </td>
 </tr>
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> When set, play-time sorting and filtering use this profile&rsquo;s account
+instead of the unscoped cave columns, and each cave carries its
+interaction summary.</p>
+</td>
+</tr>
 </table>
 
 
@@ -3823,6 +3851,10 @@ Returns only counts; does not return bundle game rows.</p>
 <td><code>cursor</code></td>
 <td><code class="typename"><span class="type">Cursor</span></code></td>
 </tr>
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
 </table>
 
 </div>
@@ -3864,6 +3896,12 @@ Returns only counts; does not return bundle game rows.</p>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
 <td></td>
 </tr>
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> When set, the cave carries this profile&rsquo;s interaction summary.</p>
+</td>
+</tr>
 </table>
 
 
@@ -3896,6 +3934,10 @@ Returns only counts; does not return bundle game rows.</p>
 <td><code>caveId</code></td>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
 </tr>
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
 </table>
 
 </div>
@@ -3909,6 +3951,106 @@ Returns only counts; does not return bundle game rows.</p>
 <tr>
 <td><code>cave</code></td>
 <td><code class="typename"><span class="type">Cave</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Fetch.GameInteraction (client request)
+
+
+<p>
+<p>Fetch the play time summary for a game, as seen by a profile&rsquo;s account.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Profile whose account&rsquo;s interaction to fetch</p>
+</td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Game to fetch the interaction for</p>
+</td>
+</tr>
+<tr>
+<td><code>fresh</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> When true, refresh from the itch.io API before returning</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>interaction</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#UserGameInteraction__TypeHint">UserGameInteraction</span></code></td>
+<td><p><span class="tag">Optional</span> The cached interaction, omitted if none has been synced yet</p>
+</td>
+</tr>
+<tr>
+<td><code>stale</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> True when no interaction is cached locally</p>
+</td>
+</tr>
+</table>
+
+
+<div id="FetchGameInteractionParams__TypeHint" class="tip-content">
+<p>Fetch.GameInteraction (client request) <a href="#/?id=fetchgameinteraction-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Fetch the play time summary for a game, as seen by a profile&rsquo;s account.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>fresh</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="FetchGameInteractionResult__TypeHint" class="tip-content">
+<p>FetchGameInteraction  <a href="#/?id=fetchgameinteraction-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>interaction</code></td>
+<td><code class="typename"><span class="type">UserGameInteraction</span></code></td>
+</tr>
+<tr>
+<td><code>stale</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
 </tr>
 </table>
 
@@ -4028,6 +4170,131 @@ game). When zero, falls back to any suitable profile.</p>
 <tr>
 <td><code>uploads</code></td>
 <td><code class="typename"><span class="type">Upload</span>[]</code></td>
+</tr>
+</table>
+
+</div>
+
+### Install.Adopt (client request)
+
+
+<p>
+<p>Registers an existing, ready-to-run folder as an installed item without
+downloading or copying its contents. Adoption transfers management of the
+entire folder to butler: uninstalling the resulting cave deletes the folder
+and all of its contents.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>uploadId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> Exact build represented by the folder, including a historical build.
+When omitted for a wharf upload, the upload&rsquo;s latest advertised build is
+used.</p>
+</td>
+</tr>
+<tr>
+<td><code>installLocationId</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>installFolderName</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>A single folder name directly beneath the install location.</p>
+</td>
+</tr>
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> Profile to use when resolving access to the game. When zero, falls back
+to any suitable profile.</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>cave</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#Cave__TypeHint">Cave</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="InstallAdoptParams__TypeHint" class="tip-content">
+<p>Install.Adopt (client request) <a href="#/?id=installadopt-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Registers an existing, ready-to-run folder as an installed item without
+downloading or copying its contents. Adoption transfers management of the
+entire folder to butler: uninstalling the resulting cave deletes the folder
+and all of its contents.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>uploadId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>installLocationId</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>installFolderName</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="InstallAdoptResult__TypeHint" class="tip-content">
+<p>InstallAdopt  <a href="#/?id=installadopt-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>cave</code></td>
+<td><code class="typename"><span class="type">Cave</span></code></td>
 </tr>
 </table>
 
@@ -6933,6 +7200,13 @@ Takes precedence over the launchTarget cave setting. If it matches
 no target, the launch fails with CodeLaunchTargetNotFound.</p>
 </td>
 </tr>
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> Profile whose account receives gameplay-session updates. When zero,
+Butler resolves any suitable profile (legacy behavior).</p>
+</td>
+</tr>
 </table>
 
 
@@ -6978,6 +7252,10 @@ no target, the launch fails with CodeLaunchTargetNotFound.</p>
 <tr>
 <td><code>target</code></td>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
 </tr>
 </table>
 
@@ -10043,6 +10321,26 @@ ie. that we can connect as, etc.</p>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
 <td></td>
 </tr>
+<tr>
+<td><code>localSecondsRun</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> Play time observed on this device for this install, regardless of
+whether gameplay-session sync succeeded. Not attributable to an
+account and never summed with server-confirmed totals.</p>
+</td>
+</tr>
+<tr>
+<td><code>localLastRunAt</code></td>
+<td><code class="typename"><span class="type builtin-type">RFCDate</span></code></td>
+<td><p><span class="tag">Optional</span> Last time a game was observed running on this device for this install</p>
+</td>
+</tr>
+<tr>
+<td><code>interaction</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#UserGameInteraction__TypeHint">UserGameInteraction</span></code></td>
+<td><p><span class="tag">Optional</span> Profile-scoped play time, omitted when nothing has been synced yet.</p>
+</td>
+</tr>
 </table>
 
 
@@ -10070,6 +10368,18 @@ ie. that we can connect as, etc.</p>
 <tr>
 <td><code>installedSize</code></td>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>localSecondsRun</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>localLastRunAt</code></td>
+<td><code class="typename"><span class="type builtin-type">RFCDate</span></code></td>
+</tr>
+<tr>
+<td><code>interaction</code></td>
+<td><code class="typename"><span class="type">UserGameInteraction</span></code></td>
 </tr>
 </table>
 
@@ -10129,6 +10439,12 @@ case (single-page bundles, bonus content) but one that should be handled.</p>
 <td><p>Information about where the cave is installed, how much space it takes up etc.</p>
 </td>
 </tr>
+<tr>
+<td><code>interaction</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#UserGameInteraction__TypeHint">UserGameInteraction</span></code></td>
+<td><p><span class="tag">Optional</span> Profile-scoped play time, omitted when nothing has been synced yet.</p>
+</td>
+</tr>
 </table>
 
 
@@ -10169,6 +10485,10 @@ case (single-page bundles, bonus content) but one that should be handled.</p>
 <td><code>installInfo</code></td>
 <td><code class="typename"><span class="type">CaveInstallInfo</span></code></td>
 </tr>
+<tr>
+<td><code>interaction</code></td>
+<td><code class="typename"><span class="type">UserGameInteraction</span></code></td>
+</tr>
 </table>
 
 </div>
@@ -10204,6 +10524,20 @@ case (single-page bundles, bonus content) but one that should be handled.</p>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
 <td></td>
 </tr>
+<tr>
+<td><code>localSecondsRun</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> Play time observed on this device for this install, regardless of
+whether gameplay-session sync succeeded. Not attributable to an
+account and never summed with server-confirmed totals.</p>
+</td>
+</tr>
+<tr>
+<td><code>localLastRunAt</code></td>
+<td><code class="typename"><span class="type builtin-type">RFCDate</span></code></td>
+<td><p><span class="tag">Optional</span> Last time a game was observed running on this device for this install</p>
+</td>
+</tr>
 </table>
 
 
@@ -10227,6 +10561,14 @@ case (single-page bundles, bonus content) but one that should be handled.</p>
 <tr>
 <td><code>secondsRun</code></td>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>localSecondsRun</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>localLastRunAt</code></td>
+<td><code class="typename"><span class="type builtin-type">RFCDate</span></code></td>
 </tr>
 </table>
 
@@ -10538,6 +10880,12 @@ it is), or a negative value if we can&rsquo;t find it</p>
 <td><p><span class="tag">Optional</span></p>
 </td>
 </tr>
+<tr>
+<td><code>neverPlayed</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> When true, only return caves that have never been played</p>
+</td>
+</tr>
 </table>
 
 
@@ -10557,6 +10905,92 @@ it is), or a negative value if we can&rsquo;t find it</p>
 <tr>
 <td><code>installLocationId</code></td>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>neverPlayed</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### UserGameInteraction (struct)
+
+
+<p>
+<p>Play time and last run info for a game, as seen by one itch.io account.
+Cached from the itch.io session API; the same for every cave of the game.</p>
+
+</p>
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>userId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>itch.io user the summary belongs to</p>
+</td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Game the summary is for</p>
+</td>
+</tr>
+<tr>
+<td><code>secondsRun</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Total play time in seconds, as confirmed by the server</p>
+</td>
+</tr>
+<tr>
+<td><code>lastRunAt</code></td>
+<td><code class="typename"><span class="type builtin-type">RFCDate</span></code></td>
+<td><p><span class="tag">Optional</span> Last time the user ran the game, null if never</p>
+</td>
+</tr>
+<tr>
+<td><code>syncedAt</code></td>
+<td><code class="typename"><span class="type builtin-type">RFCDate</span></code></td>
+<td><p><span class="tag">Optional</span> When butler last received this summary from the server</p>
+</td>
+</tr>
+</table>
+
+
+<div id="UserGameInteraction__TypeHint" class="tip-content">
+<p>UserGameInteraction (struct) <a href="#/?id=usergameinteraction-struct">(Go to definition)</a></p>
+
+<p>
+<p>Play time and last run info for a game, as seen by one itch.io account.
+Cached from the itch.io session API; the same for every cave of the game.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>userId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>secondsRun</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>lastRunAt</code></td>
+<td><code class="typename"><span class="type builtin-type">RFCDate</span></code></td>
+</tr>
+<tr>
+<td><code>syncedAt</code></td>
+<td><code class="typename"><span class="type builtin-type">RFCDate</span></code></td>
 </tr>
 </table>
 
@@ -11571,6 +12005,11 @@ did not match any launch target</p>
 <td><p>The selected sandbox is not available on this system</p>
 </td>
 </tr>
+<tr>
+<td><code>20000</code></td>
+<td><p>The profile explicitly requested for an operation does not exist</p>
+</td>
+</tr>
 </table>
 
 
@@ -11621,6 +12060,9 @@ did not match any launch target</p>
 </tr>
 <tr>
 <td><code>19000</code></td>
+</tr>
+<tr>
+<td><code>20000</code></td>
 </tr>
 </table>
 

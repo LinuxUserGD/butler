@@ -4,16 +4,20 @@ import (
 	"context"
 	"fmt"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	goerrors "errors"
 
 	"github.com/pkg/errors"
 
+	"crawshaw.io/sqlite"
+
 	"github.com/itchio/butler/butlerd"
 	"github.com/itchio/butler/butlerd/horror"
 	"github.com/itchio/butler/butlerd/messages"
 	"github.com/itchio/butler/cmd/operate"
+	"github.com/itchio/butler/database/models"
 	"github.com/itchio/hush/manifest"
 
 	"github.com/itchio/httpkit/neterr"
@@ -34,9 +38,10 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 	var res *butlerd.LaunchResult
 
 	err := withInstallFolderLock(withInstallFolderLockParams{
-		rc:     rc,
-		caveID: params.CaveID,
-		reason: "Launch",
+		rc:        rc,
+		caveID:    params.CaveID,
+		profileID: params.ProfileID,
+		reason:    "Launch",
 	}, func(info withInstallFolderInfo) error {
 		cave := info.cave
 		installFolder := info.installFolder
@@ -160,123 +165,59 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 			}
 		}
 
-		crashed := false
-		sessionWatcherDone := make(chan struct{})
-		sessionStartedChan := make(chan struct{})
-		var startSessionOnce sync.Once
-		sessionEndedChan := make(chan struct{})
+		tracksSession := launcherTracksSession(launcher)
 
-		sessionCtx, sessionCancel := context.WithCancel(rc.Ctx)
-		defer sessionCancel()
+		var (
+			sessionWatcherDone chan struct{}
+			sessionStartedChan chan time.Time
+			sessionEndedChan   chan sessionEnd
+			sessionCancel      context.CancelFunc
+			startSessionOnce   sync.Once
+			localStartedAt     atomic.Pointer[time.Time]
+		)
+		sessionStarted := func() {}
 
-		sessionWatcher := func() {
-			defer close(sessionWatcherDone)
-			defer horror.RecoverAndLog(consumer)
+		if tracksSession {
+			sessionWatcherDone = make(chan struct{})
+			sessionStartedChan = make(chan time.Time, 1)
+			sessionEndedChan = make(chan sessionEnd, 1)
 
-			lastRunAt := time.Now().UTC()
-			sessionStartedAt := time.Now().UTC()
-			var secondsRun int64 = 0
+			var sessionCtx context.Context
+			sessionCtx, sessionCancel = context.WithCancel(rc.Ctx)
+			defer sessionCancel()
 
-			conn := rc.GetConn()
-			defer rc.PutConn(conn)
-			access := operate.AccessForGameID(conn, cave.GameID)
-			client := rc.Client(access.APIKey)
+			tracker := &sessionTracker{
+				consumer:     consumer,
+				client:       rc.Client(access.APIKey),
+				gameID:       cave.GameID,
+				uploadID:     cave.UploadID,
+				buildID:      cave.BuildID,
+				credentials:  access.Credentials,
+				platform:     interactionPlatform(runtime),
+				architecture: interactionArchitecture(runtime),
+				persistSummary: func(summary *itchio.UserGameInteractionsSummary) {
+					rc.WithConn(func(conn *sqlite.Conn) {
+						if err := models.SaveUserGameInteractionSummary(conn, access.ProfileID, cave.GameID, summary); err != nil {
+							consumer.Warnf("Could not persist interaction summary: %+v", err)
+						}
+					})
+				},
+			}
 
-			var session *itchio.UserGameSession
+			go func() {
+				defer close(sessionWatcherDone)
+				defer horror.RecoverAndLog(consumer)
+				tracker.run(sessionCtx, sessionStartedChan, sessionEndedChan)
+			}()
 
-			createSession := func() (retErr error) {
-				defer horror.RecoverInto(&retErr)
-
-				res, err := client.CreateUserGameSession(rc.Ctx, itchio.CreateUserGameSessionParams{
-					GameID:       cave.GameID,
-					UploadID:     cave.UploadID,
-					BuildID:      cave.BuildID,
-					Credentials:  access.Credentials,
-					Platform:     interactionPlatform(runtime),
-					Architecture: interactionArchitecture(runtime),
-
-					SecondsRun: 0,
-					LastRunAt:  &lastRunAt,
+			sessionStarted = func() {
+				startSessionOnce.Do(func() {
+					startedAt := time.Now()
+					localStartedAt.Store(&startedAt)
+					sessionStartedChan <- startedAt
 				})
-				if err != nil {
-					return errors.WithStack(err)
-				}
-				session = res.UserGameSession
-
-				cave.UpdateInteractions(res.Summary)
-				rc.WithConn(cave.Save)
-
-				return
 			}
-
-			updateSession := func() (retErr error) {
-				defer horror.RecoverInto(&retErr)
-
-				lastRunAt = time.Now().UTC()
-				secondsRun = int64(lastRunAt.Sub(sessionStartedAt).Seconds())
-				res, err := client.UpdateUserGameSession(rc.Ctx, itchio.UpdateUserGameSessionParams{
-					SessionID: session.ID,
-
-					SecondsRun: secondsRun,
-					LastRunAt:  &lastRunAt,
-					Crashed:    crashed,
-				})
-				if err != nil {
-					return errors.WithStack(err)
-				}
-				session = res.UserGameSession
-
-				cave.UpdateInteractions(res.Summary)
-				rc.WithConn(cave.Save)
-
-				return
-			}
-
-			// At game launch, create a session
-			err := createSession()
-			if err != nil {
-				consumer.Warnf("Initial session creation: %+v", err)
-				return
-			}
-
-			// Then wait for session to actually start
-			select {
-			case <-sessionCtx.Done():
-				consumer.Debugf("Launch cancelled while waiting for session to start, bailing out")
-				return
-			case <-sessionStartedChan:
-				sessionStartedAt = time.Now().UTC()
-				lastRunAt = time.Now().UTC()
-			}
-
-		regularUpdates:
-			for {
-				select {
-				case <-sessionCtx.Done():
-					consumer.Debugf("Launch cancelled while updating session regularly, bailing out")
-					return
-				case <-time.After(1 * time.Minute):
-					err := updateSession()
-					if err != nil {
-						consumer.Warnf("Regular session update: %+v", err)
-					}
-				case <-sessionEndedChan:
-					consumer.Debugf("Session ended normally!")
-					break regularUpdates
-				}
-			}
-
-			// Then, do a final session update for accurate stats
-			err = updateSession()
-			if err != nil {
-				consumer.Warnf("Final session update: %+v", err)
-				return
-			}
-
-			consumer.Debugf("Entire session committed successfully!")
 		}
-
-		go sessionWatcher()
 
 		launcherParams := LauncherParams{
 			RequestContext: rc,
@@ -295,31 +236,42 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 
 			PrereqsDir:    params.PrereqsDir,
 			ForcePrereqs:  params.ForcePrereqs,
-			Access:        access,
+			Access:        access.OnlyAPIKey(),
 			InstallFolder: installFolder,
 			Host:          target.Host,
 
-			SessionStarted: func() {
-				startSessionOnce.Do(func() {
-					close(sessionStartedChan)
-				})
-			},
+			SessionStarted: sessionStarted,
 		}
 
 		err = launcher.Do(launcherParams)
-		close(sessionEndedChan)
-		if err != nil {
-			crashed = true
-			return err
+		launchEndedAt := time.Now()
+
+		if tracksSession {
+			sessionEndedChan <- sessionEnd{at: launchEndedAt, crashed: err != nil}
+
+			// go-itchio's retry backoffs are not context-aware, so this is a soft bound.
+			consumer.Debugf("Waiting on session watcher...")
+			select {
+			case <-sessionWatcherDone:
+				consumer.Debugf("Session watcher completed")
+			case <-time.After(finalSessionUpdateTimeout + sessionWatcherJoinGrace):
+				consumer.Warnf("Timed out waiting on session watcher")
+			}
+			sessionCancel()
+
+			// Reload because the session watcher may have updated the cave.
+			if startedAt := localStartedAt.Load(); startedAt != nil {
+				rc.WithConn(func(conn *sqlite.Conn) {
+					if fresh := models.CaveByID(conn, cave.ID); fresh != nil {
+						fresh.RecordLocalPlayTime(launchEndedAt.Sub(*startedAt), launchEndedAt)
+						fresh.Save(conn)
+					}
+				})
+			}
 		}
 
-		consumer.Debugf("Waiting on session watcher...")
-		sessionCancel()
-		select {
-		case <-sessionWatcherDone:
-			consumer.Debugf("Session watcher completed")
-		case <-time.After(5 * time.Second):
-			consumer.Warnf("Timed out waiting on session watcher")
+		if err != nil {
+			return err
 		}
 
 		res = &butlerd.LaunchResult{}
@@ -379,8 +331,15 @@ func interactionPlatform(runtime ox.Runtime) itchio.SessionPlatform {
 }
 
 func interactionArchitecture(runtime ox.Runtime) itchio.SessionArchitecture {
-	if runtime.Is64 {
+	switch runtime.Arch() {
+	case "amd64":
 		return itchio.SessionArchitectureAmd64
+	case "arm64":
+		return itchio.SessionArchitectureArm64
+	case "386":
+		return itchio.SessionArchitecture386
+	case "arm":
+		return itchio.SessionArchitectureArm
 	}
-	return itchio.SessionArchitecture386
+	return itchio.SessionArchitecture("")
 }

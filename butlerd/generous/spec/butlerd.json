@@ -379,7 +379,7 @@
       "method": "Search.Games",
       "doc": "Searches for games.",
       "caller": "client",
-      "deprecated": "Use Search.Local instead. It searches the same locally-cached games, and also returns the profile's owned bundles and collections.",
+      "deprecated": "Use Search.Local instead. It scopes games to the profile's library, and also returns the profile's owned bundles and collections.",
       "params": {
         "fields": [
           {
@@ -435,13 +435,13 @@
     },
     {
       "method": "Search.Local",
-      "doc": "Searches butler's local database for games, bundles, and collections.\nDoes not perform any API requests.\n\nGames are searched across everything locally cached. Bundles and\ncollections are scoped to the given profile: only bundles the profile\nowns and collections in the profile's collection list are returned.",
+      "doc": "Searches butler's local database for games, bundles, and collections.\nDoes not perform any API requests.\n\nResults are scoped to the given profile: games in the profile's library\n(owned, in an owned bundle, in one of their collections, on their\ndashboard, or installed), bundles the profile owns, and collections in\nthe profile's collection list.",
       "caller": "client",
       "params": {
         "fields": [
           {
             "name": "profileId",
-            "doc": "Profile whose owned bundles and collections are searched",
+            "doc": "Profile whose library, bundles, and collections are searched",
             "type": "number"
           },
           {
@@ -455,7 +455,7 @@
         "fields": [
           {
             "name": "games",
-            "doc": "Locally-cached games matching the query",
+            "doc": "Games in the profile's library matching the query",
             "type": "Game[]"
           },
           {
@@ -1386,7 +1386,14 @@
       "doc": "",
       "caller": "client",
       "params": {
-        "fields": null
+        "fields": [
+          {
+            "name": "profileId",
+            "doc": "When set, each cave summary carries this profile's interaction summary.",
+            "type": "number",
+            "optional": true
+          }
+        ]
       },
       "result": {
         "fields": [
@@ -1449,6 +1456,12 @@
             "doc": "Used for pagination, if specified",
             "type": "Cursor",
             "optional": true
+          },
+          {
+            "name": "profileId",
+            "doc": "When set, play-time sorting and filtering use this profile's account\ninstead of the unscoped cave columns, and each cave carries its\ninteraction summary.",
+            "type": "number",
+            "optional": true
           }
         ]
       },
@@ -1478,6 +1491,12 @@
             "name": "caveId",
             "doc": "",
             "type": "string"
+          },
+          {
+            "name": "profileId",
+            "doc": "When set, the cave carries this profile's interaction summary.",
+            "type": "number",
+            "optional": true
           }
         ]
       },
@@ -1487,6 +1506,47 @@
             "name": "cave",
             "doc": "Cave info, null if there is no cave with the given ID",
             "type": "Cave",
+            "optional": true
+          }
+        ]
+      }
+    },
+    {
+      "method": "Fetch.GameInteraction",
+      "doc": "Fetch the play time summary for a game, as seen by a profile's account.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "profileId",
+            "doc": "Profile whose account's interaction to fetch",
+            "type": "number"
+          },
+          {
+            "name": "gameId",
+            "doc": "Game to fetch the interaction for",
+            "type": "number"
+          },
+          {
+            "name": "fresh",
+            "doc": "When true, refresh from the itch.io API before returning",
+            "type": "boolean",
+            "optional": true
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "interaction",
+            "doc": "The cached interaction, omitted if none has been synced yet",
+            "type": "UserGameInteraction",
+            "optional": true
+          },
+          {
+            "name": "stale",
+            "doc": "True when no interaction is cached locally",
+            "type": "boolean",
             "optional": true
           }
         ]
@@ -1528,6 +1588,56 @@
             "name": "uploads",
             "doc": "A list of uploads that were found to be compatible.",
             "type": "Upload[]"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Install.Adopt",
+      "doc": "Registers an existing, ready-to-run folder as an installed item without\ndownloading or copying its contents. Adoption transfers management of the\nentire folder to butler: uninstalling the resulting cave deletes the folder\nand all of its contents.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "gameId",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "uploadId",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "buildId",
+            "doc": "Exact build represented by the folder, including a historical build.\nWhen omitted for a wharf upload, the upload's latest advertised build is\nused.",
+            "type": "number",
+            "optional": true
+          },
+          {
+            "name": "installLocationId",
+            "doc": "",
+            "type": "string"
+          },
+          {
+            "name": "installFolderName",
+            "doc": "A single folder name directly beneath the install location.",
+            "type": "string"
+          },
+          {
+            "name": "profileId",
+            "doc": "Profile to use when resolving access to the game. When zero, falls back\nto any suitable profile.",
+            "type": "number",
+            "optional": true
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "cave",
+            "doc": "",
+            "type": "Cave"
           }
         ]
       }
@@ -2415,6 +2525,12 @@
             "name": "target",
             "doc": "Launch target to use, skipping the target picker. Matched against\nmanifest action names first, then against target paths (relative to\nthe install folder); the first match in host preference order wins.\nTakes precedence over the launchTarget cave setting. If it matches\nno target, the launch fails with CodeLaunchTargetNotFound.",
             "type": "string",
+            "optional": true
+          },
+          {
+            "name": "profileId",
+            "doc": "Profile whose account receives gameplay-session updates. When zero,\nButler resolves any suitable profile (legacy behavior).",
+            "type": "number",
             "optional": true
           }
         ]
@@ -3672,7 +3788,7 @@
       "fields": [
         {
           "name": "games",
-          "doc": "Locally-cached games matching the query",
+          "doc": "Games in the profile's library matching the query",
           "type": "Game[]"
         },
         {
@@ -4283,6 +4399,24 @@
           "name": "installedSize",
           "doc": "",
           "type": "number"
+        },
+        {
+          "name": "localSecondsRun",
+          "doc": "Play time observed on this device for this install, regardless of\nwhether gameplay-session sync succeeded. Not attributable to an\naccount and never summed with server-confirmed totals.",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "localLastRunAt",
+          "doc": "Last time a game was observed running on this device for this install",
+          "type": "RFCDate",
+          "optional": true
+        },
+        {
+          "name": "interaction",
+          "doc": "Profile-scoped play time, omitted when nothing has been synced yet.",
+          "type": "UserGameInteraction",
+          "optional": true
         }
       ]
     },
@@ -4320,6 +4454,12 @@
           "name": "installInfo",
           "doc": "Information about where the cave is installed, how much space it takes up etc.",
           "type": "CaveInstallInfo"
+        },
+        {
+          "name": "interaction",
+          "doc": "Profile-scoped play time, omitted when nothing has been synced yet.",
+          "type": "UserGameInteraction",
+          "optional": true
         }
       ]
     },
@@ -4343,6 +4483,18 @@
           "name": "secondsRun",
           "doc": "",
           "type": "number"
+        },
+        {
+          "name": "localSecondsRun",
+          "doc": "Play time observed on this device for this install, regardless of\nwhether gameplay-session sync succeeded. Not attributable to an\naccount and never summed with server-confirmed totals.",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "localLastRunAt",
+          "doc": "Last time a game was observed running on this device for this install",
+          "type": "RFCDate",
+          "optional": true
         }
       ]
     },
@@ -4478,6 +4630,12 @@
           "doc": "",
           "type": "string",
           "optional": true
+        },
+        {
+          "name": "neverPlayed",
+          "doc": "When true, only return caves that have never been played",
+          "type": "boolean",
+          "optional": true
         }
       ]
     },
@@ -4511,6 +4669,57 @@
       ]
     },
     {
+      "name": "UserGameInteraction",
+      "doc": "Play time and last run info for a game, as seen by one itch.io account.\nCached from the itch.io session API; the same for every cave of the game.",
+      "fields": [
+        {
+          "name": "userId",
+          "doc": "itch.io user the summary belongs to",
+          "type": "number"
+        },
+        {
+          "name": "gameId",
+          "doc": "Game the summary is for",
+          "type": "number"
+        },
+        {
+          "name": "secondsRun",
+          "doc": "Total play time in seconds, as confirmed by the server",
+          "type": "number"
+        },
+        {
+          "name": "lastRunAt",
+          "doc": "Last time the user ran the game, null if never",
+          "type": "RFCDate",
+          "optional": true
+        },
+        {
+          "name": "syncedAt",
+          "doc": "When butler last received this summary from the server",
+          "type": "RFCDate",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "FetchGameInteractionResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "interaction",
+          "doc": "The cached interaction, omitted if none has been synced yet",
+          "type": "UserGameInteraction",
+          "optional": true
+        },
+        {
+          "name": "stale",
+          "doc": "True when no interaction is cached locally",
+          "type": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
       "name": "FetchExpireAllResult",
       "doc": "",
       "fields": null
@@ -4523,6 +4732,17 @@
           "name": "uploads",
           "doc": "A list of uploads that were found to be compatible.",
           "type": "Upload[]"
+        }
+      ]
+    },
+    {
+      "name": "InstallAdoptResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "cave",
+          "doc": "",
+          "type": "Cave"
         }
       ]
     },
@@ -7131,6 +7351,11 @@
           "name": "SandboxNotAvailable",
           "doc": "The selected sandbox is not available on this system",
           "value": 19000
+        },
+        {
+          "name": "NoSuchProfile",
+          "doc": "The profile explicitly requested for an operation does not exist",
+          "value": 20000
         }
       ]
     },

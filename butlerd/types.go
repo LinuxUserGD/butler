@@ -397,7 +397,7 @@ type ProfileDataGetResult struct {
 
 // Searches for games.
 //
-// @deprecated Use Search.Local instead. It searches the same locally-cached games, and also returns the profile's owned bundles and collections.
+// @deprecated Use Search.Local instead. It scopes games to the profile's library, and also returns the profile's owned bundles and collections.
 //
 // @name Search.Games
 // @category Search
@@ -446,15 +446,16 @@ type SearchUsersResult struct {
 // Searches butler's local database for games, bundles, and collections.
 // Does not perform any API requests.
 //
-// Games are searched across everything locally cached. Bundles and
-// collections are scoped to the given profile: only bundles the profile
-// owns and collections in the profile's collection list are returned.
+// Results are scoped to the given profile: games in the profile's library
+// (owned, in an owned bundle, in one of their collections, on their
+// dashboard, or installed), bundles the profile owns, and collections in
+// the profile's collection list.
 //
 // @name Search.Local
 // @category Search
 // @caller client
 type SearchLocalParams struct {
-	// Profile whose owned bundles and collections are searched
+	// Profile whose library, bundles, and collections are searched
 	ProfileID int64 `json:"profileId"`
 
 	Query string `json:"query"`
@@ -468,7 +469,7 @@ func (p SearchLocalParams) Validate() error {
 }
 
 type SearchLocalResult struct {
-	// Locally-cached games matching the query
+	// Games in the profile's library matching the query
 	Games []*itchio.Game `json:"games"`
 
 	// Bundles owned by the profile matching the query
@@ -1578,7 +1579,11 @@ func (r *FetchProfileBundleOwnershipsResult) SetStale(stale bool) {
 // @name Fetch.Commons
 // @category Fetch
 // @caller client
-type FetchCommonsParams struct{}
+type FetchCommonsParams struct {
+	// When set, each cave summary carries this profile's interaction summary.
+	// @optional
+	ProfileID int64 `json:"profileId,omitempty"`
+}
 
 func (p FetchCommonsParams) Validate() error {
 	return nil
@@ -1612,6 +1617,19 @@ type CaveSummary struct {
 	LastTouchedAt *time.Time `json:"lastTouchedAt,omitempty"`
 	SecondsRun    int64      `json:"secondsRun"`
 	InstalledSize int64      `json:"installedSize"`
+
+	// Play time observed on this device for this install, regardless of
+	// whether gameplay-session sync succeeded. Not attributable to an
+	// account and never summed with server-confirmed totals.
+	// @optional
+	LocalSecondsRun int64 `json:"localSecondsRun,omitempty"`
+	// Last time a game was observed running on this device for this install
+	// @optional
+	LocalLastRunAt *time.Time `json:"localLastRunAt,omitempty"`
+
+	// Profile-scoped play time, omitted when nothing has been synced yet.
+	// @optional
+	Interaction *UserGameInteraction `json:"interaction,omitempty"`
 }
 
 // A Cave corresponds to an "installed item" for a game.
@@ -1635,6 +1653,10 @@ type Cave struct {
 	Stats *CaveStats `json:"stats"`
 	// Information about where the cave is installed, how much space it takes up etc.
 	InstallInfo *CaveInstallInfo `json:"installInfo"`
+
+	// Profile-scoped play time, omitted when nothing has been synced yet.
+	// @optional
+	Interaction *UserGameInteraction `json:"interaction,omitempty"`
 }
 
 // CaveStats contains stats about cave usage and first install
@@ -1646,6 +1668,15 @@ type CaveStats struct {
 	// @optional
 	LastTouchedAt *time.Time `json:"lastTouchedAt,omitempty"`
 	SecondsRun    int64      `json:"secondsRun"`
+
+	// Play time observed on this device for this install, regardless of
+	// whether gameplay-session sync succeeded. Not attributable to an
+	// account and never summed with server-confirmed totals.
+	// @optional
+	LocalSecondsRun int64 `json:"localSecondsRun,omitempty"`
+	// Last time a game was observed running on this device for this install
+	// @optional
+	LocalLastRunAt *time.Time `json:"localLastRunAt,omitempty"`
 }
 
 // CaveInstallInfo contains information about where the cave is installed, how
@@ -1746,6 +1777,12 @@ type FetchCavesParams struct {
 	// Used for pagination, if specified
 	// @optional
 	Cursor Cursor `json:"cursor"`
+
+	// When set, play-time sorting and filtering use this profile's account
+	// instead of the unscoped cave columns, and each cave carries its
+	// interaction summary.
+	// @optional
+	ProfileID int64 `json:"profileId,omitempty"`
 }
 
 type CavesFilters struct {
@@ -1799,6 +1836,10 @@ type FetchCavesResult struct {
 // @caller client
 type FetchCaveParams struct {
 	CaveID string `json:"caveId"`
+
+	// When set, the cave carries this profile's interaction summary.
+	// @optional
+	ProfileID int64 `json:"profileId,omitempty"`
 }
 
 func (p FetchCaveParams) Validate() error {
@@ -1811,6 +1852,57 @@ type FetchCaveResult struct {
 	// Cave info, null if there is no cave with the given ID
 	// @optional
 	Cave *Cave `json:"cave,omitempty"`
+}
+
+// Play time and last run info for a game, as seen by one itch.io account.
+// Cached from the itch.io session API; the same for every cave of the game.
+type UserGameInteraction struct {
+	// itch.io user the summary belongs to
+	UserID int64 `json:"userId"`
+	// Game the summary is for
+	GameID int64 `json:"gameId"`
+	// Total play time in seconds, as confirmed by the server
+	SecondsRun int64 `json:"secondsRun"`
+	// Last time the user ran the game, null if never
+	// @optional
+	LastRunAt *time.Time `json:"lastRunAt,omitempty"`
+	// When butler last received this summary from the server
+	// @optional
+	SyncedAt *time.Time `json:"syncedAt,omitempty"`
+}
+
+// Fetch the play time summary for a game, as seen by a profile's account.
+//
+// @name Fetch.GameInteraction
+// @category Fetch
+// @caller client
+type FetchGameInteractionParams struct {
+	// Profile whose account's interaction to fetch
+	ProfileID int64 `json:"profileId"`
+
+	// Game to fetch the interaction for
+	GameID int64 `json:"gameId"`
+
+	// When true, refresh from the itch.io API before returning
+	// @optional
+	Fresh bool `json:"fresh,omitempty"`
+}
+
+func (p FetchGameInteractionParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ProfileID, validation.Required),
+		validation.Field(&p.GameID, validation.Required),
+	)
+}
+
+type FetchGameInteractionResult struct {
+	// The cached interaction, omitted if none has been synced yet
+	// @optional
+	Interaction *UserGameInteraction `json:"interaction,omitempty"`
+
+	// True when no interaction is cached locally
+	// @optional
+	Stale bool `json:"stale,omitempty"`
 }
 
 // Mark all local data as stale.
@@ -1860,6 +1952,47 @@ type GameFindUploadsResult struct {
 //----------------------------------------------------------------------
 // Install
 //----------------------------------------------------------------------
+
+// Registers an existing, ready-to-run folder as an installed item without
+// downloading or copying its contents. Adoption transfers management of the
+// entire folder to butler: uninstalling the resulting cave deletes the folder
+// and all of its contents.
+//
+// @name Install.Adopt
+// @category Install
+// @caller client
+type InstallAdoptParams struct {
+	GameID   int64 `json:"gameId"`
+	UploadID int64 `json:"uploadId"`
+
+	// Exact build represented by the folder, including a historical build.
+	// When omitted for a wharf upload, the upload's latest advertised build is
+	// used.
+	// @optional
+	BuildID int64 `json:"buildId,omitempty"`
+
+	InstallLocationID string `json:"installLocationId"`
+	// A single folder name directly beneath the install location.
+	InstallFolderName string `json:"installFolderName"`
+
+	// Profile to use when resolving access to the game. When zero, falls back
+	// to any suitable profile.
+	// @optional
+	ProfileID int64 `json:"profileId,omitempty"`
+}
+
+func (p InstallAdoptParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.GameID, validation.Required),
+		validation.Field(&p.UploadID, validation.Required),
+		validation.Field(&p.InstallLocationID, validation.Required),
+		validation.Field(&p.InstallFolderName, validation.Required),
+	)
+}
+
+type InstallAdoptResult struct {
+	Cave *Cave `json:"cave"`
+}
 
 // Queues an install operation to be later performed
 // via @@InstallPerformParams.
@@ -2917,6 +3050,11 @@ type LaunchParams struct {
 	// no target, the launch fails with CodeLaunchTargetNotFound.
 	// @optional
 	Target string `json:"target,omitempty"`
+
+	// Profile whose account receives gameplay-session updates. When zero,
+	// Butler resolves any suitable profile (legacy behavior).
+	// @optional
+	ProfileID int64 `json:"profileId,omitempty"`
 }
 
 type SandboxType string
@@ -3431,6 +3569,9 @@ const (
 
 	// The selected sandbox is not available on this system
 	CodeSandboxNotAvailable Code = 19000
+
+	// The profile explicitly requested for an operation does not exist
+	CodeNoSuchProfile Code = 20000
 )
 
 // Publish

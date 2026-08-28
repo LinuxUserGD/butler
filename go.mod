@@ -18,25 +18,25 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/homelight/json v1.18.5
 	github.com/itchio/arkive v0.0.0-20260428180635-32e8e9c72151
-	github.com/itchio/boar v0.0.0-20260417011146-418a6ee74f35
+	github.com/itchio/boar v0.0.0-20260819185915-4c70884ec9e0
 	github.com/itchio/dash v0.0.0-20260716013811-2f199733a0e5
 	github.com/itchio/elefant v0.0.0-20260515053942-17c52347bcf4
-	github.com/itchio/go-itchio v0.0.0-20260710194225-a8581d36bf19
+	github.com/itchio/go-itchio v0.0.0-20260722142243-6e0c1ede75c4
 	github.com/itchio/hades v0.0.0-20260711210423-80ab837c55cd
 	github.com/itchio/headway v0.0.0-20251229214354-da882c8b5dd4
 	github.com/itchio/httpkit v0.0.0-20260213231528-25109ada88c9
-	github.com/itchio/hush v0.0.0-20260710191509-8882c242cb2b
+	github.com/itchio/hush v0.0.0-20260819190739-65cc230ec124
 	github.com/itchio/intact v0.0.0-20200301161822-f8c4a3336c2a
 	github.com/itchio/lake v0.0.0-20260609175358-7830e8bc546a
-	github.com/itchio/mitch v0.0.0-20200305160145-f3a01c4897c9
+	github.com/itchio/mitch v0.0.0-20260722173825-17efffd7d69b
 	github.com/itchio/ox v0.0.0-20260212201121-1e6be0bfd382
 	github.com/itchio/pelican v0.0.0-20260515051627-03ecc612cf1c
-	github.com/itchio/savior v0.0.0-20260128212141-556ab9757054
+	github.com/itchio/savior v0.0.0-20260819185719-dca4d72ed7e2
 	github.com/itchio/screw v0.0.0-20260221011136-e674b460b040
 	github.com/itchio/sevenzip-go v0.0.0-20260201233743-2dbe441fd43c
 	github.com/itchio/smaug v0.0.0-20260713192329-3859079146ba
 	github.com/itchio/spellbook v0.0.0-20200301161431-a4bdbea6b725
-	github.com/itchio/wharf v0.0.0-20260314032032-5343a90f618c
+	github.com/itchio/wharf v0.0.0-20260509025649-e95738701284
 	github.com/itchio/wizardry v0.0.0-20200301161332-e8c8c4a5a488
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 	github.com/mitchellh/mapstructure v1.5.0
@@ -62,6 +62,7 @@ require (
 	github.com/clipperhouse/displaywidth v0.10.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.6.0 // indirect
 	github.com/detailyang/go-fallocate v0.0.0-20180908115635-432fa640bd2e // indirect
+	github.com/felixge/httpsnoop v1.1.0 // indirect
 	github.com/getlantern/context v0.0.0-20220418194847-3d5e7a086201 // indirect
 	github.com/getlantern/errors v1.0.4 // indirect
 	github.com/getlantern/golog v0.0.0-20230503153817-8e72de7e0a65 // indirect
@@ -71,13 +72,13 @@ require (
 	github.com/getlantern/mtime v0.0.0-20200417132445-23682092d1f7 // indirect
 	github.com/getlantern/netx v0.0.0-20251021221514-279deb2cfd40 // indirect
 	github.com/getlantern/ops v0.0.0-20231025133620-f368ab734534 // indirect
-	github.com/go-logr/logr v1.4.3 // indirect
+	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-stack/stack v1.8.1 // indirect
 	github.com/gogs/chardet v0.0.0-20211120154057-b7413eaefb8f // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/gorilla/handlers v1.4.2 // indirect
-	github.com/gorilla/mux v1.7.4 // indirect
+	github.com/gorilla/handlers v1.5.2 // indirect
+	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
 	github.com/itchio/dmcunrar-go v0.0.0-20260417004436-431599c00729 // indirect
 	github.com/itchio/dskompress v0.0.0-20190702113811-5e6f499be697 // indirect
@@ -87,7 +88,7 @@ require (
 	github.com/itchio/randsource v0.0.0-20260216215536-1b48147d46e5 // indirect
 	github.com/jgallagher/gosaca v0.0.0-20130226042358-754749770f08 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/klauspost/compress v1.18.3 // indirect
+	github.com/klauspost/compress v1.19.1 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
@@ -99,11 +100,11 @@ require (
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/xhit/go-str2duration/v2 v2.1.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
-	go.opentelemetry.io/otel v1.41.0 // indirect
-	go.opentelemetry.io/otel/metric v1.41.0 // indirect
-	go.opentelemetry.io/otel/trace v1.41.0 // indirect
+	go.opentelemetry.io/otel v1.44.0 // indirect
+	go.opentelemetry.io/otel/metric v1.44.0 // indirect
+	go.opentelemetry.io/otel/trace v1.44.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.27.1 // indirect
+	go.uber.org/zap v1.28.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/net v0.57.0 // indirect
 	golang.org/x/term v0.45.0 // indirect
