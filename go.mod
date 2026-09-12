@@ -1,6 +1,6 @@
 module github.com/itchio/butler
 
-go 1.25.0
+go 1.26.0
 
 require (
 	crawshaw.io/sqlite v0.3.2
@@ -47,7 +47,7 @@ require (
 	github.com/scjalliance/comshim v0.0.0-20190308082608-cf06d2532c4e
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/stretchr/testify v1.12.1
-	golang.org/x/crypto v0.55.0
+	golang.org/x/crypto v0.56.0
 	golang.org/x/sync v0.22.0
 	golang.org/x/sys v0.47.0
 	golang.org/x/text v0.41.0
