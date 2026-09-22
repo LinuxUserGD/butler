@@ -16,7 +16,7 @@ import (
 	"github.com/itchio/fresh-steamer/session"
 	"github.com/pkg/errors"
 	"golang.org/x/term"
-	kingpin "gopkg.in/alecthomas/kingpin.v2"
+	kingpin "github.com/alecthomas/kingpin/v2"
 )
 
 // Credentials given as flags win over the environment and the file.
