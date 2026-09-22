@@ -66,7 +66,7 @@ var args = struct {
 func Register(ctx *mansion.Context) {
 	cmd := ctx.App.Command("push", "Upload a new build to itch.io. See `butler help push`.")
 	cmd.Arg("src", "Directory to upload. May also be a zip archive (slower)").Required().StringVar(&args.src)
-	cmd.Arg("target", "Where to push, for example 'leafo/x-moon:win-64'. Targets are of the form project:channel, where project is username/game or game_id.").Required().StringVar(&args.target)
+	cmd.Arg("target", "Where to push, for example 'leafo/x-moon:win-64'. Targets are of the form project:channel, where project is username/game, game_id, or a game page URL like https://leafo.itch.io/x-moon.").Required().StringVar(&args.target)
 	cmd.Flag("userversion", "A user-supplied version number that you can later query builds by").StringVar(&args.userVersion)
 	cmd.Flag("userversion-file", "A file containing a user-supplied version number that you can later query builds by").StringVar(&args.userVersionFile)
 	cmd.Flag("fix-permissions", "Detect Mac & Linux executables and adjust their permissions automatically").Default("true").BoolVar(&args.fixPerms)
@@ -95,10 +95,11 @@ func do(ctx *mansion.Context) {
 		}
 	}
 
-	ctx.Must(Do(ctx, args.src, args.target, userVersion, args.fixPerms, args.dereference, args.ifChanged, args.autoWrap, args.autoUnzip, args.hidden))
+	ctx.Must(Do(ctx, args.src, args.target, userVersion, args.fixPerms, args.dereference, args.ifChanged, args.autoWrap, args.autoUnzip, args.hidden, nil))
 }
 
-func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion string, fixPerms bool, dereference bool, ifChanged bool, wrap bool, autoUnzip bool, hidden bool) (retErr error) {
+// metadata, when set, is stored with the build; see itchio.BuildMetadata.
+func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion string, fixPerms bool, dereference bool, ifChanged bool, wrap bool, autoUnzip bool, hidden bool, metadata itchio.BuildMetadata) (retErr error) {
 	consumer := comm.NewStateConsumer()
 
 	if autoUnzip {
@@ -147,6 +148,7 @@ func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion stri
 		case walkErr := <-walkErrs:
 			return errors.Wrap(walkErr, "walking directory to push")
 		case walkies := <-sourceContainerChan:
+			walkies.pool.Close()
 			log := func(line string) {
 				comm.Logf("%s", line)
 			}
@@ -174,6 +176,7 @@ func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion stri
 		sourceContainer = walkies.container
 		sourcePool = walkies.pool
 	}
+	defer sourcePool.Close()
 
 	showSingleFileWarningIfNecessary(sourceContainer)
 
@@ -223,13 +226,18 @@ func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion stri
 		source = fmt.Sprintf("cli/%s", buildinfo.Version)
 	}
 
+	comm.Opf("Scanning launch targets...")
+	launchAnalysis := scanBuildLaunchAnalysis(buildPath, sourceContainer, consumer)
+
 	requestCtx, cancel := ctx.DefaultCtx()
 	newBuildRes, err := client.CreateBuild(requestCtx, itchio.CreateBuildParams{
-		Target:      spec.Target,
-		Channel:     spec.Channel,
-		UserVersion: userVersion,
-		Hidden:      hidden,
-		Source:      source,
+		Target:         spec.Target,
+		Channel:        spec.Channel,
+		UserVersion:    userVersion,
+		Hidden:         hidden,
+		Source:         source,
+		Metadata:       metadata,
+		LaunchAnalysis: launchAnalysis,
 	})
 	cancel()
 	if err != nil {

@@ -1,10 +1,11 @@
 package daemon
 
 import (
-	"crawshaw.io/sqlite/sqlitex"
 	"github.com/itchio/butler/butlerd"
 	"github.com/itchio/butler/butlerd/messages"
+	"github.com/itchio/butler/database/dbpool"
 	"github.com/itchio/butler/endpoints/cleandownloads"
+	"github.com/itchio/butler/endpoints/collections"
 	"github.com/itchio/butler/endpoints/downloads"
 	"github.com/itchio/butler/endpoints/fetch"
 	"github.com/itchio/butler/endpoints/install"
@@ -22,12 +23,14 @@ import (
 
 var mainRouter *butlerd.Router
 
-func GetRouter(dbPool *sqlitex.Pool, mansionContext *mansion.Context) *butlerd.Router {
+func GetRouter(dbPool *dbpool.Pool, mansionContext *mansion.Context) *butlerd.Router {
 	if mainRouter != nil {
 		return mainRouter
 	}
 
 	mainRouter = butlerd.NewRouter(dbPool, mansionContext.NewClient, mansionContext.HTTPClient, mansionContext.HTTPTransport)
+	mainRouter.Identity = mansionContext.Identity
+	mainRouter.LowPower = args.lowPower
 
 	meta.Register(mainRouter)
 	utilities.Register(mainRouter)
@@ -42,6 +45,7 @@ func GetRouter(dbPool *sqlitex.Pool, mansionContext *mansion.Context) *butlerd.R
 	search.Register(mainRouter)
 	system.Register(mainRouter)
 	publish.Register(mainRouter)
+	collections.Register(mainRouter)
 
 	messages.EnsureAllRequests(mainRouter)
 

@@ -18,27 +18,28 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/homelight/json v1.18.5
 	github.com/itchio/arkive v0.0.0-20260428180635-32e8e9c72151
-	github.com/itchio/boar v0.0.0-20260819185915-4c70884ec9e0
-	github.com/itchio/dash v0.0.0-20260716013811-2f199733a0e5
-	github.com/itchio/elefant v0.0.0-20260515053942-17c52347bcf4
-	github.com/itchio/go-itchio v0.0.0-20260722142243-6e0c1ede75c4
-	github.com/itchio/hades v0.0.0-20260711210423-80ab837c55cd
+	github.com/itchio/boar v0.0.0-20260916011956-fec7e71978bc
+	github.com/itchio/dash v0.0.0-20260916225844-1b2a6ee0e426
+	github.com/itchio/fresh-steamer v0.0.0-20260910204833-384b262158c8
+	github.com/itchio/go-itchio v0.0.0-20260917011404-e251772b4a27
+	github.com/itchio/hades v0.0.0-20260917074053-93599d0d190a
 	github.com/itchio/headway v0.0.0-20251229214354-da882c8b5dd4
 	github.com/itchio/httpkit v0.0.0-20260213231528-25109ada88c9
-	github.com/itchio/hush v0.0.0-20260819190739-65cc230ec124
-	github.com/itchio/intact v0.0.0-20200301161822-f8c4a3336c2a
-	github.com/itchio/lake v0.0.0-20260609175358-7830e8bc546a
+	github.com/itchio/hush v0.0.0-20260914200638-506e8e2c4b9c
+	github.com/itchio/intact v0.0.0-20260226205519-5e171e94117d
+	github.com/itchio/lake v0.0.0-20260916234156-ee7b9927c490
 	github.com/itchio/mitch v0.0.0-20260722173825-17efffd7d69b
 	github.com/itchio/ox v0.0.0-20260212201121-1e6be0bfd382
-	github.com/itchio/pelican v0.0.0-20260515051627-03ecc612cf1c
-	github.com/itchio/savior v0.0.0-20260819185719-dca4d72ed7e2
+	github.com/itchio/pelican v0.0.0-20260911221521-7b94d473a7a7
+	github.com/itchio/savior v0.0.0-20260914182353-072694f48327
 	github.com/itchio/screw v0.0.0-20260221011136-e674b460b040
-	github.com/itchio/sevenzip-go v0.0.0-20260201233743-2dbe441fd43c
-	github.com/itchio/smaug v0.0.0-20260713192329-3859079146ba
-	github.com/itchio/spellbook v0.0.0-20200301161431-a4bdbea6b725
+	github.com/itchio/sevenzip-go v0.0.0-20260914192131-9ff04bb5e5ce
+	github.com/itchio/smaug v0.0.0-20260921222733-a186307fa238
+	github.com/itchio/spellbook v0.0.0-20260223022740-4f847d058148
 	github.com/itchio/wharf v0.0.0-20260509025649-e95738701284
-	github.com/itchio/wizardry v0.0.0-20200301161332-e8c8c4a5a488
+	github.com/itchio/wizardry v0.0.0-20260916215147-ed4c4cf460d1
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
+	github.com/mdp/qrterminal/v3 v3.2.1
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/natefinch/npipe v0.0.0-20160621034901-c1b8fa8bdcce
 	github.com/olekukonko/tablewriter v1.1.5
@@ -50,17 +51,18 @@ require (
 	golang.org/x/crypto v0.57.0
 	golang.org/x/sync v0.23.0
 	golang.org/x/sys v0.48.0
+	golang.org/x/term v0.46.0
 	golang.org/x/text v0.42.0
 	xorm.io/builder v0.3.13
 )
 
 require (
 	github.com/alecthomas/units v0.0.0-20211218093645-b94a6e3cc137 // indirect
-	github.com/basgys/goxml2json v1.1.0 // indirect
 	github.com/certifi/gocertifi v0.0.0-20210507211836-431795d63e8d // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/clipperhouse/displaywidth v0.10.0 // indirect
 	github.com/clipperhouse/uax29/v2 v2.6.0 // indirect
+	github.com/coder/websocket v1.8.15 // indirect
 	github.com/detailyang/go-fallocate v0.0.0-20180908115635-432fa640bd2e // indirect
 	github.com/felixge/httpsnoop v1.1.0 // indirect
 	github.com/getlantern/context v0.0.0-20220418194847-3d5e7a086201 // indirect
@@ -80,7 +82,7 @@ require (
 	github.com/gorilla/handlers v1.5.2 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
-	github.com/itchio/dmcunrar-go v0.0.0-20260417004436-431599c00729 // indirect
+	github.com/itchio/dmcunrar-go v0.0.0-20260424162333-44c84bdd19dc // indirect
 	github.com/itchio/dskompress v0.0.0-20190702113811-5e6f499be697 // indirect
 	github.com/itchio/go-brotli v0.0.0-20190702114328-3f28d645a45c // indirect
 	github.com/itchio/kompress v0.0.0-20200301155538-5c2eecce9e51 // indirect
@@ -88,7 +90,7 @@ require (
 	github.com/itchio/randsource v0.0.0-20260216215536-1b48147d46e5 // indirect
 	github.com/jgallagher/gosaca v0.0.0-20130226042358-754749770f08 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/klauspost/compress v1.19.1 // indirect
+	github.com/klauspost/compress v1.20.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.19 // indirect
@@ -98,6 +100,7 @@ require (
 	github.com/olekukonko/ll v0.1.6 // indirect
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
+	github.com/ulikunitz/xz v0.5.16 // indirect
 	github.com/xhit/go-str2duration/v2 v2.1.0 // indirect
 	go.opentelemetry.io/auto/sdk v1.2.1 // indirect
 	go.opentelemetry.io/otel v1.44.0 // indirect
@@ -107,8 +110,9 @@ require (
 	go.uber.org/zap v1.28.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/net v0.58.0 // indirect
-	golang.org/x/term v0.46.0 // indirect
 	golang.org/x/time v0.15.0 // indirect
-	google.golang.org/protobuf v1.36.11 // indirect
+	google.golang.org/protobuf v1.36.12 // indirect
 	gopkg.in/natefinch/npipe.v2 v2.0.0-20160621034901-c1b8fa8bdcce // indirect
+	howett.net/plist v1.0.1 // indirect
+	rsc.io/qr v0.2.0 // indirect
 )

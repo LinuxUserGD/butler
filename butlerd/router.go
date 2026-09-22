@@ -22,8 +22,8 @@ import (
 	"github.com/itchio/wharf/werrors"
 
 	"crawshaw.io/sqlite"
-	"crawshaw.io/sqlite/sqlitex"
 	"github.com/homelight/json"
+	"github.com/itchio/butler/database/dbpool"
 
 	"github.com/pkg/errors"
 )
@@ -54,10 +54,18 @@ type Router struct {
 	Handlers             map[string]RequestHandler
 	NotificationHandlers map[string]NotificationHandler
 	CancelFuncs          *CancelFuncs
-	dbPool               *sqlitex.Pool
+	dbPool               *dbpool.Pool
 	getClient            GetClientFunc
 	httpClient           *http.Client
 	httpTransport        *http.Transport
+
+	// Path to butler's credentials file. Global state such as Steam
+	// credentials lives next to it rather than in the per-profile database.
+	Identity string
+
+	// The client asked for a small CPU and memory footprint, as on a
+	// battery-powered handheld.
+	LowPower bool
 
 	Group                *singleflight.Group
 	ShutdownChan         chan struct{}
@@ -76,7 +84,7 @@ type Router struct {
 	globalConsumer *state.Consumer
 }
 
-func NewRouter(dbPool *sqlitex.Pool, getClient GetClientFunc, httpClient *http.Client, httpTransport *http.Transport) *Router {
+func NewRouter(dbPool *dbpool.Pool, getClient GetClientFunc, httpClient *http.Client, httpTransport *http.Transport) *Router {
 	backgroundContext, backgroundCancel := context.WithCancel(context.Background())
 
 	return &Router{
@@ -248,6 +256,8 @@ func (r *Router) HandleRequest(conn jsonrpc2.Conn, req jsonrpc2.Request) (interf
 			Conn:        conn,
 			CancelFuncs: r.CancelFuncs,
 			dbPool:      r.dbPool,
+			Identity:    r.Identity,
+			LowPower:    r.LowPower,
 			Client:      r.getClient,
 
 			HTTPClient:    r.httpClient,
@@ -382,6 +392,8 @@ func (r *Router) doBackgroundTask(id BackgroundTaskID, bt BackgroundTask) {
 		Conn:        nil,
 		CancelFuncs: r.CancelFuncs,
 		dbPool:      r.dbPool,
+		Identity:    r.Identity,
+		LowPower:    r.LowPower,
 		Client:      r.getClient,
 
 		HTTPClient:    r.httpClient,
@@ -435,7 +447,9 @@ type RequestContext struct {
 	Params      *json.RawMessage
 	Conn        jsonrpc2.Conn
 	CancelFuncs *CancelFuncs
-	dbPool      *sqlitex.Pool
+	dbPool      *dbpool.Pool
+	Identity    string
+	LowPower    bool
 
 	Group    *singleflight.Group
 	Shutdown func()
@@ -564,6 +578,29 @@ func (rc *RequestContext) WithConnString(f func(conn *sqlite.Conn) string) strin
 	conn := rc.GetConn()
 	defer rc.PutConn(conn)
 	return f(conn)
+}
+
+// WithConnDetached is like WithConn, but not subject to rc.Ctx: teardown
+// bookkeeping (play time, session summaries) must still be able to write
+// after the request has been cancelled by a force close or a client
+// disconnect. Returns an error instead of panicking when the pool is busy.
+func (rc *RequestContext) WithConnDetached(f func(conn *sqlite.Conn)) error {
+	getCtx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	conn := rc.dbPool.Get(getCtx)
+	if conn == nil {
+		return errors.WithStack(CodeDatabaseBusy)
+	}
+	defer rc.dbPool.Put(conn)
+
+	// Pool.Get tied the interrupt to getCtx, which expires in seconds;
+	// rebind it to a work bound of its own so a wedged write can't hold
+	// the conn past teardown and panic dbPool.Close
+	workCtx, cancelWork := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancelWork()
+	conn.SetInterrupt(workCtx.Done())
+	f(conn)
+	return nil
 }
 
 // MakeCancelable creates a child context, installs it as rc.Ctx for this scope,

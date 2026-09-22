@@ -18,6 +18,7 @@ import (
 	"github.com/itchio/butler/butlerd/messages"
 	"github.com/itchio/butler/cmd/operate"
 	"github.com/itchio/butler/database/models"
+	"github.com/itchio/dash"
 	"github.com/itchio/hush/manifest"
 
 	"github.com/itchio/httpkit/neterr"
@@ -49,6 +50,7 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 		runtime := info.runtime
 
 		game := cave.Game
+		settings := caveSettings(rc, cave)
 
 		consumer.Infof("→ Launching %s", operate.GameToString(game))
 		consumer.Infof("   (%s) is our install folder", installFolder)
@@ -63,9 +65,14 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 			return err
 		}
 
+		var runtimes []dash.Flavor
+		for _, r := range params.Runtimes {
+			runtimes = append(runtimes, dash.Flavor(r))
+		}
 		targetRes, err := getTargets(rc, getTargetsParams{
-			info:  info,
-			hosts: hosts,
+			info:     info,
+			hosts:    hosts,
+			runtimes: runtimes,
 		})
 		if err != nil {
 			return err
@@ -79,24 +86,61 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 
 		if params.Target != "" {
 			// an explicit per-launch target is an API contract: fail rather
-			// than surprising a non-interactive caller with a picker callback
+			// than surprising a non-interactive caller with a picker callback.
+			// Matched against the unfiltered list so a disallowed strategy is
+			// reported as such rather than as "not found".
 			target = findTarget(targets, params.Target)
 			if target == nil {
 				consumer.Errorf("Requested target (%s) matched none of the (%d) targets", params.Target, len(targets))
 				return errors.WithStack(butlerd.CodeLaunchTargetNotFound)
 			}
+			if !strategyAllowed(params.AllowedStrategies, target.Strategy.Strategy) {
+				consumer.Errorf("Requested target (%s) uses strategy (%s), which the client declared it cannot serve %v",
+					params.Target, target.Strategy.Strategy, params.AllowedStrategies)
+				return errors.WithStack(butlerd.CodeLaunchStrategyNotAllowed)
+			}
 			consumer.Infof("Using requested target (%s):", params.Target)
 			consumer.Logf("%s", target.Strategy.String())
-		} else if preferred := settingsLaunchTarget(rc, cave); preferred != "" {
-			// a persisted preference is best-effort: it may go stale when the
-			// game updates, so fall back to normal selection instead of failing
-			target = findTarget(targets, preferred)
-			if target != nil {
-				consumer.Infof("Using preferred target (%s):", preferred)
-				consumer.Logf("%s", target.Strategy.String())
-			} else {
-				consumer.Warnf("Preferred target (%s) matched none of the (%d) targets, using normal selection", preferred, len(targets))
+		} else {
+			// filter before selection so a game with both servable and
+			// unservable targets launches without a needless rejection
+			allowedTargets := targets
+			if len(params.AllowedStrategies) > 0 {
+				var filtered []*butlerd.LaunchTarget
+				for _, t := range targets {
+					if strategyAllowed(params.AllowedStrategies, t.Strategy.Strategy) {
+						filtered = append(filtered, t)
+					}
+				}
+				if len(filtered) == 0 {
+					consumer.Warnf("None of the (%d) targets use a strategy the client can serve %v",
+						len(targets), params.AllowedStrategies)
+					return errors.WithStack(butlerd.CodeLaunchStrategyNotAllowed)
+				}
+				allowedTargets = filtered
 			}
+
+			if preferred := settings.LaunchTarget; preferred != "" {
+				// a preference matching nothing is stale and falls through to
+				// normal selection, but one matching a target this client
+				// can't serve is a live user choice: refuse instead of
+				// silently launching something else. Matched against the
+				// unfiltered list to tell the two apart.
+				target = findTarget(targets, preferred)
+				if target != nil && !strategyAllowed(params.AllowedStrategies, target.Strategy.Strategy) {
+					consumer.Warnf("Preferred target (%s) uses strategy (%s), which the client declared it cannot serve %v",
+						preferred, target.Strategy.Strategy, params.AllowedStrategies)
+					return errors.WithStack(butlerd.CodeLaunchStrategyNotAllowed)
+				}
+				if target != nil {
+					consumer.Infof("Using preferred target (%s):", preferred)
+					consumer.Logf("%s", target.Strategy.String())
+				} else {
+					consumer.Warnf("Preferred target (%s) matched none of the (%d) targets, using normal selection", preferred, len(allowedTargets))
+				}
+			}
+
+			targets = allowedTargets
 		}
 
 		if target != nil {
@@ -147,7 +191,15 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 
 		args = append(args, target.Action.Args...)
 		fullTargetPath := target.Strategy.FullTargetPath
-		if params.CommandTemplate != "" && target.Strategy.Strategy != butlerd.LaunchStrategyNative {
+
+		// per-game settings apply when the client leaves a knob unset, so
+		// clients that don't resolve settings themselves (headless) match
+		// the app's behavior
+		commandTemplate := params.CommandTemplate
+		if commandTemplate == "" {
+			commandTemplate = settings.CommandTemplate
+		}
+		if commandTemplate != "" && target.Strategy.Strategy != butlerd.LaunchStrategyNative {
 			consumer.Warnf("Custom command template does not apply to %s launches", target.Strategy.Strategy)
 		}
 
@@ -156,7 +208,14 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 			return errors.WithMessage(err, "While requesting API key")
 		}
 
-		sandbox := resolveSandbox(params.Sandbox, target.Action.Sandbox)
+		sandboxPref := params.Sandbox
+		if sandboxPref == nil {
+			sandboxPref = settings.Sandbox
+		}
+		if sandboxPref == nil && params.Defaults != nil {
+			sandboxPref = params.Defaults.Sandbox
+		}
+		sandbox := resolveSandbox(sandboxPref, target.Action.Sandbox)
 		if target.Action.Sandbox {
 			if sandbox {
 				consumer.Infof("Enabling sandbox because of manifest opt-in")
@@ -196,11 +255,16 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 				platform:     interactionPlatform(runtime),
 				architecture: interactionArchitecture(runtime),
 				persistSummary: func(summary *itchio.UserGameInteractionsSummary) {
-					rc.WithConn(func(conn *sqlite.Conn) {
+					// detached: the final summary lands after a force close
+					// has already cancelled rc.Ctx
+					err := rc.WithConnDetached(func(conn *sqlite.Conn) {
 						if err := models.SaveUserGameInteractionSummary(conn, access.ProfileID, cave.GameID, summary); err != nil {
 							consumer.Warnf("Could not persist interaction summary: %+v", err)
 						}
 					})
+					if err != nil {
+						consumer.Warnf("Could not persist interaction summary: %+v", err)
+					}
 				},
 			}
 
@@ -228,11 +292,11 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 			AppManifest:      targetRes.appManifest,
 			Action:           target.Action,
 			Sandbox:          sandbox,
-			SandboxOptions:   params.SandboxOptions,
+			SandboxOptions:   resolveSandboxOptions(params.SandboxOptions, settings, params.Defaults),
 			WorkingDirectory: workingDirectory,
 			Args:             args,
 			Env:              env,
-			CommandTemplate:  params.CommandTemplate,
+			CommandTemplate:  commandTemplate,
 
 			PrereqsDir:    params.PrereqsDir,
 			ForcePrereqs:  params.ForcePrereqs,
@@ -260,13 +324,18 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 			sessionCancel()
 
 			// Reload because the session watcher may have updated the cave.
+			// Detached: play time must be recorded even when rc.Ctx was
+			// cancelled by a force close.
 			if startedAt := localStartedAt.Load(); startedAt != nil {
-				rc.WithConn(func(conn *sqlite.Conn) {
+				dbErr := rc.WithConnDetached(func(conn *sqlite.Conn) {
 					if fresh := models.CaveByID(conn, cave.ID); fresh != nil {
 						fresh.RecordLocalPlayTime(launchEndedAt.Sub(*startedAt), launchEndedAt)
 						fresh.Save(conn)
 					}
 				})
+				if dbErr != nil {
+					consumer.Warnf("Could not record local play time: %+v", dbErr)
+				}
 			}
 		}
 
@@ -281,6 +350,18 @@ func Launch(rc *butlerd.RequestContext, params butlerd.LaunchParams) (*butlerd.L
 		return nil, err
 	}
 	return res, nil
+}
+
+func strategyAllowed(allowed []butlerd.LaunchStrategy, s butlerd.LaunchStrategy) bool {
+	if len(allowed) == 0 {
+		return true
+	}
+	for _, a := range allowed {
+		if a == s {
+			return true
+		}
+	}
+	return false
 }
 
 func requestAPIKeyIfNecessary(rc *butlerd.RequestContext, manifestAction *manifest.Action, game *itchio.Game, access *operate.GameAccess, env map[string]string) error {

@@ -845,6 +845,12 @@ Used by the itch.io desktop app for OAuth login flow with PKCE.</p>
 <td><p>The OAuth client ID used in the authorization request</p>
 </td>
 </tr>
+<tr>
+<td><code>deviceInfo</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Device information string</p>
+</td>
+</tr>
 </table>
 
 
@@ -894,6 +900,10 @@ Used by the itch.io desktop app for OAuth login flow with PKCE.</p>
 </tr>
 <tr>
 <td><code>clientId</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>deviceInfo</code></td>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
 </tr>
 </table>
@@ -2712,6 +2722,13 @@ games.</p>
 <td><p><span class="tag">Optional</span> If set, will force fresh data</p>
 </td>
 </tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> When set, every returned collection has <code>hasGame</code> filled in
+for this game. This always asks the API, regardless of <code>fresh</code>.</p>
+</td>
+</tr>
 </table>
 
 
@@ -2780,6 +2797,10 @@ games.</p>
 <tr>
 <td><code>fresh</code></td>
 <td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
 </tr>
 </table>
 
@@ -4087,6 +4108,714 @@ interaction summary.</p>
 
 <div id="FetchExpireAllResult__TypeHint" class="tip-content">
 <p>FetchExpireAll  <a href="#/?id=fetchexpireall-">(Go to definition)</a></p>
+
+</div>
+
+
+## Collections Category
+
+### Collections.Create (client request)
+
+
+<p>
+<p>Creates a collection owned by the profile&rsquo;s user.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Profile to create the collection as</p>
+</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Title of the collection. Defaults to &ldquo;<username>&rsquo;s Collection&rdquo; when empty.</p>
+</td>
+</tr>
+<tr>
+<td><code>private</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> Whether the collection is hidden from everyone but its editors</p>
+</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> HTML description shown on the collection page</p>
+</td>
+</tr>
+<tr>
+<td><code>layout</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#CollectionLayout__TypeHint">CollectionLayout</span></code></td>
+<td><p><span class="tag">Optional</span> How games are displayed. Defaults to &ldquo;list&rdquo; when a blurb is
+given, &ldquo;grid&rdquo; otherwise.</p>
+</td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> A game to add to the collection right away</p>
+</td>
+</tr>
+<tr>
+<td><code>blurb</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> HTML blurb for that game. Only used together with gameId.</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>collection</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#Collection__TypeHint">Collection</span></code></td>
+<td><p>The newly created collection</p>
+</td>
+</tr>
+</table>
+
+
+<div id="CollectionsCreateParams__TypeHint" class="tip-content">
+<p>Collections.Create (client request) <a href="#/?id=collectionscreate-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Creates a collection owned by the profile&rsquo;s user.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>private</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>layout</code></td>
+<td><code class="typename"><span class="type">CollectionLayout</span></code></td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>blurb</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="CollectionsCreateResult__TypeHint" class="tip-content">
+<p>CollectionsCreate  <a href="#/?id=collectionscreate-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>collection</code></td>
+<td><code class="typename"><span class="type">Collection</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Collections.Update (client request)
+
+
+<p>
+<p>Changes a collection&rsquo;s title, description, visibility, layout, or
+whether it is shown on the profile. Fields that are omitted are
+left unchanged.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Profile to edit the collection as</p>
+</td>
+</tr>
+<tr>
+<td><code>collectionId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Collection to edit</p>
+</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> New title</p>
+</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> New HTML description. An empty string clears it.</p>
+</td>
+</tr>
+<tr>
+<td><code>private</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> Whether the collection is hidden from everyone but its editors</p>
+</td>
+</tr>
+<tr>
+<td><code>layout</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#CollectionLayout__TypeHint">CollectionLayout</span></code></td>
+<td><p><span class="tag">Optional</span> How games are displayed</p>
+</td>
+</tr>
+<tr>
+<td><code>onProfile</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> Whether the collection is shown on the profile&rsquo;s user page</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>collection</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#Collection__TypeHint">Collection</span></code></td>
+<td><p>The collection after the update</p>
+</td>
+</tr>
+</table>
+
+
+<div id="CollectionsUpdateParams__TypeHint" class="tip-content">
+<p>Collections.Update (client request) <a href="#/?id=collectionsupdate-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Changes a collection&rsquo;s title, description, visibility, layout, or
+whether it is shown on the profile. Fields that are omitted are
+left unchanged.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>collectionId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>private</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>layout</code></td>
+<td><code class="typename"><span class="type">CollectionLayout</span></code></td>
+</tr>
+<tr>
+<td><code>onProfile</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="CollectionsUpdateResult__TypeHint" class="tip-content">
+<p>CollectionsUpdate  <a href="#/?id=collectionsupdate-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>collection</code></td>
+<td><code class="typename"><span class="type">Collection</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Collections.Delete (client request)
+
+
+<p>
+<p>Deletes a collection and everything in it.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Profile to delete the collection as</p>
+</td>
+</tr>
+<tr>
+<td><code>collectionId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Collection to delete</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> <em>none</em>
+</p>
+
+
+<div id="CollectionsDeleteParams__TypeHint" class="tip-content">
+<p>Collections.Delete (client request) <a href="#/?id=collectionsdelete-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Deletes a collection and everything in it.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>collectionId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="CollectionsDeleteResult__TypeHint" class="tip-content">
+<p>CollectionsDelete  <a href="#/?id=collectionsdelete-">(Go to definition)</a></p>
+
+</div>
+
+### Collections.AddGame (client request)
+
+
+<p>
+<p>Adds a game to the end of a collection. Adding a game that is
+already in the collection returns the existing entry.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Profile to edit the collection as</p>
+</td>
+</tr>
+<tr>
+<td><code>collectionId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Collection to add the game to</p>
+</td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Game to add</p>
+</td>
+</tr>
+<tr>
+<td><code>blurb</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> HTML blurb shown next to the game in &ldquo;list&rdquo; layout</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>collectionGame</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#CollectionGame__TypeHint">CollectionGame</span></code></td>
+<td><p>The game&rsquo;s entry in the collection</p>
+</td>
+</tr>
+</table>
+
+
+<div id="CollectionsAddGameParams__TypeHint" class="tip-content">
+<p>Collections.AddGame (client request) <a href="#/?id=collectionsaddgame-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Adds a game to the end of a collection. Adding a game that is
+already in the collection returns the existing entry.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>collectionId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>blurb</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="CollectionsAddGameResult__TypeHint" class="tip-content">
+<p>CollectionsAddGame  <a href="#/?id=collectionsaddgame-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>collectionGame</code></td>
+<td><code class="typename"><span class="type">CollectionGame</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Collections.RemoveGame (client request)
+
+
+<p>
+<p>Removes a game from a collection.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Profile to edit the collection as</p>
+</td>
+</tr>
+<tr>
+<td><code>collectionId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Collection to remove the game from</p>
+</td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Game to remove</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>removed</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p>False if the game was not in the collection to begin with</p>
+</td>
+</tr>
+</table>
+
+
+<div id="CollectionsRemoveGameParams__TypeHint" class="tip-content">
+<p>Collections.RemoveGame (client request) <a href="#/?id=collectionsremovegame-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Removes a game from a collection.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>collectionId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="CollectionsRemoveGameResult__TypeHint" class="tip-content">
+<p>CollectionsRemoveGame  <a href="#/?id=collectionsremovegame-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>removed</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Collections.UpdateGame (client request)
+
+
+<p>
+<p>Edits a game&rsquo;s entry in a collection.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Profile to edit the collection as</p>
+</td>
+</tr>
+<tr>
+<td><code>collectionId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Collection the game is in</p>
+</td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Game whose entry to edit</p>
+</td>
+</tr>
+<tr>
+<td><code>blurb</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> New HTML blurb. An empty string clears it, omitting it leaves
+it unchanged.</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>collectionGame</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#CollectionGame__TypeHint">CollectionGame</span></code></td>
+<td><p>The game&rsquo;s entry in the collection after the update</p>
+</td>
+</tr>
+</table>
+
+
+<div id="CollectionsUpdateGameParams__TypeHint" class="tip-content">
+<p>Collections.UpdateGame (client request) <a href="#/?id=collectionsupdategame-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Edits a game&rsquo;s entry in a collection.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>collectionId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>gameId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>blurb</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="CollectionsUpdateGameResult__TypeHint" class="tip-content">
+<p>CollectionsUpdateGame  <a href="#/?id=collectionsupdategame-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>collectionGame</code></td>
+<td><code class="typename"><span class="type">CollectionGame</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Collections.OrderGames (client request)
+
+
+<p>
+<p>Sets the order of the games in a collection, optionally removing
+some games at the same time.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Profile to edit the collection as</p>
+</td>
+</tr>
+<tr>
+<td><code>collectionId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Collection to reorder</p>
+</td>
+</tr>
+<tr>
+<td><code>gameIds</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span>[]</code></td>
+<td><p>Game IDs in the desired order, the first one is shown first.
+Up to 500 games.</p>
+</td>
+</tr>
+<tr>
+<td><code>removeGameIds</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Games to remove from the collection before ordering</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> <em>none</em>
+</p>
+
+
+<div id="CollectionsOrderGamesParams__TypeHint" class="tip-content">
+<p>Collections.OrderGames (client request) <a href="#/?id=collectionsordergames-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Sets the order of the games in a collection, optionally removing
+some games at the same time.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>collectionId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>gameIds</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span>[]</code></td>
+</tr>
+<tr>
+<td><code>removeGameIds</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span>[]</code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="CollectionsOrderGamesResult__TypeHint" class="tip-content">
+<p>CollectionsOrderGames  <a href="#/?id=collectionsordergames-">(Go to definition)</a></p>
 
 </div>
 
@@ -7078,6 +7807,27 @@ transient.</p>
 <td><p>The ID of the cave to list launch targets for</p>
 </td>
 </tr>
+<tr>
+<td><code>runtimes</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Payload flavors the client can run with a runtime of its own, in
+dash&rsquo;s vocabulary: &ldquo;love&rdquo;, &ldquo;godot-pck&rdquo;, &ldquo;rom:nes&rdquo;, &ldquo;rom:gba&rdquo;, or
+&ldquo;rom&rdquo; for every console. Matching payloads are returned with the
+<code class="typename"><span class="type builtin-type">LaunchStrategyRuntime</span></code> strategy, for the client to launch itself;
+butler never runs them. When empty, payloads are only listed when
+nothing else is launchable, as before.</p>
+</td>
+</tr>
+<tr>
+<td><code>deepProbe</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> Fill the dependency record of native candidates: imports, glibc
+version, SDL version and how it is linked, display libraries
+(see LinuxInfo and WindowsInfo). Parses section tables of every
+native executable in the install folder, so it costs more than
+the default sniff; leave it off unless the client acts on it.</p>
+</td>
+</tr>
 </table>
 
 
@@ -7118,6 +7868,14 @@ transient.</p>
 <tr>
 <td><code>caveId</code></td>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>runtimes</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>deepProbe</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
 </tr>
 </table>
 
@@ -7160,7 +7918,10 @@ transient.</p>
 <tr>
 <td><code>prereqsDir</code></td>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
-<td><p>The directory to use to store installer files for prerequisites</p>
+<td><p><span class="tag">Optional</span> The directory to use to store installer files for prerequisites.
+When empty, launching a title that turns out to require
+prerequisites fails (via the PrereqsFailed flow); most titles
+require none.</p>
 </td>
 </tr>
 <tr>
@@ -7172,14 +7933,17 @@ transient.</p>
 <tr>
 <td><code>sandbox</code></td>
 <td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
-<td><p><span class="tag">Optional</span> Sandbox preference for this launch. When omitted, the manifest may enable
-sandboxing. An explicit value overrides the manifest preference.</p>
+<td><p><span class="tag">Optional</span> Sandbox preference for this launch. When omitted, the cave&rsquo;s sandbox
+setting applies, then the manifest opt-in. An explicit value overrides
+both.</p>
 </td>
 </tr>
 <tr>
 <td><code>sandboxOptions</code></td>
 <td><code class="typename"><span class="type" data-tip-selector="#SandboxOptions__TypeHint">SandboxOptions</span></code></td>
-<td><p><span class="tag">Optional</span> Sandbox configuration options. Only applied when sandbox is enabled.</p>
+<td><p><span class="tag">Optional</span> Sandbox configuration options. Only applied when sandbox is enabled.
+When omitted, the cave&rsquo;s persisted sandbox overrides merge per knob
+over the client defaults; an explicit value replaces both as a whole.</p>
 </td>
 </tr>
 <tr>
@@ -7187,7 +7951,8 @@ sandboxing. An explicit value overrides the manifest preference.</p>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
 <td><p><span class="tag">Optional</span> Command template applied to native launches. Use %command% as a standalone
 token to place the resolved game command. Without it, tokens are appended
-as arguments to the resolved command.</p>
+as arguments to the resolved command. When omitted, the cave&rsquo;s
+commandTemplate setting applies.</p>
 </td>
 </tr>
 <tr>
@@ -7205,6 +7970,41 @@ no target, the launch fails with CodeLaunchTargetNotFound.</p>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
 <td><p><span class="tag">Optional</span> Profile whose account receives gameplay-session updates. When zero,
 Butler resolves any suitable profile (legacy behavior).</p>
+</td>
+</tr>
+<tr>
+<td><code>allowedStrategies</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#LaunchStrategy__TypeHint">LaunchStrategy</span>[]</code></td>
+<td><p><span class="tag">Optional</span> When non-empty, declares the launch strategies this client can
+serve. Targets using other strategies are excluded from selection;
+if none remain, or an explicit target or the cave&rsquo;s saved launch
+target names an excluded one, the launch fails with
+CodeLaunchStrategyNotAllowed before any launcher or session side
+effects. Checked under the install folder lock, so it is
+not subject to the Launch.GetTargets race. Target discovery may still
+refresh metadata over the network before this check.</p>
+</td>
+</tr>
+<tr>
+<td><code>runtimes</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Payload flavors the client runs with a runtime of its own, as for
+<code class="typename"><span class="type" data-tip-selector="#LaunchGetTargetsParams__TypeHint">Launch.GetTargets</span></code>. Matching payloads become targets with the
+<code class="typename"><span class="type builtin-type">LaunchStrategyRuntime</span></code> strategy, which are launched by asking the
+client (<code class="typename"><span class="type" data-tip-selector="#RuntimeLaunchParams__TypeHint">RuntimeLaunch</span></code>). Pass the same list that produced the
+target being launched, or the target will not be found.</p>
+</td>
+</tr>
+<tr>
+<td><code>defaults</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#LaunchDefaults__TypeHint">LaunchDefaults</span></code></td>
+<td><p><span class="tag">Optional</span> Client-supplied defaults for knobs that both the explicit params and
+the cave&rsquo;s settings leave unset, typically sourced from a frontend&rsquo;s
+global preferences. Resolution order: explicit params, then cave
+settings, then these defaults, then the manifest (for the sandbox
+opt-in). Sandbox options resolve per knob between settings and
+defaults, but an explicit sandboxOptions param replaces both as a
+whole.</p>
 </td>
 </tr>
 </table>
@@ -7257,6 +8057,18 @@ Butler resolves any suitable profile (legacy behavior).</p>
 <td><code>profileId</code></td>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
 </tr>
+<tr>
+<td><code>allowedStrategies</code></td>
+<td><code class="typename"><span class="type">LaunchStrategy</span>[]</code></td>
+</tr>
+<tr>
+<td><code>runtimes</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>defaults</code></td>
+<td><code class="typename"><span class="type">LaunchDefaults</span></code></td>
+</tr>
 </table>
 
 </div>
@@ -7277,8 +8089,22 @@ sandbox is set up (if enabled), and the game is actually running.</p>
 </p>
 
 <p>
-<span class="header">Payload</span> <em>none</em>
+<span class="header">Payload</span> 
 </p>
+
+
+<table class="field-table">
+<tr>
+<td><code>pid</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> The process butler started, when it runs the game itself: the
+game&rsquo;s, or the wrapper&rsquo;s around it (a sandbox, or <code>open</code> for a
+macOS bundle). Absent for a launch butler does not run (html, url,
+shell, runtime). A client that must name the game to something
+outside butler, such as a firmware&rsquo;s kill hotkey, names this.</p>
+</td>
+</tr>
+</table>
 
 
 <div id="LaunchRunningNotification__TypeHint" class="tip-content">
@@ -7289,6 +8115,14 @@ sandbox is set up (if enabled), and the game is actually running.</p>
 sandbox is set up (if enabled), and the game is actually running.</p>
 
 </p>
+
+<table class="field-table">
+<tr>
+<td><code>pid</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+</table>
+
 </div>
 
 ### LaunchExited (notification)
@@ -7604,6 +8438,110 @@ game, ideally in an embedded browser.</p>
 
 <div id="HTMLLaunchResult__TypeHint" class="tip-content">
 <p>HTMLLaunch  <a href="#/?id=htmllaunch-">(Go to definition)</a></p>
+
+</div>
+
+### RuntimeLaunch (client caller)
+
+
+<p>
+<p>Ask the client to run a payload with a runtime of its own: a ROM in
+its emulator, a LÖVE game in its LÖVE. This is how a client that
+manages the game process itself keeps butler&rsquo;s bookkeeping. Sent
+during <code class="typename"><span class="type" data-tip-selector="#LaunchParams__TypeHint">Launch</span></code> for a <code class="typename"><span class="type builtin-type">LaunchStrategyRuntime</span></code> target, after
+<code class="typename"><span class="type" data-tip-selector="#LaunchRunningNotification__TypeHint">LaunchRunning</span></code>; the play session and the cave&rsquo;s play
+time run from then until the reply.</p>
+
+<p>Reply when the game has exited. A plain reply is a normal exit, an
+error reply is a failure or crash and fails the launch. butler never
+sees the process, so it cannot end it: when the launch is cancelled,
+the client ends the game itself.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>fullTargetPath</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>Absolute path of the payload: a file, or a folder for engines that
+run one (a LÖVE game with its main.lua at the root).</p>
+</td>
+</tr>
+<tr>
+<td><code>candidate</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#Candidate__TypeHint">Candidate</span></code></td>
+<td><p>What the payload is, as dash found it: the flavor, and for ROMs
+the system in Engine.Details.</p>
+</td>
+</tr>
+<tr>
+<td><code>args</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Command-line arguments from the manifest action, if any</p>
+</td>
+</tr>
+<tr>
+<td><code>env</code></td>
+<td><code class="typename"><span class="type builtin-type">{ [key: string]: string }</span></code></td>
+<td><p><span class="tag">Optional</span> Environment variables from the manifest action, if any</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> <em>none</em>
+</p>
+
+
+<div id="RuntimeLaunchParams__TypeHint" class="tip-content">
+<p>RuntimeLaunch (client caller) <a href="#/?id=runtimelaunch-client-caller">(Go to definition)</a></p>
+
+<p>
+<p>Ask the client to run a payload with a runtime of its own: a ROM in
+its emulator, a LÖVE game in its LÖVE. This is how a client that
+manages the game process itself keeps butler&rsquo;s bookkeeping. Sent
+during <code class="typename"><span class="type">Launch</span></code> for a <code class="typename"><span class="type builtin-type">LaunchStrategyRuntime</span></code> target, after
+<code class="typename"><span class="type">LaunchRunning</span></code>; the play session and the cave&rsquo;s play
+time run from then until the reply.</p>
+
+<p>Reply when the game has exited. A plain reply is a normal exit, an
+error reply is a failure or crash and fails the launch. butler never
+sees the process, so it cannot end it: when the launch is cancelled,
+the client ends the game itself.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>fullTargetPath</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>candidate</code></td>
+<td><code class="typename"><span class="type">Candidate</span></code></td>
+</tr>
+<tr>
+<td><code>args</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>env</code></td>
+<td><code class="typename"><span class="type builtin-type">{ [key: string]: string }</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="RuntimeLaunchResult__TypeHint" class="tip-content">
+<p>RuntimeLaunch  <a href="#/?id=runtimelaunch-">(Go to definition)</a></p>
 
 </div>
 
@@ -9526,6 +10464,1298 @@ reflects the server&rsquo;s current view.</p>
 
 </div>
 
+### Publish.SteamSync.GetStatus (client request)
+
+
+<p>
+<p>Reports what Steam credentials are stored. Reads a local file only;
+whether the login is still accepted by Steam is found out by the
+operations that use it, which fail with CodePublishSteamSyncNotLoggedIn.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> <em>none</em>
+</p>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>loggedIn</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p>True when a Steam login is stored</p>
+</td>
+</tr>
+<tr>
+<td><code>accountName</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Steam account name, when logged in</p>
+</td>
+</tr>
+<tr>
+<td><code>steamId</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> 64-bit Steam ID as a string, when logged in</p>
+</td>
+</tr>
+<tr>
+<td><code>hasPublisherKey</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p>True when a publisher Web API key is stored</p>
+</td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncGetStatusParams__TypeHint" class="tip-content">
+<p>Publish.SteamSync.GetStatus (client request) <a href="#/?id=publishsteamsyncgetstatus-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Reports what Steam credentials are stored. Reads a local file only;
+whether the login is still accepted by Steam is found out by the
+operations that use it, which fail with CodePublishSteamSyncNotLoggedIn.</p>
+
+</p>
+</div>
+
+
+<div id="PublishSteamSyncGetStatusResult__TypeHint" class="tip-content">
+<p>PublishSteamSyncGetStatus  <a href="#/?id=publishsteamsyncgetstatus-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>loggedIn</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>accountName</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>steamId</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>hasPublisherKey</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.Login (client request)
+
+
+<p>
+<p>Log in to a Steam account by QR code. Steam&rsquo;s mobile app scans the
+code and the user approves there; no password reaches butler.</p>
+
+<p>A <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncLoginChallengeNotification__TypeHint">Publish.SteamSync.Login.Challenge</span></code> carries the URL to render as a QR
+code, and is sent again whenever Steam rotates the challenge. The
+request returns once the login is approved. Cancel it with
+<code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncLoginCancelParams__TypeHint">Publish.SteamSync.Login.Cancel</span></code>.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>ID that can be later used in <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncLoginCancelParams__TypeHint">Publish.SteamSync.Login.Cancel</span></code></p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>accountName</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>Steam account name</p>
+</td>
+</tr>
+<tr>
+<td><code>steamId</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>64-bit Steam ID as a string</p>
+</td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncLoginParams__TypeHint" class="tip-content">
+<p>Publish.SteamSync.Login (client request) <a href="#/?id=publishsteamsynclogin-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Log in to a Steam account by QR code. Steam&rsquo;s mobile app scans the
+code and the user approves there; no password reaches butler.</p>
+
+<p>A <code class="typename"><span class="type">Publish.SteamSync.Login.Challenge</span></code> carries the URL to render as a QR
+code, and is sent again whenever Steam rotates the challenge. The
+request returns once the login is approved. Cancel it with
+<code class="typename"><span class="type">Publish.SteamSync.Login.Cancel</span></code>.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="PublishSteamSyncLoginResult__TypeHint" class="tip-content">
+<p>PublishSteamSyncLogin  <a href="#/?id=publishsteamsynclogin-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>accountName</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>steamId</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.Login.Cancel (client request)
+
+
+<p>
+<p>Cancel a pending <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncLoginParams__TypeHint">Publish.SteamSync.Login</span></code>.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>The ID passed to <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncLoginParams__TypeHint">Publish.SteamSync.Login</span></code></p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>didCancel</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncLoginCancelParams__TypeHint" class="tip-content">
+<p>Publish.SteamSync.Login.Cancel (client request) <a href="#/?id=publishsteamsynclogincancel-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Cancel a pending <code class="typename"><span class="type">Publish.SteamSync.Login</span></code>.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="PublishSteamSyncLoginCancelResult__TypeHint" class="tip-content">
+<p>PublishSteamSyncLoginCancel  <a href="#/?id=publishsteamsynclogincancel-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>didCancel</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.Login.Challenge (notification)
+
+
+<p>
+<p>Sent during <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncLoginParams__TypeHint">Publish.SteamSync.Login</span></code> with the URL to show as a QR code.
+Show the URL as a link too, for people whose phone is this device.</p>
+
+</p>
+
+<p>
+<span class="header">Payload</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>The ID passed to <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncLoginParams__TypeHint">Publish.SteamSync.Login</span></code></p>
+</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>Challenge URL, to be rendered as a QR code</p>
+</td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncLoginChallengeNotification__TypeHint" class="tip-content">
+<p>Publish.SteamSync.Login.Challenge (notification) <a href="#/?id=publishsteamsyncloginchallenge-notification">(Go to definition)</a></p>
+
+<p>
+<p>Sent during <code class="typename"><span class="type">Publish.SteamSync.Login</span></code> with the URL to show as a QR code.
+Show the URL as a link too, for people whose phone is this device.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.Logout (client request)
+
+
+<p>
+<p>Remove the stored Steam login, publisher key and cached depot keys.
+Nothing is revoked on Steam&rsquo;s side.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> <em>none</em>
+</p>
+
+
+
+<p>
+<span class="header">Result</span> <em>none</em>
+</p>
+
+
+<div id="PublishSteamSyncLogoutParams__TypeHint" class="tip-content">
+<p>Publish.SteamSync.Logout (client request) <a href="#/?id=publishsteamsynclogout-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Remove the stored Steam login, publisher key and cached depot keys.
+Nothing is revoked on Steam&rsquo;s side.</p>
+
+</p>
+</div>
+
+
+<div id="PublishSteamSyncLogoutResult__TypeHint" class="tip-content">
+<p>PublishSteamSyncLogout  <a href="#/?id=publishsteamsynclogout-">(Go to definition)</a></p>
+
+</div>
+
+### Publish.SteamSync.SetPublisherKey (client request)
+
+
+<p>
+<p>Store a Steam publisher Web API key after checking it with the partner
+API. The key proves which apps the developer controls; syncing is only
+allowed for those. Keys are created at
+<a href="https://partner.steamgames.com/pub/groups/">https://partner.steamgames.com/pub/groups/</a> under a publisher group.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>key</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>The publisher Web API key</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>appCount</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Number of apps the key controls</p>
+</td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncSetPublisherKeyParams__TypeHint" class="tip-content">
+<p>Publish.SteamSync.SetPublisherKey (client request) <a href="#/?id=publishsteamsyncsetpublisherkey-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Store a Steam publisher Web API key after checking it with the partner
+API. The key proves which apps the developer controls; syncing is only
+allowed for those. Keys are created at
+<a href="https://partner.steamgames.com/pub/groups/">https://partner.steamgames.com/pub/groups/</a> under a publisher group.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>key</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="PublishSteamSyncSetPublisherKeyResult__TypeHint" class="tip-content">
+<p>PublishSteamSyncSetPublisherKey  <a href="#/?id=publishsteamsyncsetpublisherkey-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>appCount</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.RemovePublisherKey (client request)
+
+
+<p>
+<p>Remove the stored publisher key, keeping the login.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> <em>none</em>
+</p>
+
+
+
+<p>
+<span class="header">Result</span> <em>none</em>
+</p>
+
+
+<div id="PublishSteamSyncRemovePublisherKeyParams__TypeHint" class="tip-content">
+<p>Publish.SteamSync.RemovePublisherKey (client request) <a href="#/?id=publishsteamsyncremovepublisherkey-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Remove the stored publisher key, keeping the login.</p>
+
+</p>
+</div>
+
+
+<div id="PublishSteamSyncRemovePublisherKeyResult__TypeHint" class="tip-content">
+<p>PublishSteamSyncRemovePublisherKey  <a href="#/?id=publishsteamsyncremovepublisherkey-">(Go to definition)</a></p>
+
+</div>
+
+### Publish.SteamSync.ListApps (client request)
+
+
+<p>
+<p>List the Steam apps the stored publisher key controls.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> <em>none</em>
+</p>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>apps</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncApp__TypeHint">PublishSteamSyncApp</span>[]</code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncListAppsParams__TypeHint" class="tip-content">
+<p>Publish.SteamSync.ListApps (client request) <a href="#/?id=publishsteamsynclistapps-client-request">(Go to definition)</a></p>
+
+<p>
+<p>List the Steam apps the stored publisher key controls.</p>
+
+</p>
+</div>
+
+
+<div id="PublishSteamSyncListAppsResult__TypeHint" class="tip-content">
+<p>PublishSteamSyncListApps  <a href="#/?id=publishsteamsynclistapps-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>apps</code></td>
+<td><code class="typename"><span class="type">PublishSteamSyncApp</span>[]</code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.Plan (client request)
+
+
+<p>
+<p>Works out what syncing a Steam app to an itch.io project would do:
+which depots go to which channel, what would be downloaded, and what
+is left out. Nothing is downloaded or pushed. Connects to Steam with
+the stored login, so it takes a few seconds.</p>
+
+<p>The result also lists every branch of the app, so the caller can offer
+a choice and call again with a different branch.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>appId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Steam app ID</p>
+</td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>itch.io project in user/slug form, without a channel</p>
+</td>
+</tr>
+<tr>
+<td><code>branch</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Steam branch, default &ldquo;public&rdquo;</p>
+</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Password for a private branch</p>
+</td>
+</tr>
+<tr>
+<td><code>map</code></td>
+<td><code class="typename"><span class="type builtin-type">{ [key: string]: string }</span></code></td>
+<td><p><span class="tag">Optional</span> Depot ID to channel name, overriding platform detection</p>
+</td>
+</tr>
+<tr>
+<td><code>skip</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Depot IDs to leave out</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>plan</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncPlan__TypeHint">PublishSteamSyncPlan</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncPlanParams__TypeHint" class="tip-content">
+<p>Publish.SteamSync.Plan (client request) <a href="#/?id=publishsteamsyncplan-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Works out what syncing a Steam app to an itch.io project would do:
+which depots go to which channel, what would be downloaded, and what
+is left out. Nothing is downloaded or pushed. Connects to Steam with
+the stored login, so it takes a few seconds.</p>
+
+<p>The result also lists every branch of the app, so the caller can offer
+a choice and call again with a different branch.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>appId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>branch</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>map</code></td>
+<td><code class="typename"><span class="type builtin-type">{ [key: string]: string }</span></code></td>
+</tr>
+<tr>
+<td><code>skip</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span>[]</code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="PublishSteamSyncPlanResult__TypeHint" class="tip-content">
+<p>PublishSteamSyncPlan  <a href="#/?id=publishsteamsyncplan-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>plan</code></td>
+<td><code class="typename"><span class="type">PublishSteamSyncPlan</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.Sync (client request)
+
+
+<p>
+<p>Syncs a Steam app to an itch.io project: plans, downloads the depots,
+assembles one directory per channel and pushes each, with the Steam
+build ID as the user version. Channels whose latest build already has
+that version are skipped unless Force is set.</p>
+
+<p>The work runs in a <code>butler steam-sync</code> worker subprocess, like
+<code class="typename"><span class="type" data-tip-selector="#PublishPushParams__TypeHint">Publish.Push</span></code>. Progress arrives as notifications: first
+<code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncPlannedNotification__TypeHint">Publish.SteamSync.Planned</span></code>, then
+<code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncDepotProgressNotification__TypeHint">Publish.SteamSync.DepotProgress</span></code> while downloading, then per
+channel <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncPushStartedNotification__TypeHint">Publish.SteamSync.PushStarted</span></code>,
+<code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncBuildAssignedNotification__TypeHint">Publish.SteamSync.BuildAssigned</span></code> and
+<code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncPushProgressNotification__TypeHint">Publish.SteamSync.PushProgress</span></code>, or
+<code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncChannelUpToDateNotification__TypeHint">Publish.SteamSync.ChannelUpToDate</span></code> when there is nothing to
+push. Cancel with <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncCancelParams__TypeHint">Publish.SteamSync.Cancel</span></code>.</p>
+
+<p>Downloads are kept in a per-app cache under butler&rsquo;s directory so the
+next sync of the same app only fetches what changed.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>ID that can be later used in <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncCancelParams__TypeHint">Publish.SteamSync.Cancel</span></code></p>
+</td>
+</tr>
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>itch.io profile to push as</p>
+</td>
+</tr>
+<tr>
+<td><code>appId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Steam app ID</p>
+</td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>itch.io project in user/slug form, without a channel</p>
+</td>
+</tr>
+<tr>
+<td><code>branch</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Steam branch, default &ldquo;public&rdquo;</p>
+</td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Password for a private branch</p>
+</td>
+</tr>
+<tr>
+<td><code>map</code></td>
+<td><code class="typename"><span class="type builtin-type">{ [key: string]: string }</span></code></td>
+<td><p><span class="tag">Optional</span> Depot ID to channel name, overriding platform detection</p>
+</td>
+</tr>
+<tr>
+<td><code>skip</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Depot IDs to leave out</p>
+</td>
+</tr>
+<tr>
+<td><code>force</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> Push even when the channel already has this Steam build</p>
+</td>
+</tr>
+<tr>
+<td><code>hidden</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> Mark new channels as hidden on creation</p>
+</td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Steam build ID that was synced</p>
+</td>
+</tr>
+<tr>
+<td><code>channels</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncSyncedChannel__TypeHint">PublishSteamSyncSyncedChannel</span>[]</code></td>
+<td><p>One entry per channel of the plan</p>
+</td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncSyncParams__TypeHint" class="tip-content">
+<p>Publish.SteamSync.Sync (client request) <a href="#/?id=publishsteamsyncsync-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Syncs a Steam app to an itch.io project: plans, downloads the depots,
+assembles one directory per channel and pushes each, with the Steam
+build ID as the user version. Channels whose latest build already has
+that version are skipped unless Force is set.</p>
+
+<p>The work runs in a <code>butler steam-sync</code> worker subprocess, like
+<code class="typename"><span class="type">Publish.Push</span></code>. Progress arrives as notifications: first
+<code class="typename"><span class="type">Publish.SteamSync.Planned</span></code>, then
+<code class="typename"><span class="type">Publish.SteamSync.DepotProgress</span></code> while downloading, then per
+channel <code class="typename"><span class="type">Publish.SteamSync.PushStarted</span></code>,
+<code class="typename"><span class="type">Publish.SteamSync.BuildAssigned</span></code> and
+<code class="typename"><span class="type">Publish.SteamSync.PushProgress</span></code>, or
+<code class="typename"><span class="type">Publish.SteamSync.ChannelUpToDate</span></code> when there is nothing to
+push. Cancel with <code class="typename"><span class="type">Publish.SteamSync.Cancel</span></code>.</p>
+
+<p>Downloads are kept in a per-app cache under butler&rsquo;s directory so the
+next sync of the same app only fetches what changed.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>profileId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>appId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>branch</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>password</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>map</code></td>
+<td><code class="typename"><span class="type builtin-type">{ [key: string]: string }</span></code></td>
+</tr>
+<tr>
+<td><code>skip</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span>[]</code></td>
+</tr>
+<tr>
+<td><code>force</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>hidden</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="PublishSteamSyncSyncResult__TypeHint" class="tip-content">
+<p>PublishSteamSyncSync  <a href="#/?id=publishsteamsyncsync-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>channels</code></td>
+<td><code class="typename"><span class="type">PublishSteamSyncSyncedChannel</span>[]</code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.Planned (notification)
+
+
+<p>
+<p>Sent once the worker has planned the sync, before any download.</p>
+
+</p>
+
+<p>
+<span class="header">Payload</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>plan</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncPlan__TypeHint">PublishSteamSyncPlan</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncPlannedNotification__TypeHint" class="tip-content">
+<p>Publish.SteamSync.Planned (notification) <a href="#/?id=publishsteamsyncplanned-notification">(Go to definition)</a></p>
+
+<p>
+<p>Sent once the worker has planned the sync, before any download.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>plan</code></td>
+<td><code class="typename"><span class="type">PublishSteamSyncPlan</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.DepotProgress (notification)
+
+
+<p>
+<p>Download progress for one depot. Depots download one at a time; sum
+TotalBytes over the plan&rsquo;s channels for the whole picture, counting
+shared depots once.</p>
+
+</p>
+
+<p>
+<span class="header">Payload</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>depotId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>doneBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>totalBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncDepotProgressNotification__TypeHint" class="tip-content">
+<p>Publish.SteamSync.DepotProgress (notification) <a href="#/?id=publishsteamsyncdepotprogress-notification">(Go to definition)</a></p>
+
+<p>
+<p>Download progress for one depot. Depots download one at a time; sum
+TotalBytes over the plan&rsquo;s channels for the whole picture, counting
+shared depots once.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>depotId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>doneBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>totalBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.ChannelUpToDate (notification)
+
+
+<p>
+<p>The channel&rsquo;s latest build already has this Steam build ID, so it
+is skipped.</p>
+
+</p>
+
+<p>
+<span class="header">Payload</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncChannelUpToDateNotification__TypeHint" class="tip-content">
+<p>Publish.SteamSync.ChannelUpToDate (notification) <a href="#/?id=publishsteamsyncchanneluptodate-notification">(Go to definition)</a></p>
+
+<p>
+<p>The channel&rsquo;s latest build already has this Steam build ID, so it
+is skipped.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.PushStarted (notification)
+
+
+<p>
+<p>The channel&rsquo;s directory is assembled and its push is starting.</p>
+
+</p>
+
+<p>
+<span class="header">Payload</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncPushStartedNotification__TypeHint" class="tip-content">
+<p>Publish.SteamSync.PushStarted (notification) <a href="#/?id=publishsteamsyncpushstarted-notification">(Go to definition)</a></p>
+
+<p>
+<p>The channel&rsquo;s directory is assembled and its push is starting.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.BuildAssigned (notification)
+
+
+<p>
+<p>The push for a channel has a build ID. Same meaning as
+<code class="typename"><span class="type" data-tip-selector="#PublishPushBuildAssignedNotification__TypeHint">Publish.Push.BuildAssigned</span></code>.</p>
+
+</p>
+
+<p>
+<span class="header">Payload</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncBuildAssignedNotification__TypeHint" class="tip-content">
+<p>Publish.SteamSync.BuildAssigned (notification) <a href="#/?id=publishsteamsyncbuildassigned-notification">(Go to definition)</a></p>
+
+<p>
+<p>The push for a channel has a build ID. Same meaning as
+<code class="typename"><span class="type">Publish.Push.BuildAssigned</span></code>.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.BuildFailed (notification)
+
+
+<p>
+<p>The push for a channel failed after its build was created. The sync
+stops at the first failed channel.</p>
+
+</p>
+
+<p>
+<span class="header">Payload</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncBuildFailedNotification__TypeHint" class="tip-content">
+<p>Publish.SteamSync.BuildFailed (notification) <a href="#/?id=publishsteamsyncbuildfailed-notification">(Go to definition)</a></p>
+
+<p>
+<p>The push for a channel failed after its build was created. The sync
+stops at the first failed channel.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>message</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.PushProgress (notification)
+
+
+<p>
+<p>Push progress for a channel. Fields as in
+<code class="typename"><span class="type" data-tip-selector="#PublishPushProgressNotification__TypeHint">Publish.Push.Progress</span></code>.</p>
+
+</p>
+
+<p>
+<span class="header">Payload</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>progress</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>eta</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>bps</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>readBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>totalBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>uploadedBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>patchBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncPushProgressNotification__TypeHint" class="tip-content">
+<p>Publish.SteamSync.PushProgress (notification) <a href="#/?id=publishsteamsyncpushprogress-notification">(Go to definition)</a></p>
+
+<p>
+<p>Push progress for a channel. Fields as in
+<code class="typename"><span class="type">Publish.Push.Progress</span></code>.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>progress</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>eta</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>bps</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>readBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>totalBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>uploadedBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>patchBytes</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Publish.SteamSync.Cancel (client request)
+
+
+<p>
+<p>Cancels a running <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncSyncParams__TypeHint">Publish.SteamSync.Sync</span></code>. The worker is killed;
+a push in flight leaves its build in the failed state on itch.io.</p>
+
+</p>
+
+<p>
+<span class="header">Parameters</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+
+<p>
+<span class="header">Result</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>didCancel</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncCancelParams__TypeHint" class="tip-content">
+<p>Publish.SteamSync.Cancel (client request) <a href="#/?id=publishsteamsynccancel-client-request">(Go to definition)</a></p>
+
+<p>
+<p>Cancels a running <code class="typename"><span class="type">Publish.SteamSync.Sync</span></code>. The worker is killed;
+a push in flight leaves its build in the failed state on itch.io.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+
+<div id="PublishSteamSyncCancelResult__TypeHint" class="tip-content">
+<p>PublishSteamSyncCancel  <a href="#/?id=publishsteamsynccancel-">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>didCancel</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
+</div>
+
 
 ## Miscellaneous Category
 
@@ -9612,6 +11842,14 @@ For implicit launch targets, a minimal one will be generated.</p>
 <td><code>"shell"</code></td>
 <td></td>
 </tr>
+<tr>
+<td><code>"runtime"</code></td>
+<td><p>A payload (ROM, .love, Godot pack, &hellip;) the client said it has a
+runtime for. FullTargetPath is the file or folder to run, and
+Candidate carries the flavor, engine, and version. Butler has no
+launcher for this strategy: the client runs it.</p>
+</td>
+</tr>
 </table>
 
 
@@ -9634,6 +11872,9 @@ For implicit launch targets, a minimal one will be generated.</p>
 </tr>
 <tr>
 <td><code>"shell"</code></td>
+</tr>
+<tr>
+<td><code>"runtime"</code></td>
 </tr>
 </table>
 
@@ -11318,6 +13559,14 @@ and a butlerd error code.</p>
 <td><code class="typename"><span class="type" data-tip-selector="#Download__TypeHint">Download</span></code></td>
 <td></td>
 </tr>
+<tr>
+<td><code>events</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#InstallEvent__TypeHint">InstallEvent</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Events recorded during the operation (install, upgrade, heal&hellip;).
+Not persisted with the download, so this notification is the only
+place to get them.</p>
+</td>
+</tr>
 </table>
 
 
@@ -11329,6 +13578,10 @@ and a butlerd error code.</p>
 <tr>
 <td><code>download</code></td>
 <td><code class="typename"><span class="type">Download</span></code></td>
+</tr>
+<tr>
+<td><code>events</code></td>
+<td><code class="typename"><span class="type">InstallEvent</span>[]</code></td>
 </tr>
 </table>
 
@@ -11705,6 +13958,79 @@ performed whenever <code class="typename"><span class="type">Downloads.Drive</sp
 
 </div>
 
+### LaunchDefaults (struct)
+
+
+<p>
+<p>Client-supplied launch defaults, applied below per-cave settings.
+See <code class="typename"><span class="type" data-tip-selector="#LaunchParams__TypeHint">Launch</span></code>.</p>
+
+</p>
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>sandbox</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> Sandbox default. Absent (not false) when the frontend has no global
+sandbox preference, so a manifest opt-in still applies.</p>
+</td>
+</tr>
+<tr>
+<td><code>sandboxType</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#SandboxType__TypeHint">SandboxType</span></code></td>
+<td><p><span class="tag">Optional</span> Default sandbox runner type.</p>
+</td>
+</tr>
+<tr>
+<td><code>sandboxNoNetwork</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> Default for cutting network access inside the sandbox.</p>
+</td>
+</tr>
+<tr>
+<td><code>sandboxAllowEnv</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Default extra environment variables allowed through the sandbox.</p>
+</td>
+</tr>
+</table>
+
+
+<div id="LaunchDefaults__TypeHint" class="tip-content">
+<p>LaunchDefaults (struct) <a href="#/?id=launchdefaults-struct">(Go to definition)</a></p>
+
+<p>
+<p>Client-supplied launch defaults, applied below per-cave settings.
+See <code class="typename"><span class="type">Launch</span></code>.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>sandbox</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>sandboxType</code></td>
+<td><code class="typename"><span class="type">SandboxType</span></code></td>
+</tr>
+<tr>
+<td><code>sandboxNoNetwork</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>sandboxAllowEnv</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+</table>
+
+</div>
+
 ### SandboxType (enum)
 
 
@@ -11976,6 +14302,12 @@ did not match any launch target</p>
 </td>
 </tr>
 <tr>
+<td><code>5002</code></td>
+<td><p>The selected target&rsquo;s strategy is not in
+LaunchParams.allowedStrategies</p>
+</td>
+</tr>
+<tr>
 <td><code>6000</code></td>
 <td><p>Java Runtime Environment is required to launch this title.</p>
 </td>
@@ -12008,6 +14340,32 @@ did not match any launch target</p>
 <tr>
 <td><code>20000</code></td>
 <td><p>The profile explicitly requested for an operation does not exist</p>
+</td>
+</tr>
+<tr>
+<td><code>21000</code></td>
+<td><p>No Steam login is stored, or Steam rejected the stored one.
+Call <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncLoginParams__TypeHint">Publish.SteamSync.Login</span></code>.</p>
+</td>
+</tr>
+<tr>
+<td><code>21001</code></td>
+<td><p>No Steam publisher key is stored. Call <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncSetPublisherKeyParams__TypeHint">Publish.SteamSync.SetPublisherKey</span></code>.</p>
+</td>
+</tr>
+<tr>
+<td><code>21002</code></td>
+<td><p>The partner API rejected the publisher key.</p>
+</td>
+</tr>
+<tr>
+<td><code>21003</code></td>
+<td><p>The user declined the login on their phone, or the challenge expired.</p>
+</td>
+</tr>
+<tr>
+<td><code>21004</code></td>
+<td><p>Another <code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncLoginParams__TypeHint">Publish.SteamSync.Login</span></code> call is still waiting for approval.</p>
 </td>
 </tr>
 </table>
@@ -12044,6 +14402,9 @@ did not match any launch target</p>
 <td><code>5001</code></td>
 </tr>
 <tr>
+<td><code>5002</code></td>
+</tr>
+<tr>
 <td><code>6000</code></td>
 </tr>
 <tr>
@@ -12063,6 +14424,21 @@ did not match any launch target</p>
 </tr>
 <tr>
 <td><code>20000</code></td>
+</tr>
+<tr>
+<td><code>21000</code></td>
+</tr>
+<tr>
+<td><code>21001</code></td>
+</tr>
+<tr>
+<td><code>21002</code></td>
+</tr>
+<tr>
+<td><code>21003</code></td>
+</tr>
+<tr>
+<td><code>21004</code></td>
 </tr>
 </table>
 
@@ -12473,6 +14849,503 @@ Type alias for string
 <p>Cursor  <a href="#/?id=cursor-">(Go to definition)</a></p>
 </div>
 
+### PublishSteamSyncApp (struct)
+
+
+<p>
+<p>A Steam app the publisher key controls</p>
+
+</p>
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Steam app ID</p>
+</td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>Name on Steam</p>
+</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>One of game, application, tool, demo, dlc, music</p>
+</td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncApp__TypeHint" class="tip-content">
+<p>PublishSteamSyncApp (struct) <a href="#/?id=publishsteamsyncapp-struct">(Go to definition)</a></p>
+
+<p>
+<p>A Steam app the publisher key controls</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### PublishSteamSyncPlan (struct)
+
+
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>appId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>appName</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>branch</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>Branch the plan is for</p>
+</td>
+</tr>
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Steam build ID on that branch, used as the itch.io user version</p>
+</td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>channels</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncChannel__TypeHint">PublishSteamSyncChannel</span>[]</code></td>
+<td><p>One itch.io channel per entry</p>
+</td>
+</tr>
+<tr>
+<td><code>skipped</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncSkippedDepot__TypeHint">PublishSteamSyncSkippedDepot</span>[]</code></td>
+<td><p>Depots left out, with the reason</p>
+</td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>branches</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncBranch__TypeHint">PublishSteamSyncBranch</span>[]</code></td>
+<td><p>Every branch of the app</p>
+</td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncPlan__TypeHint" class="tip-content">
+<p>PublishSteamSyncPlan (struct) <a href="#/?id=publishsteamsyncplan-struct">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>appId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>appName</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>branch</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>target</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>channels</code></td>
+<td><code class="typename"><span class="type">PublishSteamSyncChannel</span>[]</code></td>
+</tr>
+<tr>
+<td><code>skipped</code></td>
+<td><code class="typename"><span class="type">PublishSteamSyncSkippedDepot</span>[]</code></td>
+</tr>
+<tr>
+<td><code>warnings</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>branches</code></td>
+<td><code class="typename"><span class="type">PublishSteamSyncBranch</span>[]</code></td>
+</tr>
+</table>
+
+</div>
+
+### PublishSteamSyncChannel (struct)
+
+
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>name</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>itch.io channel name, e.g. &ldquo;windows&rdquo; or &ldquo;linux-64&rdquo;</p>
+</td>
+</tr>
+<tr>
+<td><code>os</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>itch.io platform the name maps to, empty when unknown</p>
+</td>
+</tr>
+<tr>
+<td><code>arch</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>&ldquo;32&rdquo; or &ldquo;64&rdquo; when the channel is architecture specific</p>
+</td>
+</tr>
+<tr>
+<td><code>depots</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#PublishSteamSyncDepot__TypeHint">PublishSteamSyncDepot</span>[]</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Bytes on disk once assembled</p>
+</td>
+</tr>
+<tr>
+<td><code>download</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Bytes to download from Steam</p>
+</td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncChannel__TypeHint" class="tip-content">
+<p>PublishSteamSyncChannel (struct) <a href="#/?id=publishsteamsyncchannel-struct">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>name</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>os</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>arch</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>depots</code></td>
+<td><code class="typename"><span class="type">PublishSteamSyncDepot</span>[]</code></td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>download</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### PublishSteamSyncDepot (struct)
+
+
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>manifest</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p>Manifest GID as a string</p>
+</td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>download</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>shared</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p>True when the depot is copied into every channel</p>
+</td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncDepot__TypeHint" class="tip-content">
+<p>PublishSteamSyncDepot (struct) <a href="#/?id=publishsteamsyncdepot-struct">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>manifest</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>size</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>download</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>shared</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### PublishSteamSyncSkippedDepot (struct)
+
+
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncSkippedDepot__TypeHint" class="tip-content">
+<p>PublishSteamSyncSkippedDepot (struct) <a href="#/?id=publishsteamsyncskippeddepot-struct">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>id</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>name</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>reason</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### PublishSteamSyncBranch (struct)
+
+
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>name</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span></p>
+</td>
+</tr>
+<tr>
+<td><code>passwordRequired</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p>True when the branch needs a password</p>
+</td>
+</tr>
+<tr>
+<td><code>timeUpdated</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>Unix seconds of the last build on the branch</p>
+</td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncBranch__TypeHint" class="tip-content">
+<p>PublishSteamSyncBranch (struct) <a href="#/?id=publishsteamsyncbranch-struct">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>name</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>passwordRequired</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>timeUpdated</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### PublishSteamSyncSyncedChannel (struct)
+
+
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p>itch.io build created for the channel, 0 when up to date</p>
+</td>
+</tr>
+<tr>
+<td><code>upToDate</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p>True when the channel already had this Steam build and was skipped</p>
+</td>
+</tr>
+</table>
+
+
+<div id="PublishSteamSyncSyncedChannel__TypeHint" class="tip-content">
+<p>PublishSteamSyncSyncedChannel (struct) <a href="#/?id=publishsteamsyncsyncedchannel-struct">(Go to definition)</a></p>
+
+
+<table class="field-table">
+<tr>
+<td><code>channel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>buildId</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>upToDate</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
+</div>
+
 ### Host (struct)
 
 
@@ -12773,9 +15646,27 @@ a native executable, a Java or Love2D bundle, an HTML index, etc.</p>
 </td>
 </tr>
 <tr>
+<td><code>engine</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#EngineInfo__TypeHint">EngineInfo</span></code></td>
+<td><p><span class="tag">Optional</span> Engine is what made this candidate. Set on natives when a known engine
+left its footprint next to them, and on payload flavors always.</p>
+</td>
+</tr>
+<tr>
 <td><code>metadata</code></td>
 <td><code class="typename"><span class="type builtin-type">{ [key: string]: any }</span></code></td>
 <td><p><span class="tag">Optional</span> Any other info.</p>
+</td>
+</tr>
+<tr>
+<td><code>helper</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Helper names the runtime a native belongs to when it is plumbing
+shipped next to the game rather than something a player launches:
+&ldquo;renpy&rdquo; for its python and zsync, &ldquo;electron&rdquo; or &ldquo;nwjs&rdquo; for crashpad
+and sandbox processes, &ldquo;dotnet&rdquo; for createdump, &ldquo;java&rdquo; for a bundled
+JRE, &ldquo;node&rdquo; for anything under node_modules, &ldquo;unity&rdquo; and &ldquo;unreal&rdquo;
+for their crash handlers. Filter drops helpers.</p>
 </td>
 </tr>
 </table>
@@ -12844,8 +15735,16 @@ a native executable, a Java or Love2D bundle, an HTML index, etc.</p>
 <td><code class="typename"><span class="type">JarInfo</span></code></td>
 </tr>
 <tr>
+<td><code>engine</code></td>
+<td><code class="typename"><span class="type">EngineInfo</span></code></td>
+</tr>
+<tr>
 <td><code>metadata</code></td>
 <td><code class="typename"><span class="type builtin-type">{ [key: string]: any }</span></code></td>
+</tr>
+<tr>
+<td><code>helper</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
 </tr>
 </table>
 
@@ -12915,6 +15814,96 @@ a native executable, a Java or Love2D bundle, an HTML index, etc.</p>
 <td><p>Microsoft installer packages</p>
 </td>
 </tr>
+<tr>
+<td><code>"godot-pck"</code></td>
+<td><p>Godot pack file, standalone or embedded in an executable</p>
+</td>
+</tr>
+<tr>
+<td><code>"gamemaker-data"</code></td>
+<td><p>GameMaker data file (data.win, game.unx, game.ios, game.droid)</p>
+</td>
+</tr>
+<tr>
+<td><code>"pico8-cart"</code></td>
+<td><p>PICO-8 cartridge (.p8, .p8.png)</p>
+</td>
+</tr>
+<tr>
+<td><code>"picotron-cart"</code></td>
+<td><p>Picotron cartridge (.p64, .p64.png)</p>
+</td>
+</tr>
+<tr>
+<td><code>"renpy"</code></td>
+<td><p>Ren&rsquo;Py project: the folder holding game/</p>
+</td>
+</tr>
+<tr>
+<td><code>"rpgmaker-mv"</code></td>
+<td><p>RPG Maker MV/MZ project: the folder holding js/ and index.html</p>
+</td>
+</tr>
+<tr>
+<td><code>"rpgmaker-xp"</code></td>
+<td><p>RPG Maker XP/VX/VX Ace project: the folder holding Game.ini</p>
+</td>
+</tr>
+<tr>
+<td><code>"rpgmaker-2k"</code></td>
+<td><p>RPG Maker <sup>2000</sup>&frasl;<sub>2003</sub> project: the folder holding RPG_RT.ldb</p>
+</td>
+</tr>
+<tr>
+<td><code>"ags"</code></td>
+<td><p>Adventure Game Studio game: the exe with appended data, or a .ags file</p>
+</td>
+</tr>
+<tr>
+<td><code>"doom-wad"</code></td>
+<td><p>Doom engine WAD or PK3</p>
+</td>
+</tr>
+<tr>
+<td><code>"swf"</code></td>
+<td><p>Flash movie, standalone or in a projector exe</p>
+</td>
+</tr>
+<tr>
+<td><code>"dos"</code></td>
+<td><p>Folder holding 16-bit DOS executables</p>
+</td>
+</tr>
+<tr>
+<td><code>"pyxel-app"</code></td>
+<td><p>Pyxel application bundle (.pyxapp)</p>
+</td>
+</tr>
+<tr>
+<td><code>"solarus-quest"</code></td>
+<td><p>Solarus quest (.solarus archive or folder holding data/quest.dat)</p>
+</td>
+</tr>
+<tr>
+<td><code>"tic80-cart"</code></td>
+<td><p>TIC-80 cartridge (.tic)</p>
+</td>
+</tr>
+<tr>
+<td><code>"openbor-pak"</code></td>
+<td><p>OpenBOR module (.pak)</p>
+</td>
+</tr>
+<tr>
+<td><code>"rom"</code></td>
+<td><p>Console ROM or disc image, system in Engine.Details[&ldquo;system&rdquo;]</p>
+</td>
+</tr>
+<tr>
+<td><code>"playdate-pdx"</code></td>
+<td><p>Playdate game bundle: the folder holding pdxinfo</p>
+</td>
+</tr>
 </table>
 
 
@@ -12957,6 +15946,60 @@ a native executable, a Java or Love2D bundle, an HTML index, etc.</p>
 <tr>
 <td><code>"msi"</code></td>
 </tr>
+<tr>
+<td><code>"godot-pck"</code></td>
+</tr>
+<tr>
+<td><code>"gamemaker-data"</code></td>
+</tr>
+<tr>
+<td><code>"pico8-cart"</code></td>
+</tr>
+<tr>
+<td><code>"picotron-cart"</code></td>
+</tr>
+<tr>
+<td><code>"renpy"</code></td>
+</tr>
+<tr>
+<td><code>"rpgmaker-mv"</code></td>
+</tr>
+<tr>
+<td><code>"rpgmaker-xp"</code></td>
+</tr>
+<tr>
+<td><code>"rpgmaker-2k"</code></td>
+</tr>
+<tr>
+<td><code>"ags"</code></td>
+</tr>
+<tr>
+<td><code>"doom-wad"</code></td>
+</tr>
+<tr>
+<td><code>"swf"</code></td>
+</tr>
+<tr>
+<td><code>"dos"</code></td>
+</tr>
+<tr>
+<td><code>"pyxel-app"</code></td>
+</tr>
+<tr>
+<td><code>"solarus-quest"</code></td>
+</tr>
+<tr>
+<td><code>"tic80-cart"</code></td>
+</tr>
+<tr>
+<td><code>"openbor-pak"</code></td>
+</tr>
+<tr>
+<td><code>"rom"</code></td>
+</tr>
+<tr>
+<td><code>"playdate-pdx"</code></td>
+</tr>
 </table>
 
 </div>
@@ -12985,6 +16028,26 @@ a native executable, a Java or Love2D bundle, an HTML index, etc.</p>
 <td><p>64-bit</p>
 </td>
 </tr>
+<tr>
+<td><code>"arm64"</code></td>
+<td><p>ARM 64-bit (Apple Silicon, aarch64 handhelds)</p>
+</td>
+</tr>
+<tr>
+<td><code>"arm"</code></td>
+<td><p>ARM 32-bit (Raspberry Pi and older handhelds)</p>
+</td>
+</tr>
+<tr>
+<td><code>"riscv64"</code></td>
+<td><p>RISC-V 64-bit</p>
+</td>
+</tr>
+<tr>
+<td><code>"universal"</code></td>
+<td><p>Universal binary (multiple architectures)</p>
+</td>
+</tr>
 </table>
 
 
@@ -13002,6 +16065,18 @@ a native executable, a Java or Love2D bundle, an HTML index, etc.</p>
 </tr>
 <tr>
 <td><code>"amd64"</code></td>
+</tr>
+<tr>
+<td><code>"arm64"</code></td>
+</tr>
+<tr>
+<td><code>"arm"</code></td>
+</tr>
+<tr>
+<td><code>"riscv64"</code></td>
+</tr>
+<tr>
+<td><code>"universal"</code></td>
 </tr>
 </table>
 
@@ -13046,6 +16121,33 @@ or installer packages.</p>
 <td><p><span class="tag">Optional</span> Is this a .NET assembly?</p>
 </td>
 </tr>
+<tr>
+<td><code>arch</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#Arch__TypeHint">Arch</span></code></td>
+<td><p><span class="tag">Optional</span> Machine type from the PE header</p>
+</td>
+</tr>
+<tr>
+<td><code>imports</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Imported DLLs, only filled when ConfigureParams.DeepProbe is set</p>
+</td>
+</tr>
+<tr>
+<td><code>versionProperties</code></td>
+<td><code class="typename"><span class="type builtin-type">{ [key: string]: string }</span></code></td>
+<td><p><span class="tag">Optional</span> Strings from the VS_VERSIONINFO resource (ProductName, FileVersion,
+CompanyName, &hellip;). Only filled when ConfigureParams.DeepProbe is set.</p>
+</td>
+</tr>
+<tr>
+<td><code>requestedExecutionLevel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> requestedExecutionLevel from the embedded manifest (&ldquo;asInvoker&rdquo;,
+&ldquo;requireAdministrator&rdquo;, &ldquo;highestAvailable&rdquo;). Only filled when
+ConfigureParams.DeepProbe is set.</p>
+</td>
+</tr>
 </table>
 
 
@@ -13074,6 +16176,22 @@ or installer packages.</p>
 <tr>
 <td><code>dotNet</code></td>
 <td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>arch</code></td>
+<td><code class="typename"><span class="type">Arch</span></code></td>
+</tr>
+<tr>
+<td><code>imports</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>versionProperties</code></td>
+<td><code class="typename"><span class="type builtin-type">{ [key: string]: string }</span></code></td>
+</tr>
+<tr>
+<td><code>requestedExecutionLevel</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
 </tr>
 </table>
 
@@ -13151,8 +16269,18 @@ or app bundles.</p>
 </p>
 
 <p>
-<span class="header">Fields</span> <em>none</em>
+<span class="header">Fields</span> 
 </p>
+
+
+<table class="field-table">
+<tr>
+<td><code>architectures</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#Arch__TypeHint">Arch</span>[]</code></td>
+<td><p><span class="tag">Optional</span> All CPU architectures found in the binary (for universal/fat binaries)</p>
+</td>
+</tr>
+</table>
 
 
 <div id="MacosInfo__TypeHint" class="tip-content">
@@ -13163,6 +16291,14 @@ or app bundles.</p>
 or app bundles.</p>
 
 </p>
+
+<table class="field-table">
+<tr>
+<td><code>architectures</code></td>
+<td><code class="typename"><span class="type">Arch</span>[]</code></td>
+</tr>
+</table>
+
 </div>
 
 ### LinuxInfo (struct)
@@ -13174,8 +16310,100 @@ or app bundles.</p>
 </p>
 
 <p>
-<span class="header">Fields</span> <em>none</em>
+<span class="header">Fields</span> 
 </p>
+
+
+<table class="field-table">
+<tr>
+<td><code>arch</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#Arch__TypeHint">Arch</span></code></td>
+<td><p><span class="tag">Optional</span> Machine type from the ELF header</p>
+</td>
+</tr>
+<tr>
+<td><code>os</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Operating system the ELF targets when it is not Linux: &ldquo;freebsd&rdquo;,
+&ldquo;openbsd&rdquo;, &ldquo;netbsd&rdquo; from the header&rsquo;s OS ABI byte, &ldquo;haiku&rdquo; from its
+imports (deep probe only). Such builds still get the linux flavor.</p>
+</td>
+</tr>
+<tr>
+<td><code>abi</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Calling convention for 32-bit ARM, from the ELF header flags:
+&ldquo;eabihf&rdquo; (hard-float, what Raspberry Pi and armhf distributions
+build) or &ldquo;eabi&rdquo; (soft-float). Empty for other architectures.</p>
+</td>
+</tr>
+<tr>
+<td><code>interpreter</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Program interpreter (PT_INTERP), such as /lib/ld-linux-armhf.so.3
+or /lib/ld-musl-aarch64.so.1. Names the C library and ABI the
+executable was linked against. Only filled when DeepProbe is set.</p>
+</td>
+</tr>
+<tr>
+<td><code>static</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> True when the executable has no program interpreter and no DT_NEEDED
+libraries. Only meaningful when ConfigureParams.DeepProbe is set.</p>
+</td>
+</tr>
+<tr>
+<td><code>glibcVersion</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Highest GLIBC_x.y symbol version the executable references.
+Only filled when ConfigureParams.DeepProbe is set.</p>
+</td>
+</tr>
+<tr>
+<td><code>imports</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Shared libraries listed in DT_NEEDED, in link order.
+Only filled when ConfigureParams.DeepProbe is set.</p>
+</td>
+</tr>
+<tr>
+<td><code>sdl</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> SDL major version the executable uses, &ldquo;2&rdquo; or &ldquo;3&rdquo;: imported, or
+linked in (see SDLBundled). Only filled when DeepProbe is set.</p>
+</td>
+</tr>
+<tr>
+<td><code>sdlBundled</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> True when SDL is linked into the executable rather than imported,
+so it only has the display backends it was built with.</p>
+</td>
+</tr>
+<tr>
+<td><code>sdlDynamicApi</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> True when a bundled SDL kept its dynamic API, the hook that lets a
+host substitute its own SDL at load time (SDL_DYNAMIC_API).</p>
+</td>
+</tr>
+<tr>
+<td><code>display</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Windowing and graphics libraries the executable, or the SDL it
+bundles, can load: &ldquo;x11&rdquo;, &ldquo;wayland&rdquo;, &ldquo;kmsdrm&rdquo;, &ldquo;glfw&rdquo;, &ldquo;egl&rdquo;, &ldquo;gl&rdquo;,
+&ldquo;gles&rdquo;, &ldquo;vulkan&rdquo;. From DT_NEEDED and the library names it carries
+for dlopen. Only filled when DeepProbe is set.</p>
+</td>
+</tr>
+<tr>
+<td><code>symbols</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> True when the executable keeps its symbol table.
+Only filled when DeepProbe is set.</p>
+</td>
+</tr>
+</table>
 
 
 <div id="LinuxInfo__TypeHint" class="tip-content">
@@ -13185,6 +16413,58 @@ or app bundles.</p>
 <p>Contains information specific to native Linux executables</p>
 
 </p>
+
+<table class="field-table">
+<tr>
+<td><code>arch</code></td>
+<td><code class="typename"><span class="type">Arch</span></code></td>
+</tr>
+<tr>
+<td><code>os</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>abi</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>interpreter</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>static</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>glibcVersion</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>imports</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>sdl</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>sdlBundled</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>sdlDynamicApi</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>display</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>symbols</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+</table>
+
 </div>
 
 ### LoveInfo (struct)
@@ -13302,6 +16582,316 @@ or app bundles.</p>
 <tr>
 <td><code>mainClass</code></td>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### Engine (enum)
+
+
+<p>
+<p>Engine identifies the tool a game was made with. It is the key a consumer
+uses to pick a runtime: a native candidate carries it as extra context, a
+payload candidate carries it because the payload is nothing without it.</p>
+
+</p>
+
+<p>
+<span class="header">Values</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>"godot"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"unity"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"unreal"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"gamemaker"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"love"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"pico8"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"picotron"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"renpy"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"rpgmaker"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"ags"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"doom"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"flash"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"dos"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"pyxel"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"solarus"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"tic80"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"openbor"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"playdate"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"rom"</code></td>
+<td><p>ROM images: the console lives in Details[&ldquo;system&rdquo;]</p>
+</td>
+</tr>
+<tr>
+<td><code>"fna"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"monogame"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"xna"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"hashlink"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"defold"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"construct"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"electron"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"nwjs"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"python"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"libgdx"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"lwjgl"</code></td>
+<td></td>
+</tr>
+</table>
+
+
+<div id="Engine__TypeHint" class="tip-content">
+<p>Engine (enum) <a href="#/?id=engine-enum">(Go to definition)</a></p>
+
+<p>
+<p>Engine identifies the tool a game was made with. It is the key a consumer
+uses to pick a runtime: a native candidate carries it as extra context, a
+payload candidate carries it because the payload is nothing without it.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>"godot"</code></td>
+</tr>
+<tr>
+<td><code>"unity"</code></td>
+</tr>
+<tr>
+<td><code>"unreal"</code></td>
+</tr>
+<tr>
+<td><code>"gamemaker"</code></td>
+</tr>
+<tr>
+<td><code>"love"</code></td>
+</tr>
+<tr>
+<td><code>"pico8"</code></td>
+</tr>
+<tr>
+<td><code>"picotron"</code></td>
+</tr>
+<tr>
+<td><code>"renpy"</code></td>
+</tr>
+<tr>
+<td><code>"rpgmaker"</code></td>
+</tr>
+<tr>
+<td><code>"ags"</code></td>
+</tr>
+<tr>
+<td><code>"doom"</code></td>
+</tr>
+<tr>
+<td><code>"flash"</code></td>
+</tr>
+<tr>
+<td><code>"dos"</code></td>
+</tr>
+<tr>
+<td><code>"pyxel"</code></td>
+</tr>
+<tr>
+<td><code>"solarus"</code></td>
+</tr>
+<tr>
+<td><code>"tic80"</code></td>
+</tr>
+<tr>
+<td><code>"openbor"</code></td>
+</tr>
+<tr>
+<td><code>"playdate"</code></td>
+</tr>
+<tr>
+<td><code>"rom"</code></td>
+</tr>
+<tr>
+<td><code>"fna"</code></td>
+</tr>
+<tr>
+<td><code>"monogame"</code></td>
+</tr>
+<tr>
+<td><code>"xna"</code></td>
+</tr>
+<tr>
+<td><code>"hashlink"</code></td>
+</tr>
+<tr>
+<td><code>"defold"</code></td>
+</tr>
+<tr>
+<td><code>"construct"</code></td>
+</tr>
+<tr>
+<td><code>"electron"</code></td>
+</tr>
+<tr>
+<td><code>"nwjs"</code></td>
+</tr>
+<tr>
+<td><code>"python"</code></td>
+</tr>
+<tr>
+<td><code>"libgdx"</code></td>
+</tr>
+<tr>
+<td><code>"lwjgl"</code></td>
+</tr>
+</table>
+
+</div>
+
+### EngineInfo (struct)
+
+
+<p>
+<p>EngineInfo describes what made a candidate and, for payloads, what runtime
+it needs.</p>
+
+</p>
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>engine</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#Engine__TypeHint">Engine</span></code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Engine version, in the engine&rsquo;s own notation: &ldquo;3.5.2&rdquo;, &ldquo;2022.3.10f1&rdquo;,
+&ldquo;11.5&rdquo;. Empty when it would cost too much to find out or is not
+recorded anywhere.</p>
+</td>
+</tr>
+<tr>
+<td><code>details</code></td>
+<td><code class="typename"><span class="type builtin-type">{ [key: string]: any }</span></code></td>
+<td><p><span class="tag">Optional</span> Free-form engine facts. Keys are documented per detector; the ones
+shared across engines are &ldquo;confidence&rdquo; (&ldquo;ext&rdquo; when only the file name
+was used) and &ldquo;system&rdquo; (console id for ROMs).</p>
+</td>
+</tr>
+</table>
+
+
+<div id="EngineInfo__TypeHint" class="tip-content">
+<p>EngineInfo (struct) <a href="#/?id=engineinfo-struct">(Go to definition)</a></p>
+
+<p>
+<p>EngineInfo describes what made a candidate and, for payloads, what runtime
+it needs.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>engine</code></td>
+<td><code class="typename"><span class="type">Engine</span></code></td>
+</tr>
+<tr>
+<td><code>version</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>details</code></td>
+<td><code class="typename"><span class="type builtin-type">{ [key: string]: any }</span></code></td>
 </tr>
 </table>
 
@@ -14503,6 +18093,52 @@ a web game, some music, etc.</p>
 
 </div>
 
+### CollectionLayout (enum)
+
+
+<p>
+<p>CollectionLayout is how a collection&rsquo;s games are displayed on itch.io</p>
+
+</p>
+
+<p>
+<span class="header">Values</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>"grid"</code></td>
+<td><p>CollectionLayoutGrid shows games as a grid of covers</p>
+</td>
+</tr>
+<tr>
+<td><code>"list"</code></td>
+<td><p>CollectionLayoutList shows games as a list, with blurbs</p>
+</td>
+</tr>
+</table>
+
+
+<div id="CollectionLayout__TypeHint" class="tip-content">
+<p>CollectionLayout (enum) <a href="#/?id=collectionlayout-enum">(Go to definition)</a></p>
+
+<p>
+<p>CollectionLayout is how a collection&rsquo;s games are displayed on itch.io</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>"grid"</code></td>
+</tr>
+<tr>
+<td><code>"list"</code></td>
+</tr>
+</table>
+
+</div>
+
 ### Collection (struct)
 
 
@@ -14524,9 +18160,40 @@ a web game, some music, etc.</p>
 </td>
 </tr>
 <tr>
+<td><code>url</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Canonical address of the collection&rsquo;s page on itch.io</p>
+</td>
+</tr>
+<tr>
 <td><code>title</code></td>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
 <td><p>Human-friendly title for collection, for example <code>Couch coop games</code></p>
+</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> HTML description shown on the collection page</p>
+</td>
+</tr>
+<tr>
+<td><code>private</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p>Whether the collection is hidden from everyone but its editors</p>
+</td>
+</tr>
+<tr>
+<td><code>layout</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#CollectionLayout__TypeHint">CollectionLayout</span></code></td>
+<td><p><span class="tag">Optional</span> How games are displayed</p>
+</td>
+</tr>
+<tr>
+<td><code>hasGame</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> Only set when listing collections filtered by a game: whether
+that game is in this collection</p>
 </td>
 </tr>
 <tr>
@@ -14583,8 +18250,28 @@ page deleted, visibility level changed, etc.)</p>
 <td><code class="typename"><span class="type builtin-type">number</span></code></td>
 </tr>
 <tr>
+<td><code>url</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
 <td><code>title</code></td>
 <td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>private</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>layout</code></td>
+<td><code class="typename"><span class="type">CollectionLayout</span></code></td>
+</tr>
+<tr>
+<td><code>hasGame</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
 </tr>
 <tr>
 <td><code>createdAt</code></td>

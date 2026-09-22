@@ -13,6 +13,7 @@
   * [Progress bar design](pushing.md#appendix-a-understanding-the-progress-bar)
   * [Hidden channels](pushing.md#appendix-f-pushing-to-a-hidden-channel)
   * [Troubleshooting](troubleshooting.md)
+* [Syncing builds from Steam](steam-sync.md)
 * [Prerequisites](prerequisites.md)
 * [Third-party integrations](integration.md)
 * [Building a launcher with butlerd](launcher-integration.md)

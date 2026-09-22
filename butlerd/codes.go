@@ -18,6 +18,8 @@ var codeMessages = map[Code]string{
 
 	CodeLaunchTargetNotFound: "The requested launch target was not found.",
 
+	CodeLaunchStrategyNotAllowed: "This title cannot be launched by this client.",
+
 	CodeJavaRuntimeNeeded: "Java Runtime Environment is required to launch this title.",
 
 	CodeNetworkDisconnected: "There is no Internet connection",
@@ -31,6 +33,12 @@ var codeMessages = map[Code]string{
 	CodeSandboxNotAvailable: "The selected sandbox is not available on this system.",
 
 	CodeNoSuchProfile: "The requested profile does not exist.",
+
+	CodePublishSteamSyncNotLoggedIn:         "Not logged in to Steam.",
+	CodePublishSteamSyncNoPublisherKey:      "No Steam publisher key is stored.",
+	CodePublishSteamSyncPublisherKeyInvalid: "Steam rejected the publisher key.",
+	CodePublishSteamSyncLoginDenied:         "The Steam login was denied.",
+	CodePublishSteamSyncLoginInProgress:     "A Steam login is already in progress.",
 }
 
 func (code Code) RpcErrorMessage() string {

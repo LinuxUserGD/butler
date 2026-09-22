@@ -26,6 +26,55 @@ func resolveSandbox(pref *bool, manifestOptIn bool) bool {
 	return manifestOptIn
 }
 
+// resolveSandboxOptions resolves the sandbox-options tiers. An explicit
+// client options object replaces everything below it as a whole: its
+// fields aren't pointers, so sending a block is the only way a client
+// can express false/empty knobs. Without one, cave settings merge over
+// client defaults per knob; both are pointer-typed there, so an explicit
+// false or empty list shadows a default. Returns nil when no tier says
+// anything.
+func resolveSandboxOptions(fromParams *butlerd.SandboxOptions, settings butlerd.CaveSettings, defaults *butlerd.LaunchDefaults) *butlerd.SandboxOptions {
+	if fromParams != nil {
+		return fromParams
+	}
+
+	opts := &butlerd.SandboxOptions{}
+	any := false
+
+	switch {
+	case settings.SandboxType != nil:
+		opts.Type = *settings.SandboxType
+		any = true
+	case defaults != nil && defaults.SandboxType != nil:
+		opts.Type = *defaults.SandboxType
+		any = true
+	}
+
+	switch {
+	case settings.SandboxNoNetwork != nil:
+		opts.NoNetwork = *settings.SandboxNoNetwork
+		any = true
+	case defaults != nil && defaults.SandboxNoNetwork != nil:
+		opts.NoNetwork = *defaults.SandboxNoNetwork
+		any = true
+	}
+
+	// defaults' list is a plain slice where empty means unset
+	switch {
+	case settings.SandboxAllowEnv != nil:
+		opts.AllowEnv = *settings.SandboxAllowEnv
+		any = true
+	case defaults != nil && len(defaults.SandboxAllowEnv) > 0:
+		opts.AllowEnv = defaults.SandboxAllowEnv
+		any = true
+	}
+
+	if !any {
+		return nil
+	}
+	return opts
+}
+
 func getUploadAndBuild(rc *butlerd.RequestContext, info withInstallFolderInfo) (upload *itchio.Upload, build *itchio.Build, err error) {
 	consumer := rc.Consumer
 
@@ -87,6 +136,10 @@ func getUploadAndBuild(rc *butlerd.RequestContext, info withInstallFolderInfo) (
 type getTargetsParams struct {
 	info  withInstallFolderInfo
 	hosts []manager.Host
+	// payload flavors the client runs itself, see LaunchGetTargetsParams
+	runtimes []dash.Flavor
+	// fill imports, glibc, SDL and display info on native candidates
+	deepProbe bool
 }
 
 type getTargetsResult struct {
@@ -118,9 +171,10 @@ func getTargets(rc *butlerd.RequestContext, params getTargetsParams) (*getTarget
 	}
 
 	verdict, err := configure.Do(configure.Params{
-		Path:     installFolder,
-		NoFilter: true,
-		Consumer: consumer,
+		Path:      installFolder,
+		NoFilter:  true,
+		DeepProbe: params.deepProbe,
+		Consumer:  consumer,
 	})
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -128,37 +182,49 @@ func getTargets(rc *butlerd.RequestContext, params getTargetsParams) (*getTarget
 
 	var targets []*butlerd.LaunchTarget
 
-	shouldBrowse := false
-	if upload != nil {
-		switch upload.Type {
-		case "soundtrack", "book", "video", "documentation", "mod", "audio_assets", "graphical_assets", "sourcecode":
-			consumer.Infof("Upload is of type (%s), forcing shell strategy", upload.Type)
-			shouldBrowse = true
-		}
-	}
+	// Content uploads (soundtracks, source code, mods...) are not meant to
+	// be run but often hold something runnable: a PICO-8 cart is source
+	// code, a Doom WAD is a mod. The folder goes first so a lone
+	// executable never launches on its own, short of a saved preference
+	// or a client that disallows the shell strategy. A manifest that
+	// fails to resolve (source code naming a build never made) must not
+	// take the folder away.
+	contentUpload := upload != nil && isContentUploadType(upload.Type)
 
-	if !shouldBrowse {
-		for _, host := range params.hosts {
-			hostTargets, err := getTargetsForHost(rc, upload, appManifest, verdict, info, host)
-			if err != nil {
+	for _, host := range params.hosts {
+		hostTargets, err := getTargetsForHost(rc, upload, appManifest, verdict, info, host, params.runtimes)
+		if err != nil {
+			if !contentUpload {
 				return nil, err
 			}
-			targets = append(targets, hostTargets...)
+			consumer.Warnf("Could not resolve targets for host %s of a (%s) upload: %v", host, upload.Type, err)
+			continue
 		}
+		targets = append(targets, hostTargets...)
 	}
 
-	if len(targets) == 0 {
-		consumer.Warnf("Falling back to shell strategy")
-		targets = append(targets, &butlerd.LaunchTarget{
+	browse := func(name, icon string) *butlerd.LaunchTarget {
+		return &butlerd.LaunchTarget{
 			Action: &manifest.Action{
-				Name: info.cave.Game.Title,
+				Name: name,
+				Icon: icon,
 				Path: ".",
 			},
 			Strategy: &butlerd.StrategyResult{
 				FullTargetPath: installFolder,
 				Strategy:       butlerd.LaunchStrategyShell,
 			},
-		})
+		}
+	}
+
+	if contentUpload {
+		consumer.Infof("Upload is of type (%s), offering the folder first", upload.Type)
+		targets = append([]*butlerd.LaunchTarget{browse("Open folder", "folder-open")}, targets...)
+	}
+
+	if len(targets) == 0 {
+		consumer.Warnf("Falling back to shell strategy")
+		targets = append(targets, browse(info.cave.Game.Title, ""))
 	}
 
 	var uniqueTargets []*butlerd.LaunchTarget
@@ -186,6 +252,7 @@ func getTargetsForHost(rc *butlerd.RequestContext,
 	verdict *dash.Verdict,
 	info withInstallFolderInfo,
 	host manager.Host,
+	runtimes []dash.Flavor,
 ) ([]*butlerd.LaunchTarget, error) {
 	consumer := rc.Consumer
 	consumer.Opf("Seeking launch targets for host (%s)", host)
@@ -220,11 +287,20 @@ func getTargetsForHost(rc *butlerd.RequestContext,
 				return action, nil
 			}
 
-			if len(verdict.Candidates) != 1 {
-				consumer.Warnf("Expected 1 candidates but had (%d)", len(verdict.Candidates))
+			// an executable with an embedded payload (fused LÖVE, Godot
+			// pck, AGS data) is also reported as that payload at the same
+			// path; only the executable says which platform the action is for
+			var candidates []*dash.Candidate
+			for _, c := range verdict.Candidates {
+				if !c.IsPayload() {
+					candidates = append(candidates, c)
+				}
+			}
+			if len(candidates) != 1 {
+				consumer.Warnf("Expected 1 candidate but had (%d)", len(candidates))
 				return action, nil
 			}
-			candidate := verdict.Candidates[0]
+			candidate := candidates[0]
 			platform := flavorToPlatform(candidate.Flavor)
 			if platform != nil {
 				action.Platform = *platform
@@ -254,6 +330,9 @@ func getTargetsForHost(rc *butlerd.RequestContext,
 				consumer.Warnf("Could not resolve launch target for action '%s' on host %s: %v", action.Name, host, err)
 				continue
 			}
+			if nativeHost {
+				target = runtimeTargetForAction(consumer, host, target, runtimes)
+			}
 			targets = append(targets, target)
 			consumer.Logf("%s", target.Strategy.String())
 		}
@@ -280,17 +359,35 @@ func getTargetsForHost(rc *butlerd.RequestContext,
 		// so use it to filter.
 		filterParams.Arch = info.runtime.Arch()
 	}
+	if nativeHost {
+		// the client's runtimes only exist on the machine it runs on
+		filterParams.Runtimes = runtimes
+	}
 
 	v2 := verdict.Filter(consumer, filterParams)
 	verdict = &v2
 
 	for _, candidate := range verdict.Candidates {
-		target, err := CandidateToLaunchTarget(consumer, info.installFolder, host, candidate)
-		if err != nil {
-			return nil, err
+		var target *butlerd.LaunchTarget
+		if dash.MatchesRuntime(candidate, filterParams.Runtimes) {
+			target = RuntimeLaunchTarget(info.installFolder, host, candidate)
+		} else {
+			var err error
+			target, err = CandidateToLaunchTarget(consumer, info.installFolder, host, candidate)
+			if err != nil {
+				return nil, err
+			}
 		}
 		targets = append(targets, target)
 	}
 
 	return targets, nil
+}
+
+func isContentUploadType(uploadType itchio.UploadType) bool {
+	switch uploadType {
+	case "soundtrack", "book", "video", "documentation", "mod", "audio_assets", "graphical_assets", "sourcecode":
+		return true
+	}
+	return false
 }

@@ -161,6 +161,73 @@ func CandidateToLaunchTarget(consumer *state.Consumer, basePath string, host man
 	return target, nil
 }
 
+// runtimeTargetForAction hands a manifest action to the client when it
+// runs what the action points at: a payload file, or a folder holding
+// one. The action stays, with its name, arguments and settings; only the
+// strategy changes. Anything else is returned as it was.
+func runtimeTargetForAction(consumer *state.Consumer, host manager.Host, target *butlerd.LaunchTarget, runtimes []dash.Flavor) *butlerd.LaunchTarget {
+	if len(runtimes) == 0 || target.Strategy == nil {
+		return target
+	}
+	var basePath string
+	var candidate *dash.Candidate
+	switch target.Strategy.Strategy {
+	case butlerd.LaunchStrategyNative:
+		basePath = filepath.Dir(target.Strategy.FullTargetPath)
+		candidate = target.Strategy.Candidate
+	case butlerd.LaunchStrategyShell:
+		basePath = target.Strategy.FullTargetPath
+		verdict, err := dash.Configure(basePath, dash.ConfigureParams{
+			Consumer: consumer,
+			Filter:   filtering.FilterPaths,
+		})
+		if err != nil {
+			consumer.Warnf("Could not configure (%s): %v", basePath, err)
+			return target
+		}
+		for _, c := range verdict.Candidates {
+			if dash.MatchesRuntime(c, runtimes) {
+				candidate = c
+				break
+			}
+		}
+	default:
+		return target
+	}
+	if candidate == nil || !dash.MatchesRuntime(candidate, runtimes) {
+		return target
+	}
+	consumer.Infof("Action '%s' points at a %s payload the client runs itself", target.Action.Name, candidate.Flavor)
+	runtimeTarget := RuntimeLaunchTarget(basePath, host, candidate)
+	runtimeTarget.Action = target.Action
+	return runtimeTarget
+}
+
+// RuntimeLaunchTarget describes a payload the client runs with its own
+// runtime. Unlike the shell fallback, the target path is the payload
+// itself, file or folder.
+func RuntimeLaunchTarget(basePath string, host manager.Host, candidate *dash.Candidate) *butlerd.LaunchTarget {
+	fullPath := filepath.Join(basePath, filepath.FromSlash(candidate.Path))
+
+	name := filepath.Base(fullPath)
+	if candidate.Size > 0 {
+		name += fmt.Sprintf(" (%s)", united.FormatBytes(candidate.Size))
+	}
+
+	return &butlerd.LaunchTarget{
+		Host: host,
+		Action: &manifest.Action{
+			Name: name,
+			Path: candidate.Path,
+		},
+		Strategy: &butlerd.StrategyResult{
+			Strategy:       butlerd.LaunchStrategyRuntime,
+			FullTargetPath: fullPath,
+			Candidate:      candidate,
+		},
+	}
+}
+
 func IsElevatedWindowsInstaller(consumer *state.Consumer, candidate *dash.Candidate, fullPath string) bool {
 	if candidate.Flavor != dash.FlavorNativeWindows {
 		return false

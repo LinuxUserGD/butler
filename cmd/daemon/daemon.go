@@ -7,14 +7,15 @@ import (
 	"net"
 	"os"
 	"path/filepath"
+	"runtime"
 
 	"github.com/itchio/butler/butlerd/horror"
 
-	"crawshaw.io/sqlite/sqlitex"
 	"github.com/google/gops/agent"
 	"github.com/google/uuid"
 	"github.com/itchio/butler/butlerd"
 	"github.com/itchio/butler/database"
+	"github.com/itchio/butler/database/dbpool"
 	"github.com/itchio/butler/database/models"
 	"github.com/itchio/headway/state"
 
@@ -28,6 +29,7 @@ var args = struct {
 	transport   string
 	keepAlive   bool
 	log         bool
+	lowPower    bool
 }{}
 
 // origStdout holds the real stdout before redirecting it for stdio transport.
@@ -39,6 +41,7 @@ func Register(ctx *mansion.Context) {
 	cmd.Flag("transport", "Which transport to use").Default("tcp").EnumVar(&args.transport, "http", "tcp", "stdio")
 	cmd.Flag("keep-alive", "Accept multiple TCP connections, stay up until killed or a destiny PID shuts down").BoolVar(&args.keepAlive)
 	cmd.Flag("log", "Log all requests to stderr").BoolVar(&args.log)
+	cmd.Flag("low-power", "Favor a small CPU and memory footprint over speed, for battery-powered devices").BoolVar(&args.lowPower)
 	ctx.Register(cmd, do)
 }
 
@@ -68,6 +71,10 @@ func do(ctx *mansion.Context) {
 	}
 
 	ctx.EnsureDBPath()
+
+	if args.lowPower {
+		applyLowPower()
+	}
 
 	err := agent.Listen(agent.Options{
 		Addr:            "localhost:0",
@@ -102,7 +109,12 @@ func do(ctx *mansion.Context) {
 		justCreated = true
 	}
 
-	dbPool, err := sqlitex.Open(ctx.DBPath, 0, 100)
+	dbPool, err := dbpool.Open(ctx.DBPath, dbpool.Options{
+		MaxConns: 100,
+		OnOpenError: func(err error) {
+			comm.Warnf("butlerd: could not open additional database connection: %+v", err)
+		},
+	})
 	if err != nil {
 		ctx.Must(errors.WithMessage(err, "opening DB for the first time"))
 	}
@@ -128,7 +140,18 @@ func do(ctx *mansion.Context) {
 	ctx.Must(Do(ctx, context.Background(), dbPool, secret))
 }
 
-func Do(mansionContext *mansion.Context, ctx context.Context, dbPool *sqlitex.Pool, secret string) error {
+// lowPowerMaxProcs leaves cores for the client's interface and the game it
+// may be running while butler installs something.
+const lowPowerMaxProcs = 2
+
+func applyLowPower() {
+	if runtime.GOMAXPROCS(0) > lowPowerMaxProcs {
+		runtime.GOMAXPROCS(lowPowerMaxProcs)
+	}
+	comm.Logf("butlerd: low power mode, using %d of %d cores", runtime.GOMAXPROCS(0), runtime.NumCPU())
+}
+
+func Do(mansionContext *mansion.Context, ctx context.Context, dbPool *dbpool.Pool, secret string) error {
 	s := butlerd.NewServer(secret)
 	router := GetRouter(dbPool, mansionContext)
 

@@ -2,6 +2,7 @@ package butlerd
 
 import (
 	"fmt"
+	"github.com/itchio/dash"
 	"time"
 
 	"github.com/itchio/hush"
@@ -244,6 +245,11 @@ type ProfileLoginWithOAuthCodeParams struct {
 
 	// The OAuth client ID used in the authorization request
 	ClientID string `json:"clientId"`
+
+	// Device information string
+	//
+	// @optional
+	DeviceInfo string `json:"deviceInfo"`
 }
 
 func (p ProfileLoginWithOAuthCodeParams) Validate() error {
@@ -1052,6 +1058,11 @@ type FetchProfileCollectionsParams struct {
 	// If set, will force fresh data
 	// @optional
 	Fresh bool `json:"fresh"`
+
+	// When set, every returned collection has `hasGame` filled in
+	// for this game. This always asks the API, regardless of `fresh`.
+	// @optional
+	GameID int64 `json:"gameId"`
 }
 
 func (p FetchProfileCollectionsParams) Validate() error {
@@ -1919,6 +1930,256 @@ func (p FetchExpireAllParams) Validate() error {
 type FetchExpireAllResult struct{}
 
 //----------------------------------------------------------------------
+// Collections
+//----------------------------------------------------------------------
+
+// Creates a collection owned by the profile's user.
+//
+// @name Collections.Create
+// @category Collections
+// @caller client
+type CollectionsCreateParams struct {
+	// Profile to create the collection as
+	ProfileID int64 `json:"profileId"`
+
+	// Title of the collection. Defaults to "<username>'s Collection" when empty.
+	// @optional
+	Title string `json:"title"`
+
+	// Whether the collection is hidden from everyone but its editors
+	// @optional
+	Private bool `json:"private"`
+
+	// HTML description shown on the collection page
+	// @optional
+	Description string `json:"description"`
+
+	// How games are displayed. Defaults to "list" when a blurb is
+	// given, "grid" otherwise.
+	// @optional
+	Layout itchio.CollectionLayout `json:"layout"`
+
+	// A game to add to the collection right away
+	// @optional
+	GameID int64 `json:"gameId"`
+
+	// HTML blurb for that game. Only used together with gameId.
+	// @optional
+	Blurb string `json:"blurb"`
+}
+
+func (p CollectionsCreateParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ProfileID, validation.Required),
+		validation.Field(&p.Layout, validation.In(itchio.CollectionLayoutGrid, itchio.CollectionLayoutList)),
+	)
+}
+
+type CollectionsCreateResult struct {
+	// The newly created collection
+	Collection *itchio.Collection `json:"collection"`
+}
+
+// Changes a collection's title, description, visibility, layout, or
+// whether it is shown on the profile. Fields that are omitted are
+// left unchanged.
+//
+// @name Collections.Update
+// @category Collections
+// @caller client
+type CollectionsUpdateParams struct {
+	// Profile to edit the collection as
+	ProfileID int64 `json:"profileId"`
+
+	// Collection to edit
+	CollectionID int64 `json:"collectionId"`
+
+	// New title
+	// @optional
+	Title *string `json:"title,omitempty"`
+
+	// New HTML description. An empty string clears it.
+	// @optional
+	Description *string `json:"description,omitempty"`
+
+	// Whether the collection is hidden from everyone but its editors
+	// @optional
+	Private *bool `json:"private,omitempty"`
+
+	// How games are displayed
+	// @optional
+	Layout *itchio.CollectionLayout `json:"layout,omitempty"`
+
+	// Whether the collection is shown on the profile's user page
+	// @optional
+	OnProfile *bool `json:"onProfile,omitempty"`
+}
+
+func (p CollectionsUpdateParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ProfileID, validation.Required),
+		validation.Field(&p.CollectionID, validation.Required),
+		validation.Field(&p.Layout, validation.In(itchio.CollectionLayoutGrid, itchio.CollectionLayoutList)),
+	)
+}
+
+type CollectionsUpdateResult struct {
+	// The collection after the update
+	Collection *itchio.Collection `json:"collection"`
+}
+
+// Deletes a collection and everything in it.
+//
+// @name Collections.Delete
+// @category Collections
+// @caller client
+type CollectionsDeleteParams struct {
+	// Profile to delete the collection as
+	ProfileID int64 `json:"profileId"`
+
+	// Collection to delete
+	CollectionID int64 `json:"collectionId"`
+}
+
+func (p CollectionsDeleteParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ProfileID, validation.Required),
+		validation.Field(&p.CollectionID, validation.Required),
+	)
+}
+
+type CollectionsDeleteResult struct{}
+
+// Adds a game to the end of a collection. Adding a game that is
+// already in the collection returns the existing entry.
+//
+// @name Collections.AddGame
+// @category Collections
+// @caller client
+type CollectionsAddGameParams struct {
+	// Profile to edit the collection as
+	ProfileID int64 `json:"profileId"`
+
+	// Collection to add the game to
+	CollectionID int64 `json:"collectionId"`
+
+	// Game to add
+	GameID int64 `json:"gameId"`
+
+	// HTML blurb shown next to the game in "list" layout
+	// @optional
+	Blurb string `json:"blurb"`
+}
+
+func (p CollectionsAddGameParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ProfileID, validation.Required),
+		validation.Field(&p.CollectionID, validation.Required),
+		validation.Field(&p.GameID, validation.Required),
+	)
+}
+
+type CollectionsAddGameResult struct {
+	// The game's entry in the collection
+	CollectionGame *itchio.CollectionGame `json:"collectionGame"`
+}
+
+// Removes a game from a collection.
+//
+// @name Collections.RemoveGame
+// @category Collections
+// @caller client
+type CollectionsRemoveGameParams struct {
+	// Profile to edit the collection as
+	ProfileID int64 `json:"profileId"`
+
+	// Collection to remove the game from
+	CollectionID int64 `json:"collectionId"`
+
+	// Game to remove
+	GameID int64 `json:"gameId"`
+}
+
+func (p CollectionsRemoveGameParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ProfileID, validation.Required),
+		validation.Field(&p.CollectionID, validation.Required),
+		validation.Field(&p.GameID, validation.Required),
+	)
+}
+
+type CollectionsRemoveGameResult struct {
+	// False if the game was not in the collection to begin with
+	Removed bool `json:"removed"`
+}
+
+// Edits a game's entry in a collection.
+//
+// @name Collections.UpdateGame
+// @category Collections
+// @caller client
+type CollectionsUpdateGameParams struct {
+	// Profile to edit the collection as
+	ProfileID int64 `json:"profileId"`
+
+	// Collection the game is in
+	CollectionID int64 `json:"collectionId"`
+
+	// Game whose entry to edit
+	GameID int64 `json:"gameId"`
+
+	// New HTML blurb. An empty string clears it, omitting it leaves
+	// it unchanged.
+	// @optional
+	Blurb *string `json:"blurb,omitempty"`
+}
+
+func (p CollectionsUpdateGameParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ProfileID, validation.Required),
+		validation.Field(&p.CollectionID, validation.Required),
+		validation.Field(&p.GameID, validation.Required),
+	)
+}
+
+type CollectionsUpdateGameResult struct {
+	// The game's entry in the collection after the update
+	CollectionGame *itchio.CollectionGame `json:"collectionGame"`
+}
+
+// Sets the order of the games in a collection, optionally removing
+// some games at the same time.
+//
+// @name Collections.OrderGames
+// @category Collections
+// @caller client
+type CollectionsOrderGamesParams struct {
+	// Profile to edit the collection as
+	ProfileID int64 `json:"profileId"`
+
+	// Collection to reorder
+	CollectionID int64 `json:"collectionId"`
+
+	// Game IDs in the desired order, the first one is shown first.
+	// Up to 500 games.
+	GameIDs []int64 `json:"gameIds"`
+
+	// Games to remove from the collection before ordering
+	// @optional
+	RemoveGameIDs []int64 `json:"removeGameIds,omitempty"`
+}
+
+func (p CollectionsOrderGamesParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ProfileID, validation.Required),
+		validation.Field(&p.CollectionID, validation.Required),
+		validation.Field(&p.GameIDs, validation.Length(0, 500)),
+	)
+}
+
+type CollectionsOrderGamesResult struct{}
+
+//----------------------------------------------------------------------
 // Game
 //----------------------------------------------------------------------
 
@@ -2774,6 +3035,11 @@ type DownloadsDriveErroredNotification struct {
 // @name Downloads.Drive.Finished
 type DownloadsDriveFinishedNotification struct {
 	Download *Download `json:"download"`
+	// Events recorded during the operation (install, upgrade, heal...).
+	// Not persisted with the download, so this notification is the only
+	// place to get them.
+	// @optional
+	Events []hush.InstallEvent `json:"events,omitempty"`
 }
 
 // @name Downloads.Drive.Discarded
@@ -2998,6 +3264,23 @@ type SnoozeCaveResult struct {
 type LaunchGetTargetsParams struct {
 	// The ID of the cave to list launch targets for
 	CaveID string `json:"caveId"`
+
+	// Payload flavors the client can run with a runtime of its own, in
+	// dash's vocabulary: "love", "godot-pck", "rom:nes", "rom:gba", or
+	// "rom" for every console. Matching payloads are returned with the
+	// @@LaunchStrategyRuntime strategy, for the client to launch itself;
+	// butler never runs them. When empty, payloads are only listed when
+	// nothing else is launchable, as before.
+	// @optional
+	Runtimes []string `json:"runtimes,omitempty"`
+
+	// Fill the dependency record of native candidates: imports, glibc
+	// version, SDL version and how it is linked, display libraries
+	// (see LinuxInfo and WindowsInfo). Parses section tables of every
+	// native executable in the install folder, so it costs more than
+	// the default sniff; leave it off unless the client acts on it.
+	// @optional
+	DeepProbe bool `json:"deepProbe,omitempty"`
 }
 
 func (p LaunchGetTargetsParams) Validate() error {
@@ -3021,25 +3304,33 @@ type LaunchParams struct {
 	// The ID of the cave to launch
 	CaveID string `json:"caveId"`
 
-	// The directory to use to store installer files for prerequisites
-	PrereqsDir string `json:"prereqsDir"`
+	// The directory to use to store installer files for prerequisites.
+	// When empty, launching a title that turns out to require
+	// prerequisites fails (via the PrereqsFailed flow); most titles
+	// require none.
+	// @optional
+	PrereqsDir string `json:"prereqsDir,omitempty"`
 
 	// Force installing all prerequisites, even if they're already marked as installed
 	// @optional
 	ForcePrereqs bool `json:"forcePrereqs,omitempty"`
 
-	// Sandbox preference for this launch. When omitted, the manifest may enable
-	// sandboxing. An explicit value overrides the manifest preference.
+	// Sandbox preference for this launch. When omitted, the cave's sandbox
+	// setting applies, then the manifest opt-in. An explicit value overrides
+	// both.
 	// @optional
 	Sandbox *bool `json:"sandbox,omitempty"`
 
 	// Sandbox configuration options. Only applied when sandbox is enabled.
+	// When omitted, the cave's persisted sandbox overrides merge per knob
+	// over the client defaults; an explicit value replaces both as a whole.
 	// @optional
 	SandboxOptions *SandboxOptions `json:"sandboxOptions,omitempty"`
 
 	// Command template applied to native launches. Use %command% as a standalone
 	// token to place the resolved game command. Without it, tokens are appended
-	// as arguments to the resolved command.
+	// as arguments to the resolved command. When omitted, the cave's
+	// commandTemplate setting applies.
 	// @optional
 	CommandTemplate string `json:"commandTemplate,omitempty"`
 
@@ -3055,6 +3346,56 @@ type LaunchParams struct {
 	// Butler resolves any suitable profile (legacy behavior).
 	// @optional
 	ProfileID int64 `json:"profileId,omitempty"`
+
+	// When non-empty, declares the launch strategies this client can
+	// serve. Targets using other strategies are excluded from selection;
+	// if none remain, or an explicit target or the cave's saved launch
+	// target names an excluded one, the launch fails with
+	// CodeLaunchStrategyNotAllowed before any launcher or session side
+	// effects. Checked under the install folder lock, so it is
+	// not subject to the Launch.GetTargets race. Target discovery may still
+	// refresh metadata over the network before this check.
+	// @optional
+	AllowedStrategies []LaunchStrategy `json:"allowedStrategies,omitempty"`
+
+	// Payload flavors the client runs with a runtime of its own, as for
+	// @@LaunchGetTargetsParams. Matching payloads become targets with the
+	// @@LaunchStrategyRuntime strategy, which are launched by asking the
+	// client (@@RuntimeLaunchParams). Pass the same list that produced the
+	// target being launched, or the target will not be found.
+	// @optional
+	Runtimes []string `json:"runtimes,omitempty"`
+
+	// Client-supplied defaults for knobs that both the explicit params and
+	// the cave's settings leave unset, typically sourced from a frontend's
+	// global preferences. Resolution order: explicit params, then cave
+	// settings, then these defaults, then the manifest (for the sandbox
+	// opt-in). Sandbox options resolve per knob between settings and
+	// defaults, but an explicit sandboxOptions param replaces both as a
+	// whole.
+	// @optional
+	Defaults *LaunchDefaults `json:"defaults,omitempty"`
+}
+
+// Client-supplied launch defaults, applied below per-cave settings.
+// See @@LaunchParams.
+type LaunchDefaults struct {
+	// Sandbox default. Absent (not false) when the frontend has no global
+	// sandbox preference, so a manifest opt-in still applies.
+	// @optional
+	Sandbox *bool `json:"sandbox,omitempty"`
+
+	// Default sandbox runner type.
+	// @optional
+	SandboxType *SandboxType `json:"sandboxType,omitempty"`
+
+	// Default for cutting network access inside the sandbox.
+	// @optional
+	SandboxNoNetwork *bool `json:"sandboxNoNetwork,omitempty"`
+
+	// Default extra environment variables allowed through the sandbox.
+	// @optional
+	SandboxAllowEnv []string `json:"sandboxAllowEnv,omitempty"`
 }
 
 type SandboxType string
@@ -3110,7 +3451,6 @@ func validateCaveSettings(settings *CaveSettings) error {
 func (p LaunchParams) Validate() error {
 	err := validation.ValidateStruct(&p,
 		validation.Field(&p.CaveID, validation.Required),
-		validation.Field(&p.PrereqsDir, validation.Required),
 	)
 	if err != nil {
 		return err
@@ -3134,7 +3474,16 @@ type LaunchResult struct {
 // sandbox is set up (if enabled), and the game is actually running.
 //
 // @category Launch
-type LaunchRunningNotification struct{}
+type LaunchRunningNotification struct {
+	// The process butler started, when it runs the game itself: the
+	// game's, or the wrapper's around it (a sandbox, or `open` for a
+	// macOS bundle). Absent for a launch butler does not run (html, url,
+	// shell, runtime). A client that must name the game to something
+	// outside butler, such as a firmware's kill hotkey, names this.
+	//
+	// @optional
+	Pid int64 `json:"pid,omitempty"`
+}
 
 // Sent during @@LaunchParams, when the game has actually exited.
 //
@@ -3234,6 +3583,46 @@ func (p HTMLLaunchParams) Validate() error {
 }
 
 type HTMLLaunchResult struct {
+}
+
+// Ask the client to run a payload with a runtime of its own: a ROM in
+// its emulator, a LÖVE game in its LÖVE. This is how a client that
+// manages the game process itself keeps butler's bookkeeping. Sent
+// during @@LaunchParams for a @@LaunchStrategyRuntime target, after
+// @@LaunchRunningNotification; the play session and the cave's play
+// time run from then until the reply.
+//
+// Reply when the game has exited. A plain reply is a normal exit, an
+// error reply is a failure or crash and fails the launch. butler never
+// sees the process, so it cannot end it: when the launch is cancelled,
+// the client ends the game itself.
+//
+// @category Launch
+// @caller server
+type RuntimeLaunchParams struct {
+	// Absolute path of the payload: a file, or a folder for engines that
+	// run one (a LÖVE game with its main.lua at the root).
+	FullTargetPath string `json:"fullTargetPath"`
+	// What the payload is, as dash found it: the flavor, and for ROMs
+	// the system in Engine.Details.
+	Candidate *dash.Candidate `json:"candidate"`
+
+	// Command-line arguments from the manifest action, if any
+	// @optional
+	Args []string `json:"args,omitempty"`
+	// Environment variables from the manifest action, if any
+	// @optional
+	Env map[string]string `json:"env,omitempty"`
+}
+
+func (p RuntimeLaunchParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.FullTargetPath, validation.Required),
+		validation.Field(&p.Candidate, validation.Required),
+	)
+}
+
+type RuntimeLaunchResult struct {
 }
 
 // Ask the client to perform an URL launch, ie. open an address
@@ -3552,6 +3941,10 @@ const (
 	// did not match any launch target
 	CodeLaunchTargetNotFound Code = 5001
 
+	// The selected target's strategy is not in
+	// LaunchParams.allowedStrategies
+	CodeLaunchStrategyNotAllowed Code = 5002
+
 	// Java Runtime Environment is required to launch this title.
 	CodeJavaRuntimeNeeded Code = 6000
 
@@ -3572,6 +3965,18 @@ const (
 
 	// The profile explicitly requested for an operation does not exist
 	CodeNoSuchProfile Code = 20000
+
+	// No Steam login is stored, or Steam rejected the stored one.
+	// Call @@PublishSteamSyncLoginParams.
+	CodePublishSteamSyncNotLoggedIn Code = 21000
+	// No Steam publisher key is stored. Call @@PublishSteamSyncSetPublisherKeyParams.
+	CodePublishSteamSyncNoPublisherKey Code = 21001
+	// The partner API rejected the publisher key.
+	CodePublishSteamSyncPublisherKeyInvalid Code = 21002
+	// The user declined the login on their phone, or the challenge expired.
+	CodePublishSteamSyncLoginDenied Code = 21003
+	// Another @@PublishSteamSyncLoginParams call is still waiting for approval.
+	CodePublishSteamSyncLoginInProgress Code = 21004
 )
 
 // Publish
@@ -3971,4 +4376,451 @@ var GameClassificationList = []interface{}{
 	itchio.GameClassificationOther,
 	itchio.GameClassificationComic,
 	itchio.GameClassificationBook,
+}
+
+// Publish.SteamSync
+
+// Steam credentials are global, not per profile: the publisher key
+// belongs to a Steam partner account, not an itch.io user. They are kept
+// in a file next to butler's own credentials, shared with the
+// `butler steam-*` commands.
+
+// Reports what Steam credentials are stored. Reads a local file only;
+// whether the login is still accepted by Steam is found out by the
+// operations that use it, which fail with CodePublishSteamSyncNotLoggedIn.
+//
+// @name Publish.SteamSync.GetStatus
+// @category Publish
+// @tags Offline
+// @caller client
+type PublishSteamSyncGetStatusParams struct {
+}
+
+func (p PublishSteamSyncGetStatusParams) Validate() error {
+	return nil
+}
+
+type PublishSteamSyncGetStatusResult struct {
+	// True when a Steam login is stored
+	LoggedIn bool `json:"loggedIn"`
+	// Steam account name, when logged in
+	AccountName string `json:"accountName,omitempty"`
+	// 64-bit Steam ID as a string, when logged in
+	SteamID string `json:"steamId,omitempty"`
+	// True when a publisher Web API key is stored
+	HasPublisherKey bool `json:"hasPublisherKey"`
+}
+
+// Log in to a Steam account by QR code. Steam's mobile app scans the
+// code and the user approves there; no password reaches butler.
+//
+// A @@PublishSteamSyncLoginChallengeNotification carries the URL to render as a QR
+// code, and is sent again whenever Steam rotates the challenge. The
+// request returns once the login is approved. Cancel it with
+// @@PublishSteamSyncLoginCancelParams.
+//
+// @name Publish.SteamSync.Login
+// @category Publish
+// @tags Cancellable
+// @caller client
+type PublishSteamSyncLoginParams struct {
+	// ID that can be later used in @@PublishSteamSyncLoginCancelParams
+	ID string `json:"id"`
+}
+
+func (p PublishSteamSyncLoginParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ID, validation.Required),
+	)
+}
+
+type PublishSteamSyncLoginResult struct {
+	// Steam account name
+	AccountName string `json:"accountName"`
+	// 64-bit Steam ID as a string
+	SteamID string `json:"steamId"`
+}
+
+// Cancel a pending @@PublishSteamSyncLoginParams.
+//
+// @name Publish.SteamSync.Login.Cancel
+// @category Publish
+// @caller client
+type PublishSteamSyncLoginCancelParams struct {
+	// The ID passed to @@PublishSteamSyncLoginParams
+	ID string `json:"id"`
+}
+
+func (p PublishSteamSyncLoginCancelParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ID, validation.Required),
+	)
+}
+
+type PublishSteamSyncLoginCancelResult struct {
+	DidCancel bool `json:"didCancel"`
+}
+
+// Sent during @@PublishSteamSyncLoginParams with the URL to show as a QR code.
+// Show the URL as a link too, for people whose phone is this device.
+//
+// @name Publish.SteamSync.Login.Challenge
+// @category Publish
+type PublishSteamSyncLoginChallengeNotification struct {
+	// The ID passed to @@PublishSteamSyncLoginParams
+	ID string `json:"id"`
+	// Challenge URL, to be rendered as a QR code
+	URL string `json:"url"`
+}
+
+// Remove the stored Steam login, publisher key and cached depot keys.
+// Nothing is revoked on Steam's side.
+//
+// @name Publish.SteamSync.Logout
+// @category Publish
+// @tags Offline
+// @caller client
+type PublishSteamSyncLogoutParams struct {
+}
+
+func (p PublishSteamSyncLogoutParams) Validate() error {
+	return nil
+}
+
+type PublishSteamSyncLogoutResult struct {
+}
+
+// Store a Steam publisher Web API key after checking it with the partner
+// API. The key proves which apps the developer controls; syncing is only
+// allowed for those. Keys are created at
+// https://partner.steamgames.com/pub/groups/ under a publisher group.
+//
+// @name Publish.SteamSync.SetPublisherKey
+// @category Publish
+// @caller client
+type PublishSteamSyncSetPublisherKeyParams struct {
+	// The publisher Web API key
+	Key string `json:"key"`
+}
+
+func (p PublishSteamSyncSetPublisherKeyParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.Key, validation.Required),
+	)
+}
+
+type PublishSteamSyncSetPublisherKeyResult struct {
+	// Number of apps the key controls
+	AppCount int64 `json:"appCount"`
+}
+
+// Remove the stored publisher key, keeping the login.
+//
+// @name Publish.SteamSync.RemovePublisherKey
+// @category Publish
+// @tags Offline
+// @caller client
+type PublishSteamSyncRemovePublisherKeyParams struct {
+}
+
+func (p PublishSteamSyncRemovePublisherKeyParams) Validate() error {
+	return nil
+}
+
+type PublishSteamSyncRemovePublisherKeyResult struct {
+}
+
+// List the Steam apps the stored publisher key controls.
+//
+// @name Publish.SteamSync.ListApps
+// @category Publish
+// @caller client
+type PublishSteamSyncListAppsParams struct {
+}
+
+func (p PublishSteamSyncListAppsParams) Validate() error {
+	return nil
+}
+
+type PublishSteamSyncListAppsResult struct {
+	Apps []*PublishSteamSyncApp `json:"apps"`
+}
+
+// A Steam app the publisher key controls
+type PublishSteamSyncApp struct {
+	// Steam app ID
+	ID int64 `json:"id"`
+	// Name on Steam
+	Name string `json:"name"`
+	// One of game, application, tool, demo, dlc, music
+	Type string `json:"type"`
+}
+
+// Works out what syncing a Steam app to an itch.io project would do:
+// which depots go to which channel, what would be downloaded, and what
+// is left out. Nothing is downloaded or pushed. Connects to Steam with
+// the stored login, so it takes a few seconds.
+//
+// The result also lists every branch of the app, so the caller can offer
+// a choice and call again with a different branch.
+//
+// @name Publish.SteamSync.Plan
+// @category Publish
+// @caller client
+type PublishSteamSyncPlanParams struct {
+	// Steam app ID
+	AppID int64 `json:"appId"`
+	// itch.io project in user/slug form, without a channel
+	Target string `json:"target"`
+	// Steam branch, default "public"
+	// @optional
+	Branch string `json:"branch"`
+	// Password for a private branch
+	// @optional
+	Password string `json:"password"`
+	// Depot ID to channel name, overriding platform detection
+	// @optional
+	Map map[string]string `json:"map"`
+	// Depot IDs to leave out
+	// @optional
+	Skip []int64 `json:"skip"`
+}
+
+func (p PublishSteamSyncPlanParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.AppID, validation.Required),
+		validation.Field(&p.Target, validation.Required),
+	)
+}
+
+type PublishSteamSyncPlanResult struct {
+	Plan *PublishSteamSyncPlan `json:"plan"`
+}
+
+type PublishSteamSyncPlan struct {
+	AppID   int64  `json:"appId"`
+	AppName string `json:"appName"`
+	// Branch the plan is for
+	Branch string `json:"branch"`
+	// Steam build ID on that branch, used as the itch.io user version
+	BuildID int64  `json:"buildId"`
+	Target  string `json:"target"`
+	// One itch.io channel per entry
+	Channels []*PublishSteamSyncChannel `json:"channels"`
+	// Depots left out, with the reason
+	Skipped  []*PublishSteamSyncSkippedDepot `json:"skipped"`
+	Warnings []string                        `json:"warnings"`
+	// Every branch of the app
+	Branches []*PublishSteamSyncBranch `json:"branches"`
+}
+
+type PublishSteamSyncChannel struct {
+	// itch.io channel name, e.g. "windows" or "linux-64"
+	Name string `json:"name"`
+	// itch.io platform the name maps to, empty when unknown
+	OS string `json:"os"`
+	// "32" or "64" when the channel is architecture specific
+	Arch   string                   `json:"arch"`
+	Depots []*PublishSteamSyncDepot `json:"depots"`
+	// Bytes on disk once assembled
+	Size int64 `json:"size"`
+	// Bytes to download from Steam
+	Download int64 `json:"download"`
+}
+
+type PublishSteamSyncDepot struct {
+	ID   int64  `json:"id"`
+	Name string `json:"name"`
+	// Manifest GID as a string
+	Manifest string `json:"manifest"`
+	Size     int64  `json:"size"`
+	Download int64  `json:"download"`
+	// True when the depot is copied into every channel
+	Shared bool `json:"shared"`
+}
+
+type PublishSteamSyncSkippedDepot struct {
+	ID     int64  `json:"id"`
+	Name   string `json:"name"`
+	Reason string `json:"reason"`
+}
+
+type PublishSteamSyncBranch struct {
+	Name    string `json:"name"`
+	BuildID int64  `json:"buildId"`
+	// @optional
+	Description string `json:"description"`
+	// True when the branch needs a password
+	PasswordRequired bool `json:"passwordRequired"`
+	// Unix seconds of the last build on the branch
+	TimeUpdated int64 `json:"timeUpdated"`
+}
+
+// Syncs a Steam app to an itch.io project: plans, downloads the depots,
+// assembles one directory per channel and pushes each, with the Steam
+// build ID as the user version. Channels whose latest build already has
+// that version are skipped unless Force is set.
+//
+// The work runs in a `butler steam-sync` worker subprocess, like
+// @@PublishPushParams. Progress arrives as notifications: first
+// @@PublishSteamSyncPlannedNotification, then
+// @@PublishSteamSyncDepotProgressNotification while downloading, then per
+// channel @@PublishSteamSyncPushStartedNotification,
+// @@PublishSteamSyncBuildAssignedNotification and
+// @@PublishSteamSyncPushProgressNotification, or
+// @@PublishSteamSyncChannelUpToDateNotification when there is nothing to
+// push. Cancel with @@PublishSteamSyncCancelParams.
+//
+// Downloads are kept in a per-app cache under butler's directory so the
+// next sync of the same app only fetches what changed.
+//
+// @name Publish.SteamSync.Sync
+// @category Publish
+// @tags Cancellable
+// @caller client
+type PublishSteamSyncSyncParams struct {
+	// ID that can be later used in @@PublishSteamSyncCancelParams
+	ID string `json:"id"`
+	// itch.io profile to push as
+	ProfileID int64 `json:"profileId"`
+	// Steam app ID
+	AppID int64 `json:"appId"`
+	// itch.io project in user/slug form, without a channel
+	Target string `json:"target"`
+	// Steam branch, default "public"
+	// @optional
+	Branch string `json:"branch"`
+	// Password for a private branch
+	// @optional
+	Password string `json:"password"`
+	// Depot ID to channel name, overriding platform detection
+	// @optional
+	Map map[string]string `json:"map"`
+	// Depot IDs to leave out
+	// @optional
+	Skip []int64 `json:"skip"`
+	// Push even when the channel already has this Steam build
+	// @optional
+	Force bool `json:"force"`
+	// Mark new channels as hidden on creation
+	// @optional
+	Hidden bool `json:"hidden"`
+}
+
+func (p PublishSteamSyncSyncParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ID, validation.Required),
+		validation.Field(&p.ProfileID, validation.Required),
+		validation.Field(&p.AppID, validation.Required),
+		validation.Field(&p.Target, validation.Required),
+	)
+}
+
+type PublishSteamSyncSyncResult struct {
+	// Steam build ID that was synced
+	BuildID int64 `json:"buildId"`
+	// One entry per channel of the plan
+	Channels []*PublishSteamSyncSyncedChannel `json:"channels"`
+}
+
+type PublishSteamSyncSyncedChannel struct {
+	Channel string `json:"channel"`
+	// itch.io build created for the channel, 0 when up to date
+	BuildID int64 `json:"buildId"`
+	// True when the channel already had this Steam build and was skipped
+	UpToDate bool `json:"upToDate"`
+}
+
+// Sent once the worker has planned the sync, before any download.
+//
+// @name Publish.SteamSync.Planned
+// @category Publish
+type PublishSteamSyncPlannedNotification struct {
+	Plan *PublishSteamSyncPlan `json:"plan"`
+}
+
+// Download progress for one depot. Depots download one at a time; sum
+// TotalBytes over the plan's channels for the whole picture, counting
+// shared depots once.
+//
+// @name Publish.SteamSync.DepotProgress
+// @category Publish
+type PublishSteamSyncDepotProgressNotification struct {
+	DepotID    int64 `json:"depotId"`
+	DoneBytes  int64 `json:"doneBytes"`
+	TotalBytes int64 `json:"totalBytes"`
+}
+
+// The channel's latest build already has this Steam build ID, so it
+// is skipped.
+//
+// @name Publish.SteamSync.ChannelUpToDate
+// @category Publish
+type PublishSteamSyncChannelUpToDateNotification struct {
+	Channel string `json:"channel"`
+}
+
+// The channel's directory is assembled and its push is starting.
+//
+// @name Publish.SteamSync.PushStarted
+// @category Publish
+type PublishSteamSyncPushStartedNotification struct {
+	Channel string `json:"channel"`
+}
+
+// The push for a channel has a build ID. Same meaning as
+// @@PublishPushBuildAssignedNotification.
+//
+// @name Publish.SteamSync.BuildAssigned
+// @category Publish
+type PublishSteamSyncBuildAssignedNotification struct {
+	Channel string `json:"channel"`
+	BuildID int64  `json:"buildId"`
+}
+
+// The push for a channel failed after its build was created. The sync
+// stops at the first failed channel.
+//
+// @name Publish.SteamSync.BuildFailed
+// @category Publish
+type PublishSteamSyncBuildFailedNotification struct {
+	Channel string `json:"channel"`
+	BuildID int64  `json:"buildId"`
+	Message string `json:"message"`
+}
+
+// Push progress for a channel. Fields as in
+// @@PublishPushProgressNotification.
+//
+// @name Publish.SteamSync.PushProgress
+// @category Publish
+type PublishSteamSyncPushProgressNotification struct {
+	Channel       string  `json:"channel"`
+	Progress      float64 `json:"progress"`
+	ETA           float64 `json:"eta"`
+	BPS           float64 `json:"bps"`
+	ReadBytes     int64   `json:"readBytes"`
+	TotalBytes    int64   `json:"totalBytes"`
+	UploadedBytes int64   `json:"uploadedBytes"`
+	PatchBytes    int64   `json:"patchBytes"`
+}
+
+// Cancels a running @@PublishSteamSyncSyncParams. The worker is killed;
+// a push in flight leaves its build in the failed state on itch.io.
+//
+// @name Publish.SteamSync.Cancel
+// @category Publish
+// @caller client
+type PublishSteamSyncCancelParams struct {
+	ID string `json:"id"`
+}
+
+func (p PublishSteamSyncCancelParams) Validate() error {
+	return validation.ValidateStruct(&p,
+		validation.Field(&p.ID, validation.Required),
+	)
+}
+
+type PublishSteamSyncCancelResult struct {
+	DidCancel bool `json:"didCancel"`
 }

@@ -211,6 +211,12 @@
             "name": "clientId",
             "doc": "The OAuth client ID used in the authorization request",
             "type": "string"
+          },
+          {
+            "name": "deviceInfo",
+            "doc": "Device information string\n",
+            "type": "string",
+            "optional": true
           }
         ]
       },
@@ -957,6 +963,12 @@
             "doc": "If set, will force fresh data",
             "type": "boolean",
             "optional": true
+          },
+          {
+            "name": "gameId",
+            "doc": "When set, every returned collection has `hasGame` filled in\nfor this game. This always asks the API, regardless of `fresh`.",
+            "type": "number",
+            "optional": true
           }
         ]
       },
@@ -1558,6 +1570,289 @@
       "caller": "client",
       "params": {
         "fields": null
+      },
+      "result": {
+        "fields": null
+      }
+    },
+    {
+      "method": "Collections.Create",
+      "doc": "Creates a collection owned by the profile's user.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "profileId",
+            "doc": "Profile to create the collection as",
+            "type": "number"
+          },
+          {
+            "name": "title",
+            "doc": "Title of the collection. Defaults to \"\u003cusername\u003e's Collection\" when empty.",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "name": "private",
+            "doc": "Whether the collection is hidden from everyone but its editors",
+            "type": "boolean",
+            "optional": true
+          },
+          {
+            "name": "description",
+            "doc": "HTML description shown on the collection page",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "name": "layout",
+            "doc": "How games are displayed. Defaults to \"list\" when a blurb is\ngiven, \"grid\" otherwise.",
+            "type": "CollectionLayout",
+            "optional": true
+          },
+          {
+            "name": "gameId",
+            "doc": "A game to add to the collection right away",
+            "type": "number",
+            "optional": true
+          },
+          {
+            "name": "blurb",
+            "doc": "HTML blurb for that game. Only used together with gameId.",
+            "type": "string",
+            "optional": true
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "collection",
+            "doc": "The newly created collection",
+            "type": "Collection"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Collections.Update",
+      "doc": "Changes a collection's title, description, visibility, layout, or\nwhether it is shown on the profile. Fields that are omitted are\nleft unchanged.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "profileId",
+            "doc": "Profile to edit the collection as",
+            "type": "number"
+          },
+          {
+            "name": "collectionId",
+            "doc": "Collection to edit",
+            "type": "number"
+          },
+          {
+            "name": "title",
+            "doc": "New title",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "name": "description",
+            "doc": "New HTML description. An empty string clears it.",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "name": "private",
+            "doc": "Whether the collection is hidden from everyone but its editors",
+            "type": "boolean",
+            "optional": true
+          },
+          {
+            "name": "layout",
+            "doc": "How games are displayed",
+            "type": "CollectionLayout",
+            "optional": true
+          },
+          {
+            "name": "onProfile",
+            "doc": "Whether the collection is shown on the profile's user page",
+            "type": "boolean",
+            "optional": true
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "collection",
+            "doc": "The collection after the update",
+            "type": "Collection"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Collections.Delete",
+      "doc": "Deletes a collection and everything in it.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "profileId",
+            "doc": "Profile to delete the collection as",
+            "type": "number"
+          },
+          {
+            "name": "collectionId",
+            "doc": "Collection to delete",
+            "type": "number"
+          }
+        ]
+      },
+      "result": {
+        "fields": null
+      }
+    },
+    {
+      "method": "Collections.AddGame",
+      "doc": "Adds a game to the end of a collection. Adding a game that is\nalready in the collection returns the existing entry.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "profileId",
+            "doc": "Profile to edit the collection as",
+            "type": "number"
+          },
+          {
+            "name": "collectionId",
+            "doc": "Collection to add the game to",
+            "type": "number"
+          },
+          {
+            "name": "gameId",
+            "doc": "Game to add",
+            "type": "number"
+          },
+          {
+            "name": "blurb",
+            "doc": "HTML blurb shown next to the game in \"list\" layout",
+            "type": "string",
+            "optional": true
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "collectionGame",
+            "doc": "The game's entry in the collection",
+            "type": "CollectionGame"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Collections.RemoveGame",
+      "doc": "Removes a game from a collection.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "profileId",
+            "doc": "Profile to edit the collection as",
+            "type": "number"
+          },
+          {
+            "name": "collectionId",
+            "doc": "Collection to remove the game from",
+            "type": "number"
+          },
+          {
+            "name": "gameId",
+            "doc": "Game to remove",
+            "type": "number"
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "removed",
+            "doc": "False if the game was not in the collection to begin with",
+            "type": "boolean"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Collections.UpdateGame",
+      "doc": "Edits a game's entry in a collection.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "profileId",
+            "doc": "Profile to edit the collection as",
+            "type": "number"
+          },
+          {
+            "name": "collectionId",
+            "doc": "Collection the game is in",
+            "type": "number"
+          },
+          {
+            "name": "gameId",
+            "doc": "Game whose entry to edit",
+            "type": "number"
+          },
+          {
+            "name": "blurb",
+            "doc": "New HTML blurb. An empty string clears it, omitting it leaves\nit unchanged.",
+            "type": "string",
+            "optional": true
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "collectionGame",
+            "doc": "The game's entry in the collection after the update",
+            "type": "CollectionGame"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Collections.OrderGames",
+      "doc": "Sets the order of the games in a collection, optionally removing\nsome games at the same time.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "profileId",
+            "doc": "Profile to edit the collection as",
+            "type": "number"
+          },
+          {
+            "name": "collectionId",
+            "doc": "Collection to reorder",
+            "type": "number"
+          },
+          {
+            "name": "gameIds",
+            "doc": "Game IDs in the desired order, the first one is shown first.\nUp to 500 games.",
+            "type": "number[]"
+          },
+          {
+            "name": "removeGameIds",
+            "doc": "Games to remove from the collection before ordering",
+            "type": "number[]",
+            "optional": true
+          }
+        ]
       },
       "result": {
         "fields": null
@@ -2468,6 +2763,18 @@
             "name": "caveId",
             "doc": "The ID of the cave to list launch targets for",
             "type": "string"
+          },
+          {
+            "name": "runtimes",
+            "doc": "Payload flavors the client can run with a runtime of its own, in\ndash's vocabulary: \"love\", \"godot-pck\", \"rom:nes\", \"rom:gba\", or\n\"rom\" for every console. Matching payloads are returned with the\n@@LaunchStrategyRuntime strategy, for the client to launch itself;\nbutler never runs them. When empty, payloads are only listed when\nnothing else is launchable, as before.",
+            "type": "string[]",
+            "optional": true
+          },
+          {
+            "name": "deepProbe",
+            "doc": "Fill the dependency record of native candidates: imports, glibc\nversion, SDL version and how it is linked, display libraries\n(see LinuxInfo and WindowsInfo). Parses section tables of every\nnative executable in the install folder, so it costs more than\nthe default sniff; leave it off unless the client acts on it.",
+            "type": "boolean",
+            "optional": true
           }
         ]
       },
@@ -2494,8 +2801,9 @@
           },
           {
             "name": "prereqsDir",
-            "doc": "The directory to use to store installer files for prerequisites",
-            "type": "string"
+            "doc": "The directory to use to store installer files for prerequisites.\nWhen empty, launching a title that turns out to require\nprerequisites fails (via the PrereqsFailed flow); most titles\nrequire none.",
+            "type": "string",
+            "optional": true
           },
           {
             "name": "forcePrereqs",
@@ -2505,19 +2813,19 @@
           },
           {
             "name": "sandbox",
-            "doc": "Sandbox preference for this launch. When omitted, the manifest may enable\nsandboxing. An explicit value overrides the manifest preference.",
+            "doc": "Sandbox preference for this launch. When omitted, the cave's sandbox\nsetting applies, then the manifest opt-in. An explicit value overrides\nboth.",
             "type": "boolean",
             "optional": true
           },
           {
             "name": "sandboxOptions",
-            "doc": "Sandbox configuration options. Only applied when sandbox is enabled.",
+            "doc": "Sandbox configuration options. Only applied when sandbox is enabled.\nWhen omitted, the cave's persisted sandbox overrides merge per knob\nover the client defaults; an explicit value replaces both as a whole.",
             "type": "SandboxOptions",
             "optional": true
           },
           {
             "name": "commandTemplate",
-            "doc": "Command template applied to native launches. Use %command% as a standalone\ntoken to place the resolved game command. Without it, tokens are appended\nas arguments to the resolved command.",
+            "doc": "Command template applied to native launches. Use %command% as a standalone\ntoken to place the resolved game command. Without it, tokens are appended\nas arguments to the resolved command. When omitted, the cave's\ncommandTemplate setting applies.",
             "type": "string",
             "optional": true
           },
@@ -2531,6 +2839,24 @@
             "name": "profileId",
             "doc": "Profile whose account receives gameplay-session updates. When zero,\nButler resolves any suitable profile (legacy behavior).",
             "type": "number",
+            "optional": true
+          },
+          {
+            "name": "allowedStrategies",
+            "doc": "When non-empty, declares the launch strategies this client can\nserve. Targets using other strategies are excluded from selection;\nif none remain, or an explicit target or the cave's saved launch\ntarget names an excluded one, the launch fails with\nCodeLaunchStrategyNotAllowed before any launcher or session side\neffects. Checked under the install folder lock, so it is\nnot subject to the Launch.GetTargets race. Target discovery may still\nrefresh metadata over the network before this check.",
+            "type": "LaunchStrategy[]",
+            "optional": true
+          },
+          {
+            "name": "runtimes",
+            "doc": "Payload flavors the client runs with a runtime of its own, as for\n@@LaunchGetTargetsParams. Matching payloads become targets with the\n@@LaunchStrategyRuntime strategy, which are launched by asking the\nclient (@@RuntimeLaunchParams). Pass the same list that produced the\ntarget being launched, or the target will not be found.",
+            "type": "string[]",
+            "optional": true
+          },
+          {
+            "name": "defaults",
+            "doc": "Client-supplied defaults for knobs that both the explicit params and\nthe cave's settings leave unset, typically sourced from a frontend's\nglobal preferences. Resolution order: explicit params, then cave\nsettings, then these defaults, then the manifest (for the sandbox\nopt-in). Sandbox options resolve per knob between settings and\ndefaults, but an explicit sandboxOptions param replaces both as a\nwhole.",
+            "type": "LaunchDefaults",
             "optional": true
           }
         ]
@@ -2627,6 +2953,40 @@
             "name": "env",
             "doc": "Environment variables, to pass as `global.Itch.env`",
             "type": "{ [key: string]: string }"
+          }
+        ]
+      },
+      "result": {
+        "fields": null
+      }
+    },
+    {
+      "method": "RuntimeLaunch",
+      "doc": "Ask the client to run a payload with a runtime of its own: a ROM in\nits emulator, a LÖVE game in its LÖVE. This is how a client that\nmanages the game process itself keeps butler's bookkeeping. Sent\nduring @@LaunchParams for a @@LaunchStrategyRuntime target, after\n@@LaunchRunningNotification; the play session and the cave's play\ntime run from then until the reply.\n\nReply when the game has exited. A plain reply is a normal exit, an\nerror reply is a failure or crash and fails the launch. butler never\nsees the process, so it cannot end it: when the launch is cancelled,\nthe client ends the game itself.",
+      "caller": "server",
+      "params": {
+        "fields": [
+          {
+            "name": "fullTargetPath",
+            "doc": "Absolute path of the payload: a file, or a folder for engines that\nrun one (a LÖVE game with its main.lua at the root).",
+            "type": "string"
+          },
+          {
+            "name": "candidate",
+            "doc": "What the payload is, as dash found it: the flavor, and for ROMs\nthe system in Engine.Details.",
+            "type": "Candidate"
+          },
+          {
+            "name": "args",
+            "doc": "Command-line arguments from the manifest action, if any",
+            "type": "string[]",
+            "optional": true
+          },
+          {
+            "name": "env",
+            "doc": "Environment variables from the manifest action, if any",
+            "type": "{ [key: string]: string }",
+            "optional": true
           }
         ]
       },
@@ -3145,6 +3505,307 @@
           }
         ]
       }
+    },
+    {
+      "method": "Publish.SteamSync.GetStatus",
+      "doc": "Reports what Steam credentials are stored. Reads a local file only;\nwhether the login is still accepted by Steam is found out by the\noperations that use it, which fail with CodePublishSteamSyncNotLoggedIn.",
+      "caller": "client",
+      "params": {
+        "fields": null
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "loggedIn",
+            "doc": "True when a Steam login is stored",
+            "type": "boolean"
+          },
+          {
+            "name": "accountName",
+            "doc": "Steam account name, when logged in",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "name": "steamId",
+            "doc": "64-bit Steam ID as a string, when logged in",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "name": "hasPublisherKey",
+            "doc": "True when a publisher Web API key is stored",
+            "type": "boolean"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.Login",
+      "doc": "Log in to a Steam account by QR code. Steam's mobile app scans the\ncode and the user approves there; no password reaches butler.\n\nA @@PublishSteamSyncLoginChallengeNotification carries the URL to render as a QR\ncode, and is sent again whenever Steam rotates the challenge. The\nrequest returns once the login is approved. Cancel it with\n@@PublishSteamSyncLoginCancelParams.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "id",
+            "doc": "ID that can be later used in @@PublishSteamSyncLoginCancelParams",
+            "type": "string"
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "accountName",
+            "doc": "Steam account name",
+            "type": "string"
+          },
+          {
+            "name": "steamId",
+            "doc": "64-bit Steam ID as a string",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.Login.Cancel",
+      "doc": "Cancel a pending @@PublishSteamSyncLoginParams.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "id",
+            "doc": "The ID passed to @@PublishSteamSyncLoginParams",
+            "type": "string"
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "didCancel",
+            "doc": "",
+            "type": "boolean"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.Logout",
+      "doc": "Remove the stored Steam login, publisher key and cached depot keys.\nNothing is revoked on Steam's side.",
+      "caller": "client",
+      "params": {
+        "fields": null
+      },
+      "result": {
+        "fields": null
+      }
+    },
+    {
+      "method": "Publish.SteamSync.SetPublisherKey",
+      "doc": "Store a Steam publisher Web API key after checking it with the partner\nAPI. The key proves which apps the developer controls; syncing is only\nallowed for those. Keys are created at\nhttps://partner.steamgames.com/pub/groups/ under a publisher group.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "key",
+            "doc": "The publisher Web API key",
+            "type": "string"
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "appCount",
+            "doc": "Number of apps the key controls",
+            "type": "number"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.RemovePublisherKey",
+      "doc": "Remove the stored publisher key, keeping the login.",
+      "caller": "client",
+      "params": {
+        "fields": null
+      },
+      "result": {
+        "fields": null
+      }
+    },
+    {
+      "method": "Publish.SteamSync.ListApps",
+      "doc": "List the Steam apps the stored publisher key controls.",
+      "caller": "client",
+      "params": {
+        "fields": null
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "apps",
+            "doc": "",
+            "type": "PublishSteamSyncApp[]"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.Plan",
+      "doc": "Works out what syncing a Steam app to an itch.io project would do:\nwhich depots go to which channel, what would be downloaded, and what\nis left out. Nothing is downloaded or pushed. Connects to Steam with\nthe stored login, so it takes a few seconds.\n\nThe result also lists every branch of the app, so the caller can offer\na choice and call again with a different branch.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "appId",
+            "doc": "Steam app ID",
+            "type": "number"
+          },
+          {
+            "name": "target",
+            "doc": "itch.io project in user/slug form, without a channel",
+            "type": "string"
+          },
+          {
+            "name": "branch",
+            "doc": "Steam branch, default \"public\"",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "name": "password",
+            "doc": "Password for a private branch",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "name": "map",
+            "doc": "Depot ID to channel name, overriding platform detection",
+            "type": "{ [key: string]: string }",
+            "optional": true
+          },
+          {
+            "name": "skip",
+            "doc": "Depot IDs to leave out",
+            "type": "number[]",
+            "optional": true
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "plan",
+            "doc": "",
+            "type": "PublishSteamSyncPlan"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.Sync",
+      "doc": "Syncs a Steam app to an itch.io project: plans, downloads the depots,\nassembles one directory per channel and pushes each, with the Steam\nbuild ID as the user version. Channels whose latest build already has\nthat version are skipped unless Force is set.\n\nThe work runs in a `butler steam-sync` worker subprocess, like\n@@PublishPushParams. Progress arrives as notifications: first\n@@PublishSteamSyncPlannedNotification, then\n@@PublishSteamSyncDepotProgressNotification while downloading, then per\nchannel @@PublishSteamSyncPushStartedNotification,\n@@PublishSteamSyncBuildAssignedNotification and\n@@PublishSteamSyncPushProgressNotification, or\n@@PublishSteamSyncChannelUpToDateNotification when there is nothing to\npush. Cancel with @@PublishSteamSyncCancelParams.\n\nDownloads are kept in a per-app cache under butler's directory so the\nnext sync of the same app only fetches what changed.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "id",
+            "doc": "ID that can be later used in @@PublishSteamSyncCancelParams",
+            "type": "string"
+          },
+          {
+            "name": "profileId",
+            "doc": "itch.io profile to push as",
+            "type": "number"
+          },
+          {
+            "name": "appId",
+            "doc": "Steam app ID",
+            "type": "number"
+          },
+          {
+            "name": "target",
+            "doc": "itch.io project in user/slug form, without a channel",
+            "type": "string"
+          },
+          {
+            "name": "branch",
+            "doc": "Steam branch, default \"public\"",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "name": "password",
+            "doc": "Password for a private branch",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "name": "map",
+            "doc": "Depot ID to channel name, overriding platform detection",
+            "type": "{ [key: string]: string }",
+            "optional": true
+          },
+          {
+            "name": "skip",
+            "doc": "Depot IDs to leave out",
+            "type": "number[]",
+            "optional": true
+          },
+          {
+            "name": "force",
+            "doc": "Push even when the channel already has this Steam build",
+            "type": "boolean",
+            "optional": true
+          },
+          {
+            "name": "hidden",
+            "doc": "Mark new channels as hidden on creation",
+            "type": "boolean",
+            "optional": true
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "buildId",
+            "doc": "Steam build ID that was synced",
+            "type": "number"
+          },
+          {
+            "name": "channels",
+            "doc": "One entry per channel of the plan",
+            "type": "PublishSteamSyncSyncedChannel[]"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.Cancel",
+      "doc": "Cancels a running @@PublishSteamSyncSyncParams. The worker is killed;\na push in flight leaves its build in the failed state on itch.io.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "id",
+            "doc": "",
+            "type": "string"
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "didCancel",
+            "doc": "",
+            "type": "boolean"
+          }
+        ]
+      }
     }
   ],
   "notifications": [
@@ -3206,6 +3867,12 @@
             "name": "download",
             "doc": "",
             "type": "Download"
+          },
+          {
+            "name": "events",
+            "doc": "Events recorded during the operation (install, upgrade, heal...).\nNot persisted with the download, so this notification is the only\nplace to get them.",
+            "type": "InstallEvent[]",
+            "optional": true
           }
         ]
       }
@@ -3381,7 +4048,14 @@
       "method": "LaunchRunning",
       "doc": "Sent during @@LaunchParams, when the game is configured, prerequisites are installed\nsandbox is set up (if enabled), and the game is actually running.",
       "params": {
-        "fields": null
+        "fields": [
+          {
+            "name": "pid",
+            "doc": "The process butler started, when it runs the game itself: the\ngame's, or the wrapper's around it (a sandbox, or `open` for a\nmacOS bundle). Absent for a launch butler does not run (html, url,\nshell, runtime). A client that must name the game to something\noutside butler, such as a firmware's kill hotkey, names this.\n",
+            "type": "number",
+            "optional": true
+          }
+        ]
       }
     },
     {
@@ -3523,6 +4197,175 @@
           {
             "name": "patchBytes",
             "doc": "Compressed patch size produced so far. Equals UploadedBytes once\nupload catches up; the gap between them is the in-flight buffer.",
+            "type": "number"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.Login.Challenge",
+      "doc": "Sent during @@PublishSteamSyncLoginParams with the URL to show as a QR code.\nShow the URL as a link too, for people whose phone is this device.",
+      "params": {
+        "fields": [
+          {
+            "name": "id",
+            "doc": "The ID passed to @@PublishSteamSyncLoginParams",
+            "type": "string"
+          },
+          {
+            "name": "url",
+            "doc": "Challenge URL, to be rendered as a QR code",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.Planned",
+      "doc": "Sent once the worker has planned the sync, before any download.",
+      "params": {
+        "fields": [
+          {
+            "name": "plan",
+            "doc": "",
+            "type": "PublishSteamSyncPlan"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.DepotProgress",
+      "doc": "Download progress for one depot. Depots download one at a time; sum\nTotalBytes over the plan's channels for the whole picture, counting\nshared depots once.",
+      "params": {
+        "fields": [
+          {
+            "name": "depotId",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "doneBytes",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "totalBytes",
+            "doc": "",
+            "type": "number"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.ChannelUpToDate",
+      "doc": "The channel's latest build already has this Steam build ID, so it\nis skipped.",
+      "params": {
+        "fields": [
+          {
+            "name": "channel",
+            "doc": "",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.PushStarted",
+      "doc": "The channel's directory is assembled and its push is starting.",
+      "params": {
+        "fields": [
+          {
+            "name": "channel",
+            "doc": "",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.BuildAssigned",
+      "doc": "The push for a channel has a build ID. Same meaning as\n@@PublishPushBuildAssignedNotification.",
+      "params": {
+        "fields": [
+          {
+            "name": "channel",
+            "doc": "",
+            "type": "string"
+          },
+          {
+            "name": "buildId",
+            "doc": "",
+            "type": "number"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.BuildFailed",
+      "doc": "The push for a channel failed after its build was created. The sync\nstops at the first failed channel.",
+      "params": {
+        "fields": [
+          {
+            "name": "channel",
+            "doc": "",
+            "type": "string"
+          },
+          {
+            "name": "buildId",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "message",
+            "doc": "",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Publish.SteamSync.PushProgress",
+      "doc": "Push progress for a channel. Fields as in\n@@PublishPushProgressNotification.",
+      "params": {
+        "fields": [
+          {
+            "name": "channel",
+            "doc": "",
+            "type": "string"
+          },
+          {
+            "name": "progress",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "eta",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "bps",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "readBytes",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "totalBytes",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "uploadedBytes",
+            "doc": "",
+            "type": "number"
+          },
+          {
+            "name": "patchBytes",
+            "doc": "",
             "type": "number"
           }
         ]
@@ -4725,6 +5568,71 @@
       "fields": null
     },
     {
+      "name": "CollectionsCreateResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "collection",
+          "doc": "The newly created collection",
+          "type": "Collection"
+        }
+      ]
+    },
+    {
+      "name": "CollectionsUpdateResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "collection",
+          "doc": "The collection after the update",
+          "type": "Collection"
+        }
+      ]
+    },
+    {
+      "name": "CollectionsDeleteResult",
+      "doc": "",
+      "fields": null
+    },
+    {
+      "name": "CollectionsAddGameResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "collectionGame",
+          "doc": "The game's entry in the collection",
+          "type": "CollectionGame"
+        }
+      ]
+    },
+    {
+      "name": "CollectionsRemoveGameResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "removed",
+          "doc": "False if the game was not in the collection to begin with",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "CollectionsUpdateGameResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "collectionGame",
+          "doc": "The game's entry in the collection after the update",
+          "type": "CollectionGame"
+        }
+      ]
+    },
+    {
+      "name": "CollectionsOrderGamesResult",
+      "doc": "",
+      "fields": null
+    },
+    {
       "name": "GameFindUploadsResult",
       "doc": "",
       "fields": [
@@ -5275,6 +6183,36 @@
       ]
     },
     {
+      "name": "LaunchDefaults",
+      "doc": "Client-supplied launch defaults, applied below per-cave settings.\nSee @@LaunchParams.",
+      "fields": [
+        {
+          "name": "sandbox",
+          "doc": "Sandbox default. Absent (not false) when the frontend has no global\nsandbox preference, so a manifest opt-in still applies.",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "sandboxType",
+          "doc": "Default sandbox runner type.",
+          "type": "SandboxType",
+          "optional": true
+        },
+        {
+          "name": "sandboxNoNetwork",
+          "doc": "Default for cutting network access inside the sandbox.",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "sandboxAllowEnv",
+          "doc": "Default extra environment variables allowed through the sandbox.",
+          "type": "string[]",
+          "optional": true
+        }
+      ]
+    },
+    {
       "name": "SandboxOptions",
       "doc": "Options for controlling sandbox behavior.",
       "fields": [
@@ -5332,6 +6270,11 @@
     },
     {
       "name": "HTMLLaunchResult",
+      "doc": "",
+      "fields": null
+    },
+    {
+      "name": "RuntimeLaunchResult",
       "doc": "",
       "fields": null
     },
@@ -5662,6 +6605,349 @@
       ]
     },
     {
+      "name": "PublishSteamSyncGetStatusResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "loggedIn",
+          "doc": "True when a Steam login is stored",
+          "type": "boolean"
+        },
+        {
+          "name": "accountName",
+          "doc": "Steam account name, when logged in",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "steamId",
+          "doc": "64-bit Steam ID as a string, when logged in",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "hasPublisherKey",
+          "doc": "True when a publisher Web API key is stored",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncLoginResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "accountName",
+          "doc": "Steam account name",
+          "type": "string"
+        },
+        {
+          "name": "steamId",
+          "doc": "64-bit Steam ID as a string",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncLoginCancelResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "didCancel",
+          "doc": "",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncLogoutResult",
+      "doc": "",
+      "fields": null
+    },
+    {
+      "name": "PublishSteamSyncSetPublisherKeyResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "appCount",
+          "doc": "Number of apps the key controls",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncRemovePublisherKeyResult",
+      "doc": "",
+      "fields": null
+    },
+    {
+      "name": "PublishSteamSyncListAppsResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "apps",
+          "doc": "",
+          "type": "PublishSteamSyncApp[]"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncApp",
+      "doc": "A Steam app the publisher key controls",
+      "fields": [
+        {
+          "name": "id",
+          "doc": "Steam app ID",
+          "type": "number"
+        },
+        {
+          "name": "name",
+          "doc": "Name on Steam",
+          "type": "string"
+        },
+        {
+          "name": "type",
+          "doc": "One of game, application, tool, demo, dlc, music",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncPlanResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "plan",
+          "doc": "",
+          "type": "PublishSteamSyncPlan"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncPlan",
+      "doc": "",
+      "fields": [
+        {
+          "name": "appId",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "appName",
+          "doc": "",
+          "type": "string"
+        },
+        {
+          "name": "branch",
+          "doc": "Branch the plan is for",
+          "type": "string"
+        },
+        {
+          "name": "buildId",
+          "doc": "Steam build ID on that branch, used as the itch.io user version",
+          "type": "number"
+        },
+        {
+          "name": "target",
+          "doc": "",
+          "type": "string"
+        },
+        {
+          "name": "channels",
+          "doc": "One itch.io channel per entry",
+          "type": "PublishSteamSyncChannel[]"
+        },
+        {
+          "name": "skipped",
+          "doc": "Depots left out, with the reason",
+          "type": "PublishSteamSyncSkippedDepot[]"
+        },
+        {
+          "name": "warnings",
+          "doc": "",
+          "type": "string[]"
+        },
+        {
+          "name": "branches",
+          "doc": "Every branch of the app",
+          "type": "PublishSteamSyncBranch[]"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncChannel",
+      "doc": "",
+      "fields": [
+        {
+          "name": "name",
+          "doc": "itch.io channel name, e.g. \"windows\" or \"linux-64\"",
+          "type": "string"
+        },
+        {
+          "name": "os",
+          "doc": "itch.io platform the name maps to, empty when unknown",
+          "type": "string"
+        },
+        {
+          "name": "arch",
+          "doc": "\"32\" or \"64\" when the channel is architecture specific",
+          "type": "string"
+        },
+        {
+          "name": "depots",
+          "doc": "",
+          "type": "PublishSteamSyncDepot[]"
+        },
+        {
+          "name": "size",
+          "doc": "Bytes on disk once assembled",
+          "type": "number"
+        },
+        {
+          "name": "download",
+          "doc": "Bytes to download from Steam",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncDepot",
+      "doc": "",
+      "fields": [
+        {
+          "name": "id",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "name",
+          "doc": "",
+          "type": "string"
+        },
+        {
+          "name": "manifest",
+          "doc": "Manifest GID as a string",
+          "type": "string"
+        },
+        {
+          "name": "size",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "download",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "shared",
+          "doc": "True when the depot is copied into every channel",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncSkippedDepot",
+      "doc": "",
+      "fields": [
+        {
+          "name": "id",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "name",
+          "doc": "",
+          "type": "string"
+        },
+        {
+          "name": "reason",
+          "doc": "",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncBranch",
+      "doc": "",
+      "fields": [
+        {
+          "name": "name",
+          "doc": "",
+          "type": "string"
+        },
+        {
+          "name": "buildId",
+          "doc": "",
+          "type": "number"
+        },
+        {
+          "name": "description",
+          "doc": "",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "passwordRequired",
+          "doc": "True when the branch needs a password",
+          "type": "boolean"
+        },
+        {
+          "name": "timeUpdated",
+          "doc": "Unix seconds of the last build on the branch",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncSyncResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "buildId",
+          "doc": "Steam build ID that was synced",
+          "type": "number"
+        },
+        {
+          "name": "channels",
+          "doc": "One entry per channel of the plan",
+          "type": "PublishSteamSyncSyncedChannel[]"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncSyncedChannel",
+      "doc": "",
+      "fields": [
+        {
+          "name": "channel",
+          "doc": "",
+          "type": "string"
+        },
+        {
+          "name": "buildId",
+          "doc": "itch.io build created for the channel, 0 when up to date",
+          "type": "number"
+        },
+        {
+          "name": "upToDate",
+          "doc": "True when the channel already had this Steam build and was skipped",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "PublishSteamSyncCancelResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "didCancel",
+          "doc": "",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
       "name": "Host",
       "doc": "",
       "fields": [
@@ -5820,9 +7106,21 @@
           "optional": true
         },
         {
+          "name": "engine",
+          "doc": "Engine is what made this candidate. Set on natives when a known engine\nleft its footprint next to them, and on payload flavors always.",
+          "type": "EngineInfo",
+          "optional": true
+        },
+        {
           "name": "metadata",
           "doc": "Any other info.",
           "type": "{ [key: string]: any }",
+          "optional": true
+        },
+        {
+          "name": "helper",
+          "doc": "Helper names the runtime a native belongs to when it is plumbing\nshipped next to the game rather than something a player launches:\n\"renpy\" for its python and zsync, \"electron\" or \"nwjs\" for crashpad\nand sandbox processes, \"dotnet\" for createdump, \"java\" for a bundled\nJRE, \"node\" for anything under node_modules, \"unity\" and \"unreal\"\nfor their crash handlers. Filter drops helpers.",
+          "type": "string",
           "optional": true
         }
       ]
@@ -5854,18 +7152,122 @@
           "doc": "Is this a .NET assembly?",
           "type": "boolean",
           "optional": true
+        },
+        {
+          "name": "arch",
+          "doc": "Machine type from the PE header",
+          "type": "Arch",
+          "optional": true
+        },
+        {
+          "name": "imports",
+          "doc": "Imported DLLs, only filled when ConfigureParams.DeepProbe is set",
+          "type": "string[]",
+          "optional": true
+        },
+        {
+          "name": "versionProperties",
+          "doc": "Strings from the VS_VERSIONINFO resource (ProductName, FileVersion,\nCompanyName, ...). Only filled when ConfigureParams.DeepProbe is set.",
+          "type": "{ [key: string]: string }",
+          "optional": true
+        },
+        {
+          "name": "requestedExecutionLevel",
+          "doc": "requestedExecutionLevel from the embedded manifest (\"asInvoker\",\n\"requireAdministrator\", \"highestAvailable\"). Only filled when\nConfigureParams.DeepProbe is set.",
+          "type": "string",
+          "optional": true
         }
       ]
     },
     {
       "name": "MacosInfo",
       "doc": "Contains information specific to native macOS executables\nor app bundles.",
-      "fields": null
+      "fields": [
+        {
+          "name": "architectures",
+          "doc": "All CPU architectures found in the binary (for universal/fat binaries)",
+          "type": "Arch[]",
+          "optional": true
+        }
+      ]
     },
     {
       "name": "LinuxInfo",
       "doc": "Contains information specific to native Linux executables",
-      "fields": null
+      "fields": [
+        {
+          "name": "arch",
+          "doc": "Machine type from the ELF header",
+          "type": "Arch",
+          "optional": true
+        },
+        {
+          "name": "os",
+          "doc": "Operating system the ELF targets when it is not Linux: \"freebsd\",\n\"openbsd\", \"netbsd\" from the header's OS ABI byte, \"haiku\" from its\nimports (deep probe only). Such builds still get the linux flavor.",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "abi",
+          "doc": "Calling convention for 32-bit ARM, from the ELF header flags:\n\"eabihf\" (hard-float, what Raspberry Pi and armhf distributions\nbuild) or \"eabi\" (soft-float). Empty for other architectures.",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "interpreter",
+          "doc": "Program interpreter (PT_INTERP), such as /lib/ld-linux-armhf.so.3\nor /lib/ld-musl-aarch64.so.1. Names the C library and ABI the\nexecutable was linked against. Only filled when DeepProbe is set.",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "static",
+          "doc": "True when the executable has no program interpreter and no DT_NEEDED\nlibraries. Only meaningful when ConfigureParams.DeepProbe is set.",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "glibcVersion",
+          "doc": "Highest GLIBC_x.y symbol version the executable references.\nOnly filled when ConfigureParams.DeepProbe is set.",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "imports",
+          "doc": "Shared libraries listed in DT_NEEDED, in link order.\nOnly filled when ConfigureParams.DeepProbe is set.",
+          "type": "string[]",
+          "optional": true
+        },
+        {
+          "name": "sdl",
+          "doc": "SDL major version the executable uses, \"2\" or \"3\": imported, or\nlinked in (see SDLBundled). Only filled when DeepProbe is set.",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "sdlBundled",
+          "doc": "True when SDL is linked into the executable rather than imported,\nso it only has the display backends it was built with.",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "sdlDynamicApi",
+          "doc": "True when a bundled SDL kept its dynamic API, the hook that lets a\nhost substitute its own SDL at load time (SDL_DYNAMIC_API).",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "display",
+          "doc": "Windowing and graphics libraries the executable, or the SDL it\nbundles, can load: \"x11\", \"wayland\", \"kmsdrm\", \"glfw\", \"egl\", \"gl\",\n\"gles\", \"vulkan\". From DT_NEEDED and the library names it carries\nfor dlopen. Only filled when DeepProbe is set.",
+          "type": "string[]",
+          "optional": true
+        },
+        {
+          "name": "symbols",
+          "doc": "True when the executable keeps its symbol table.\nOnly filled when DeepProbe is set.",
+          "type": "boolean",
+          "optional": true
+        }
+      ]
     },
     {
       "name": "LoveInfo",
@@ -5899,6 +7301,29 @@
           "name": "mainClass",
           "doc": "The main Java class as specified by the manifest included in the .jar (if any)",
           "type": "string",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "EngineInfo",
+      "doc": "EngineInfo describes what made a candidate and, for payloads, what runtime\nit needs.",
+      "fields": [
+        {
+          "name": "engine",
+          "doc": "",
+          "type": "Engine"
+        },
+        {
+          "name": "version",
+          "doc": "Engine version, in the engine's own notation: \"3.5.2\", \"2022.3.10f1\",\n\"11.5\". Empty when it would cost too much to find out or is not\nrecorded anywhere.",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "details",
+          "doc": "Free-form engine facts. Keys are documented per detector; the ones\nshared across engines are \"confidence\" (\"ext\" when only the file name\nwas used) and \"system\" (console id for ROMs).",
+          "type": "{ [key: string]: any }",
           "optional": true
         }
       ]
@@ -6263,9 +7688,38 @@
           "type": "number"
         },
         {
+          "name": "url",
+          "doc": "Canonical address of the collection's page on itch.io",
+          "type": "string",
+          "optional": true
+        },
+        {
           "name": "title",
           "doc": "Human-friendly title for collection, for example `Couch coop games`",
           "type": "string"
+        },
+        {
+          "name": "description",
+          "doc": "HTML description shown on the collection page",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "private",
+          "doc": "Whether the collection is hidden from everyone but its editors",
+          "type": "boolean"
+        },
+        {
+          "name": "layout",
+          "doc": "How games are displayed",
+          "type": "CollectionLayout",
+          "optional": true
+        },
+        {
+          "name": "hasGame",
+          "doc": "Only set when listing collections filtered by a game: whether\nthat game is in this collection",
+          "type": "boolean",
+          "optional": true
         },
         {
           "name": "createdAt",
@@ -7144,6 +8598,11 @@
           "name": "Shell",
           "doc": "",
           "value": "shell"
+        },
+        {
+          "name": "Runtime",
+          "doc": "A payload (ROM, .love, Godot pack, ...) the client said it has a\nruntime for. FullTargetPath is the file or folder to run, and\nCandidate carries the flavor, engine, and version. Butler has no\nlauncher for this strategy: the client runs it.",
+          "value": "runtime"
         }
       ]
     },
@@ -7323,6 +8782,11 @@
           "value": 5001
         },
         {
+          "name": "LaunchStrategyNotAllowed",
+          "doc": "The selected target's strategy is not in\nLaunchParams.allowedStrategies",
+          "value": 5002
+        },
+        {
           "name": "JavaRuntimeNeeded",
           "doc": "Java Runtime Environment is required to launch this title.",
           "value": 6000
@@ -7356,6 +8820,31 @@
           "name": "NoSuchProfile",
           "doc": "The profile explicitly requested for an operation does not exist",
           "value": 20000
+        },
+        {
+          "name": "PublishSteamSyncNotLoggedIn",
+          "doc": "No Steam login is stored, or Steam rejected the stored one.\nCall @@PublishSteamSyncLoginParams.",
+          "value": 21000
+        },
+        {
+          "name": "PublishSteamSyncNoPublisherKey",
+          "doc": "No Steam publisher key is stored. Call @@PublishSteamSyncSetPublisherKeyParams.",
+          "value": 21001
+        },
+        {
+          "name": "PublishSteamSyncPublisherKeyInvalid",
+          "doc": "The partner API rejected the publisher key.",
+          "value": 21002
+        },
+        {
+          "name": "PublishSteamSyncLoginDenied",
+          "doc": "The user declined the login on their phone, or the challenge expired.",
+          "value": 21003
+        },
+        {
+          "name": "PublishSteamSyncLoginInProgress",
+          "doc": "Another @@PublishSteamSyncLoginParams call is still waiting for approval.",
+          "value": 21004
         }
       ]
     },
@@ -7412,6 +8901,96 @@
           "name": "MSI",
           "doc": "Microsoft installer packages",
           "value": "msi"
+        },
+        {
+          "name": "GodotPck",
+          "doc": "Godot pack file, standalone or embedded in an executable",
+          "value": "godot-pck"
+        },
+        {
+          "name": "GameMakerData",
+          "doc": "GameMaker data file (data.win, game.unx, game.ios, game.droid)",
+          "value": "gamemaker-data"
+        },
+        {
+          "name": "Pico8Cart",
+          "doc": "PICO-8 cartridge (.p8, .p8.png)",
+          "value": "pico8-cart"
+        },
+        {
+          "name": "PicotronCart",
+          "doc": "Picotron cartridge (.p64, .p64.png)",
+          "value": "picotron-cart"
+        },
+        {
+          "name": "Renpy",
+          "doc": "Ren'Py project: the folder holding game/",
+          "value": "renpy"
+        },
+        {
+          "name": "RPGMakerMV",
+          "doc": "RPG Maker MV/MZ project: the folder holding js/ and index.html",
+          "value": "rpgmaker-mv"
+        },
+        {
+          "name": "RPGMakerXP",
+          "doc": "RPG Maker XP/VX/VX Ace project: the folder holding Game.ini",
+          "value": "rpgmaker-xp"
+        },
+        {
+          "name": "RPGMaker2k",
+          "doc": "RPG Maker 2000/2003 project: the folder holding RPG_RT.ldb",
+          "value": "rpgmaker-2k"
+        },
+        {
+          "name": "AGS",
+          "doc": "Adventure Game Studio game: the exe with appended data, or a .ags file",
+          "value": "ags"
+        },
+        {
+          "name": "DoomWad",
+          "doc": "Doom engine WAD or PK3",
+          "value": "doom-wad"
+        },
+        {
+          "name": "SWF",
+          "doc": "Flash movie, standalone or in a projector exe",
+          "value": "swf"
+        },
+        {
+          "name": "DOS",
+          "doc": "Folder holding 16-bit DOS executables",
+          "value": "dos"
+        },
+        {
+          "name": "PyxelApp",
+          "doc": "Pyxel application bundle (.pyxapp)",
+          "value": "pyxel-app"
+        },
+        {
+          "name": "SolarusQuest",
+          "doc": "Solarus quest (.solarus archive or folder holding data/quest.dat)",
+          "value": "solarus-quest"
+        },
+        {
+          "name": "TIC80Cart",
+          "doc": "TIC-80 cartridge (.tic)",
+          "value": "tic80-cart"
+        },
+        {
+          "name": "OpenBORPak",
+          "doc": "OpenBOR module (.pak)",
+          "value": "openbor-pak"
+        },
+        {
+          "name": "ROM",
+          "doc": "Console ROM or disc image, system in Engine.Details[\"system\"]",
+          "value": "rom"
+        },
+        {
+          "name": "PlaydatePdx",
+          "doc": "Playdate game bundle: the folder holding pdxinfo",
+          "value": "playdate-pdx"
         }
       ]
     },
@@ -7428,6 +9007,26 @@
           "name": "Amd64",
           "doc": "64-bit",
           "value": "amd64"
+        },
+        {
+          "name": "Arm64",
+          "doc": "ARM 64-bit (Apple Silicon, aarch64 handhelds)",
+          "value": "arm64"
+        },
+        {
+          "name": "Arm",
+          "doc": "ARM 32-bit (Raspberry Pi and older handhelds)",
+          "value": "arm"
+        },
+        {
+          "name": "Riscv64",
+          "doc": "RISC-V 64-bit",
+          "value": "riscv64"
+        },
+        {
+          "name": "Universal",
+          "doc": "Universal binary (multiple architectures)",
+          "value": "universal"
         }
       ]
     },
@@ -7454,6 +9053,162 @@
           "name": "Archive",
           "doc": "Self-extracting installers that 7-zip knows how to extract",
           "value": "archive"
+        }
+      ]
+    },
+    {
+      "name": "Engine",
+      "doc": "Engine identifies the tool a game was made with. It is the key a consumer\nuses to pick a runtime: a native candidate carries it as extra context, a\npayload candidate carries it because the payload is nothing without it.",
+      "values": [
+        {
+          "name": "Godot",
+          "doc": "",
+          "value": "godot"
+        },
+        {
+          "name": "Unity",
+          "doc": "",
+          "value": "unity"
+        },
+        {
+          "name": "Unreal",
+          "doc": "",
+          "value": "unreal"
+        },
+        {
+          "name": "GameMaker",
+          "doc": "",
+          "value": "gamemaker"
+        },
+        {
+          "name": "Love",
+          "doc": "",
+          "value": "love"
+        },
+        {
+          "name": "Pico8",
+          "doc": "",
+          "value": "pico8"
+        },
+        {
+          "name": "Picotron",
+          "doc": "",
+          "value": "picotron"
+        },
+        {
+          "name": "Renpy",
+          "doc": "",
+          "value": "renpy"
+        },
+        {
+          "name": "RPGMaker",
+          "doc": "",
+          "value": "rpgmaker"
+        },
+        {
+          "name": "AGS",
+          "doc": "",
+          "value": "ags"
+        },
+        {
+          "name": "Doom",
+          "doc": "",
+          "value": "doom"
+        },
+        {
+          "name": "Flash",
+          "doc": "",
+          "value": "flash"
+        },
+        {
+          "name": "DOS",
+          "doc": "",
+          "value": "dos"
+        },
+        {
+          "name": "Pyxel",
+          "doc": "",
+          "value": "pyxel"
+        },
+        {
+          "name": "Solarus",
+          "doc": "",
+          "value": "solarus"
+        },
+        {
+          "name": "TIC80",
+          "doc": "",
+          "value": "tic80"
+        },
+        {
+          "name": "OpenBOR",
+          "doc": "",
+          "value": "openbor"
+        },
+        {
+          "name": "Playdate",
+          "doc": "",
+          "value": "playdate"
+        },
+        {
+          "name": "ROM",
+          "doc": "ROM images: the console lives in Details[\"system\"]",
+          "value": "rom"
+        },
+        {
+          "name": "FNA",
+          "doc": "",
+          "value": "fna"
+        },
+        {
+          "name": "MonoGame",
+          "doc": "",
+          "value": "monogame"
+        },
+        {
+          "name": "XNA",
+          "doc": "",
+          "value": "xna"
+        },
+        {
+          "name": "HashLink",
+          "doc": "",
+          "value": "hashlink"
+        },
+        {
+          "name": "Defold",
+          "doc": "",
+          "value": "defold"
+        },
+        {
+          "name": "Construct",
+          "doc": "",
+          "value": "construct"
+        },
+        {
+          "name": "Electron",
+          "doc": "",
+          "value": "electron"
+        },
+        {
+          "name": "NWJS",
+          "doc": "",
+          "value": "nwjs"
+        },
+        {
+          "name": "Python",
+          "doc": "",
+          "value": "python"
+        },
+        {
+          "name": "LibGDX",
+          "doc": "",
+          "value": "libgdx"
+        },
+        {
+          "name": "LWJGL",
+          "doc": "",
+          "value": "lwjgl"
         }
       ]
     },
@@ -7654,6 +9409,22 @@
           "name": "Other",
           "doc": "UploadTypeOther is for literally anything that isn't an existing category,\nor for stuff that isn't tagged properly.",
           "value": "other"
+        }
+      ]
+    },
+    {
+      "name": "CollectionLayout",
+      "doc": "CollectionLayout is how a collection's games are displayed on itch.io",
+      "values": [
+        {
+          "name": "Grid",
+          "doc": "CollectionLayoutGrid shows games as a grid of covers",
+          "value": "grid"
+        },
+        {
+          "name": "List",
+          "doc": "CollectionLayoutList shows games as a list, with blurbs",
+          "value": "list"
         }
       ]
     },

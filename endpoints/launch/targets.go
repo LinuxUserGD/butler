@@ -6,6 +6,7 @@ import (
 
 	"github.com/itchio/butler/butlerd"
 	"github.com/itchio/butler/database/models"
+	"github.com/itchio/dash"
 )
 
 func GetTargets(rc *butlerd.RequestContext, params butlerd.LaunchGetTargetsParams) (*butlerd.LaunchGetTargetsResult, error) {
@@ -24,9 +25,16 @@ func GetTargets(rc *butlerd.RequestContext, params butlerd.LaunchGetTargetsParam
 		return nil, err
 	}
 
+	var runtimes []dash.Flavor
+	for _, r := range params.Runtimes {
+		runtimes = append(runtimes, dash.Flavor(r))
+	}
+
 	targetRes, err := getTargets(rc, getTargetsParams{
-		info:  info,
-		hosts: hosts,
+		info:      info,
+		hosts:     hosts,
+		runtimes:  runtimes,
+		deepProbe: params.DeepProbe,
 	})
 	if err != nil {
 		return nil, err
@@ -37,16 +45,22 @@ func GetTargets(rc *butlerd.RequestContext, params butlerd.LaunchGetTargetsParam
 	}, nil
 }
 
-// settingsLaunchTarget returns the launch target persisted in the cave's
-// settings, or empty if unset or unreadable.
-func settingsLaunchTarget(rc *butlerd.RequestContext, cave *models.Cave) string {
+// caveSettings returns the settings persisted on the cave, or zero
+// settings if unset or unreadable.
+func caveSettings(rc *butlerd.RequestContext, cave *models.Cave) butlerd.CaveSettings {
 	var settings butlerd.CaveSettings
 	err := models.UnmarshalJSONAllowEmpty(cave.Settings, &settings, "cave settings")
 	if err != nil {
 		rc.Consumer.Warnf("Could not parse cave settings: %v", err)
-		return ""
+		return butlerd.CaveSettings{}
 	}
-	return settings.LaunchTarget
+	return settings
+}
+
+// settingsLaunchTarget returns the launch target persisted in the cave's
+// settings, or empty if unset or unreadable.
+func settingsLaunchTarget(rc *butlerd.RequestContext, cave *models.Cave) string {
+	return caveSettings(rc, cave).LaunchTarget
 }
 
 // findTarget matches a preferred target against action names first,

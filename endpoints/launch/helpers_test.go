@@ -3,10 +3,12 @@ package launch
 import (
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
 	"github.com/itchio/butler/butlerd"
+	"github.com/itchio/butler/cmd/configure"
 	"github.com/itchio/butler/manager"
 	"github.com/itchio/dash"
 	"github.com/itchio/headway/state"
@@ -36,7 +38,7 @@ func TestGetTargetsForHost_NativeAllManifestActionsFail(t *testing.T) {
 		},
 	}
 
-	_, err := getTargetsForHost(rc, nil, appManifest, &dash.Verdict{}, info, host)
+	_, err := getTargetsForHost(rc, nil, appManifest, &dash.Verdict{}, info, host, nil)
 	if err == nil {
 		t.Fatalf("expected error when all native manifest actions fail")
 	}
@@ -73,7 +75,7 @@ func TestGetTargetsForHost_NonNativeAllManifestActionsFail(t *testing.T) {
 		},
 	}
 
-	targets, err := getTargetsForHost(rc, nil, appManifest, &dash.Verdict{}, info, host)
+	targets, err := getTargetsForHost(rc, nil, appManifest, &dash.Verdict{}, info, host, nil)
 	if err != nil {
 		t.Fatalf("expected no error for non-native host when all manifest actions fail, got: %v", err)
 	}
@@ -113,7 +115,7 @@ func TestGetTargetsForHost_NativePartialManifestResolution(t *testing.T) {
 		},
 	}
 
-	targets, err := getTargetsForHost(rc, nil, appManifest, &dash.Verdict{}, info, host)
+	targets, err := getTargetsForHost(rc, nil, appManifest, &dash.Verdict{}, info, host, nil)
 	if err != nil {
 		t.Fatalf("expected no error when at least one native action resolves, got: %v", err)
 	}
@@ -150,5 +152,166 @@ func TestResolveSandbox(t *testing.T) {
 				t.Errorf("resolveSandbox(%v, %v) = %v, want %v", tt.pref, tt.manifestOptIn, got, tt.want)
 			}
 		})
+	}
+}
+
+func TestResolveSandboxOptions(t *testing.T) {
+	t.Parallel()
+
+	if got := resolveSandboxOptions(nil, butlerd.CaveSettings{}, nil); got != nil {
+		t.Errorf("expected nil options when no tier says anything, got %+v", got)
+	}
+
+	yes := true
+	no := false
+	bubblewrap := butlerd.SandboxTypeBubblewrap
+
+	noNetwork := true
+	settings := butlerd.CaveSettings{
+		SandboxNoNetwork: &noNetwork,
+		SandboxAllowEnv:  &[]string{"DISPLAY"},
+	}
+
+	// an explicit params block replaces the lower tiers as a whole
+	explicit := &butlerd.SandboxOptions{Type: butlerd.SandboxTypeFirejail}
+	if got := resolveSandboxOptions(explicit, settings, nil); got != explicit {
+		t.Errorf("expected explicit params to win as a whole, got %+v", got)
+	}
+
+	got := resolveSandboxOptions(nil, settings, nil)
+	if got == nil || !got.NoNetwork || len(got.AllowEnv) != 1 || got.AllowEnv[0] != "DISPLAY" || got.Type != "" {
+		t.Errorf("expected options built from settings, got %+v", got)
+	}
+
+	defaults := &butlerd.LaunchDefaults{
+		SandboxType:      &bubblewrap,
+		SandboxNoNetwork: &yes,
+		SandboxAllowEnv:  []string{"PULSE_SERVER"},
+	}
+
+	got = resolveSandboxOptions(nil, butlerd.CaveSettings{}, defaults)
+	if got == nil || got.Type != butlerd.SandboxTypeBubblewrap || !got.NoNetwork ||
+		len(got.AllowEnv) != 1 || got.AllowEnv[0] != "PULSE_SERVER" {
+		t.Errorf("expected options built from defaults, got %+v", got)
+	}
+
+	// a per-game override beats a default, including an explicit false
+	settingsNoNetworkOff := butlerd.CaveSettings{SandboxNoNetwork: &no}
+	got = resolveSandboxOptions(nil, settingsNoNetworkOff, defaults)
+	if got == nil || got.NoNetwork {
+		t.Errorf("expected settings' explicit false to beat the default true, got %+v", got)
+	}
+
+	// a present-but-empty per-game allowlist clears the default one
+	settingsEmptyAllowEnv := butlerd.CaveSettings{SandboxAllowEnv: &[]string{}}
+	got = resolveSandboxOptions(nil, settingsEmptyAllowEnv, defaults)
+	if got == nil || len(got.AllowEnv) != 0 {
+		t.Errorf("expected settings' empty allowlist to shadow the default, got %+v", got)
+	}
+}
+
+func TestGetTargetsForHost_Runtimes(t *testing.T) {
+	t.Parallel()
+
+	installFolder := t.TempDir()
+	rom := make([]byte, 16+16384)
+	copy(rom, "NES\x1a")
+	if err := os.WriteFile(filepath.Join(installFolder, "game.nes"), rom, 0644); err != nil {
+		t.Fatal(err)
+	}
+
+	runtime := ox.Runtime{Platform: ox.PlatformLinux, Is64: true}
+	rc := &butlerd.RequestContext{Consumer: &state.Consumer{}}
+	info := withInstallFolderInfo{
+		installFolder: installFolder,
+		runtime:       runtime,
+	}
+	host := manager.Host{Runtime: runtime}
+
+	verdict, err := dash.Configure(installFolder, dash.ConfigureParams{Consumer: &state.Consumer{}})
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// no runtimes: the lone payload falls back to the shell strategy, as before
+	targets, err := getTargetsForHost(rc, nil, nil, verdict, info, host, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(targets) != 1 || targets[0].Strategy.Strategy != butlerd.LaunchStrategyShell {
+		t.Fatalf("expected one shell target without runtimes, got %+v", targets)
+	}
+
+	// a runtime for another system changes nothing
+	targets, err = getTargetsForHost(rc, nil, nil, verdict, info, host, []dash.Flavor{"rom:gba"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(targets) != 1 || targets[0].Strategy.Strategy != butlerd.LaunchStrategyShell {
+		t.Fatalf("expected one shell target with a non-matching runtime, got %+v", targets)
+	}
+
+	for _, runtimes := range [][]dash.Flavor{{"rom:nes"}, {"rom"}} {
+		targets, err = getTargetsForHost(rc, nil, nil, verdict, info, host, runtimes)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(targets) != 1 {
+			t.Fatalf("runtimes %v: expected one target, got %d", runtimes, len(targets))
+		}
+		s := targets[0].Strategy
+		if s.Strategy != butlerd.LaunchStrategyRuntime {
+			t.Fatalf("runtimes %v: expected runtime strategy, got %s", runtimes, s.Strategy)
+		}
+		if s.FullTargetPath != filepath.Join(installFolder, "game.nes") {
+			t.Fatalf("runtimes %v: expected the ROM path, got %s", runtimes, s.FullTargetPath)
+		}
+		if s.Candidate == nil || s.Candidate.Flavor != dash.FlavorROM || s.Candidate.Engine.Details["system"] != "nes" {
+			t.Fatalf("runtimes %v: candidate lacks ROM system: %+v", runtimes, s.Candidate)
+		}
+	}
+
+	// a non-native host (wine, remote) does not get the client's runtimes
+	other := manager.Host{Runtime: ox.Runtime{Platform: ox.PlatformWindows, Is64: true}}
+	targets, err = getTargetsForHost(rc, nil, nil, verdict, info, other, []dash.Flavor{"rom"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(targets) != 1 || targets[0].Strategy.Strategy != butlerd.LaunchStrategyShell {
+		t.Fatalf("expected shell target for non-native host, got %+v", targets)
+	}
+}
+
+func TestConfigure_DeepProbe(t *testing.T) {
+	t.Parallel()
+	if runtime.GOOS != "linux" {
+		t.Skip("needs a host ELF")
+	}
+	sh, err := os.ReadFile("/bin/sh")
+	if err != nil {
+		t.Skip("no /bin/sh")
+	}
+	installFolder := t.TempDir()
+	if err := os.WriteFile(filepath.Join(installFolder, "sh"), sh, 0755); err != nil {
+		t.Fatal(err)
+	}
+
+	for _, deep := range []bool{false, true} {
+		verdict, err := configure.Do(configure.Params{
+			Path:      installFolder,
+			NoFilter:  true,
+			DeepProbe: deep,
+			Consumer:  &state.Consumer{},
+		})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(verdict.Candidates) != 1 || verdict.Candidates[0].LinuxInfo == nil {
+			t.Fatalf("deepProbe=%v: expected one linux candidate, got %+v", deep, verdict.Candidates)
+		}
+		hasImports := len(verdict.Candidates[0].LinuxInfo.Imports) > 0
+		if hasImports != deep {
+			t.Fatalf("deepProbe=%v: imports present=%v", deep, hasImports)
+		}
 	}
 }
