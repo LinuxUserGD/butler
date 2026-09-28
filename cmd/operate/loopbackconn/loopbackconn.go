@@ -67,7 +67,7 @@ func (lc *loopbackConn) OnCall(method string, handler CallHandler) {
 	lc.callHandlers[method] = handler
 }
 
-func (lc *loopbackConn) Call(method string, params interface{}, result interface{}) error {
+func (lc *loopbackConn) Call(ctx context.Context, method string, params interface{}, result interface{}) error {
 	if h, ok := lc.callHandlers[method]; ok {
 		return h(lc, method, params, result)
 	}

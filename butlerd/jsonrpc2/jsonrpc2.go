@@ -63,7 +63,9 @@ const (
 type OutgoingCall func(msg Message)
 
 type Conn interface {
-	Call(method string, params interface{}, result interface{}) error
+	// Gives up when ctx is done and forgets the pending call, so a reply
+	// that never comes leaks nothing.
+	Call(ctx context.Context, method string, params interface{}, result interface{}) error
 	Notify(method string, params interface{}) error
 	Context() context.Context
 	Close()
@@ -297,7 +299,7 @@ func (c *connImpl) Notify(method string, params interface{}) error {
 	return c.send(msg)
 }
 
-func (c *connImpl) Call(method string, params interface{}, result interface{}) error {
+func (c *connImpl) Call(ctx context.Context, method string, params interface{}, result interface{}) error {
 	paramsText, err := EncodeJSON(params)
 	if err != nil {
 		return err
@@ -310,7 +312,9 @@ func (c *connImpl) Call(method string, params interface{}, result interface{}) e
 		Params: &paramsText,
 	}
 
-	done := make(chan error)
+	// Buffered: a reply landing after ctx is done must not block the
+	// reader, which dispatches it under outgoingCallsMutex
+	done := make(chan error, 1)
 
 	f := func(msg Message) {
 		done <- (func() error {
@@ -337,6 +341,11 @@ func (c *connImpl) Call(method string, params interface{}, result interface{}) e
 	select {
 	case err := <-done:
 		return err
+	case <-ctx.Done():
+		c.outgoingCallsMutex.Lock()
+		delete(c.outgoingCalls, id)
+		c.outgoingCallsMutex.Unlock()
+		return ctx.Err()
 	case <-c.ctx.Done():
 		return errors.New("json-rpc2: connection closed")
 	}

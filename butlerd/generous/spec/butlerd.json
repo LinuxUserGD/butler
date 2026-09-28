@@ -236,6 +236,85 @@
       }
     },
     {
+      "method": "Profile.LoginWithDevice",
+      "doc": "Add a new profile by signing in from another device, for a client with\nno browser or keyboard. The server issues a code the user approves on\ntheir phone: the OAuth device grant (RFC 8628) with PKCE, ending in the\nsame token exchange as @@ProfileLoginWithOAuthCodeParams.\n\nA @@ProfileLoginWithDeviceChallengeNotification carries the URL to show\nas a QR code and the user code to show under it, and is sent again with\na new code whenever the previous one expires unanswered. Once the user\napproves, @@ProfileLoginWithDeviceRequestDeviceInfoParams asks what to\ntell the server about this device, then the request returns with the\nnew profile. Cancel it with @@ProfileLoginWithDeviceCancelParams.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "id",
+            "doc": "ID that can be later used in @@ProfileLoginWithDeviceCancelParams",
+            "type": "string"
+          },
+          {
+            "name": "clientId",
+            "doc": "The OAuth client ID registered for the device grant",
+            "type": "string"
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "profile",
+            "doc": "Information for the new profile, now remembered",
+            "type": "Profile"
+          },
+          {
+            "name": "cookie",
+            "doc": "Profile cookie for website",
+            "type": "{ [key: string]: string }"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Profile.LoginWithDevice.Cancel",
+      "doc": "Cancel a pending @@ProfileLoginWithDeviceParams.",
+      "caller": "client",
+      "params": {
+        "fields": [
+          {
+            "name": "id",
+            "doc": "The ID passed to @@ProfileLoginWithDeviceParams",
+            "type": "string"
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "didCancel",
+            "doc": "",
+            "type": "boolean"
+          }
+        ]
+      }
+    },
+    {
+      "method": "Profile.LoginWithDevice.RequestDeviceInfo",
+      "doc": "Sent during @@ProfileLoginWithDeviceParams once the user has approved,\njust before the token exchange. Answer with an empty string, or refuse\nthe request, to share nothing.",
+      "caller": "server",
+      "params": {
+        "fields": [
+          {
+            "name": "id",
+            "doc": "The ID passed to @@ProfileLoginWithDeviceParams",
+            "type": "string"
+          }
+        ]
+      },
+      "result": {
+        "fields": [
+          {
+            "name": "deviceInfo",
+            "doc": "Device information string, as in @@ProfileLoginWithOAuthCodeParams",
+            "type": "string"
+          }
+        ]
+      }
+    },
+    {
       "method": "Profile.RequestCaptcha",
       "doc": "Ask the user to solve a captcha challenge\nSent during @@ProfileLoginWithPasswordParams if certain\nconditions are met.",
       "caller": "server",
@@ -3935,6 +4014,34 @@
       }
     },
     {
+      "method": "Profile.LoginWithDevice.Challenge",
+      "doc": "Sent during @@ProfileLoginWithDeviceParams with what to put on screen.\nShow the URL as a link too, for people whose phone is this device.",
+      "params": {
+        "fields": [
+          {
+            "name": "id",
+            "doc": "The ID passed to @@ProfileLoginWithDeviceParams",
+            "type": "string"
+          },
+          {
+            "name": "url",
+            "doc": "Consent page URL, to be rendered as a QR code",
+            "type": "string"
+          },
+          {
+            "name": "userCode",
+            "doc": "Short code to show under it; the consent page shows the same one",
+            "type": "string"
+          },
+          {
+            "name": "expiresIn",
+            "doc": "Seconds until this code expires and a new one is sent",
+            "type": "number"
+          }
+        ]
+      }
+    },
+    {
       "method": "Progress",
       "doc": "Sent periodically during @@InstallPerformParams to inform on the current state of an install",
       "params": {
@@ -4539,6 +4646,44 @@
       ]
     },
     {
+      "name": "ProfileLoginWithDeviceResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "profile",
+          "doc": "Information for the new profile, now remembered",
+          "type": "Profile"
+        },
+        {
+          "name": "cookie",
+          "doc": "Profile cookie for website",
+          "type": "{ [key: string]: string }"
+        }
+      ]
+    },
+    {
+      "name": "ProfileLoginWithDeviceCancelResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "didCancel",
+          "doc": "",
+          "type": "boolean"
+        }
+      ]
+    },
+    {
+      "name": "ProfileLoginWithDeviceRequestDeviceInfoResult",
+      "doc": "",
+      "fields": [
+        {
+          "name": "deviceInfo",
+          "doc": "Device information string, as in @@ProfileLoginWithOAuthCodeParams",
+          "type": "string"
+        }
+      ]
+    },
+    {
       "name": "ProfileRequestCaptchaResult",
       "doc": "",
       "fields": [
@@ -4725,6 +4870,12 @@
           "doc": "Only include games with a download tagged for this platform\n(\"windows\", \"linux\", \"osx\"), or web-playable games (\"web\").",
           "type": "string",
           "optional": true
+        },
+        {
+          "name": "scannedPlatforms",
+          "doc": "Only include games whose scanned platforms (see Game.ScannedPlatforms)\ncontain at least one of these entries (OR), e.g. \"linux-arm64\",\n\"rom:gba\". Games that haven't been scanned yet never match. An empty\nlist applies no filter.",
+          "type": "string[]",
+          "optional": true
         }
       ]
     },
@@ -4877,6 +5028,12 @@
           "doc": "Only include games with a download tagged for this platform\n(\"windows\", \"linux\", \"osx\"), or web-playable games (\"web\").",
           "type": "string",
           "optional": true
+        },
+        {
+          "name": "scannedPlatforms",
+          "doc": "Only include games whose scanned platforms (see Game.ScannedPlatforms)\ncontain at least one of these entries (OR), e.g. \"linux-arm64\",\n\"rom:gba\". Games that haven't been scanned yet never match. An empty\nlist applies no filter.",
+          "type": "string[]",
+          "optional": true
         }
       ]
     },
@@ -5018,6 +5175,12 @@
           "doc": "Only include games with a download tagged for this platform\n(\"windows\", \"linux\", \"osx\"), or web-playable games (\"web\").",
           "type": "string",
           "optional": true
+        },
+        {
+          "name": "scannedPlatforms",
+          "doc": "Only include games whose scanned platforms (see Game.ScannedPlatforms)\ncontain at least one of these entries (OR), e.g. \"linux-arm64\",\n\"rom:gba\". Games that haven't been scanned yet never match. An empty\nlist applies no filter.",
+          "type": "string[]",
+          "optional": true
         }
       ]
     },
@@ -5086,6 +5249,12 @@
           "name": "platform",
           "doc": "Only include games with a download tagged for this platform\n(\"windows\", \"linux\", \"osx\"), or web-playable games (\"web\").",
           "type": "string",
+          "optional": true
+        },
+        {
+          "name": "scannedPlatforms",
+          "doc": "Only include games whose scanned platforms (see Game.ScannedPlatforms)\ncontain at least one of these entries (OR), e.g. \"linux-arm64\",\n\"rom:gba\". Games that haven't been scanned yet never match. An empty\nlist applies no filter.",
+          "type": "string[]",
           "optional": true
         }
       ]
@@ -7469,6 +7638,12 @@
           "type": "Platforms"
         },
         {
+          "name": "scannedPlatforms",
+          "doc": "Exact platforms found by scanning the game's uploads, such as\n`linux-amd64`, `windows-386`, `rom:gba`, or a device profile id.\nIndependent of Platforms, which comes from uploader-set tags.\nnil when the uploads haven't been scanned, empty when a scan\nfound nothing.",
+          "type": "string[]",
+          "optional": true
+        },
+        {
           "name": "user",
           "doc": "The user account this game is associated to",
           "type": "User",
@@ -7663,6 +7838,30 @@
           "name": "platforms",
           "doc": "Platforms this upload is compatible with",
           "type": "Platforms"
+        },
+        {
+          "name": "launchTargets",
+          "doc": "Launch targets found by scanning the upload's contents, as a\nmarshaled []dash.LaunchTarget kept raw so this package doesn't\ndepend on dash. nil when the upload hasn't been scanned, `[]`\nwhen a scan found nothing. For wharf uploads this describes the\ncurrent build.",
+          "type": "any",
+          "optional": true
+        },
+        {
+          "name": "launchTargetsSource",
+          "doc": "Where LaunchTargets came from: \"server\" for a wharfd scan,\n\"client\" for an unverified report from the pushing butler.",
+          "type": "LaunchTargetsSource",
+          "optional": true
+        },
+        {
+          "name": "launchTargetsScannerVersion",
+          "doc": "Identifies the client that produced a client report, e.g. \"butler/15.26.0\"",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "launchTargetsExtractedSize",
+          "doc": "Size in bytes of the extracted files the launch targets were found in",
+          "type": "number",
+          "optional": true
         },
         {
           "name": "createdAt",
@@ -8845,6 +9044,16 @@
           "name": "PublishSteamSyncLoginInProgress",
           "doc": "Another @@PublishSteamSyncLoginParams call is still waiting for approval.",
           "value": 21004
+        },
+        {
+          "name": "ProfileLoginWithDeviceDenied",
+          "doc": "The user pressed deny on the consent page.",
+          "value": 22000
+        },
+        {
+          "name": "ProfileLoginWithDeviceInProgress",
+          "doc": "Another @@ProfileLoginWithDeviceParams call is still waiting for approval.",
+          "value": 22001
         }
       ]
     },
@@ -9312,6 +9521,22 @@
           "name": "Book",
           "doc": "GameClassificationBook is a book (pdf, jpg, specific e-book formats, etc.)",
           "value": "book"
+        }
+      ]
+    },
+    {
+      "name": "LaunchTargetsSource",
+      "doc": "LaunchTargetsSource describes who produced an upload's launch targets.",
+      "values": [
+        {
+          "name": "Server",
+          "doc": "LaunchTargetsSourceServer is a wharfd scan of the upload",
+          "value": "server"
+        },
+        {
+          "name": "Client",
+          "doc": "LaunchTargetsSourceClient is the report butler sent when pushing the build",
+          "value": "client"
         }
       ]
     },
