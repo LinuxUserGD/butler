@@ -16045,6 +16045,12 @@ a native executable, a Java or Love2D bundle, an HTML index, etc.</p>
 </td>
 </tr>
 <tr>
+<td><code>androidInfo</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#AndroidInfo__TypeHint">AndroidInfo</span></code></td>
+<td><p><span class="tag">Optional</span> AndroidInfo contains information specific to Android packages</p>
+</td>
+</tr>
+<tr>
 <td><code>loveInfo</code></td>
 <td><code class="typename"><span class="type" data-tip-selector="#LoveInfo__TypeHint">LoveInfo</span></code></td>
 <td><p><span class="tag">Optional</span> LoveInfo contains information specific to Love2D bundles (<code>.love</code> files)</p>
@@ -16083,7 +16089,8 @@ shipped next to the game rather than something a player launches:
 &ldquo;renpy&rdquo; for its python and zsync, &ldquo;electron&rdquo; or &ldquo;nwjs&rdquo; for crashpad
 and sandbox processes, &ldquo;dotnet&rdquo; for createdump, &ldquo;java&rdquo; for a bundled
 JRE, &ldquo;node&rdquo; for anything under node_modules, &ldquo;unity&rdquo; and &ldquo;unreal&rdquo;
-for their crash handlers. Filter drops helpers.</p>
+for their crash handlers, &ldquo;android&rdquo; for a split package, which only
+installs along with its base. Filter drops helpers.</p>
 </td>
 </tr>
 </table>
@@ -16138,6 +16145,10 @@ a native executable, a Java or Love2D bundle, an HTML index, etc.</p>
 <tr>
 <td><code>macosInfo</code></td>
 <td><code class="typename"><span class="type">MacosInfo</span></code></td>
+</tr>
+<tr>
+<td><code>androidInfo</code></td>
+<td><code class="typename"><span class="type">AndroidInfo</span></code></td>
 </tr>
 <tr>
 <td><code>loveInfo</code></td>
@@ -16321,6 +16332,11 @@ a native executable, a Java or Love2D bundle, an HTML index, etc.</p>
 <td><p>Playdate game bundle: the folder holding pdxinfo</p>
 </td>
 </tr>
+<tr>
+<td><code>"android"</code></td>
+<td><p>Android application package (.apk)</p>
+</td>
+</tr>
 </table>
 
 
@@ -16416,6 +16432,9 @@ a native executable, a Java or Love2D bundle, an HTML index, etc.</p>
 </tr>
 <tr>
 <td><code>"playdate-pdx"</code></td>
+</tr>
+<tr>
+<td><code>"android"</code></td>
 </tr>
 </table>
 
@@ -16713,6 +16732,297 @@ or app bundles.</p>
 <tr>
 <td><code>architectures</code></td>
 <td><code class="typename"><span class="type">Arch</span>[]</code></td>
+</tr>
+</table>
+
+</div>
+
+### AndroidInfo (struct)
+
+
+<p>
+<p>Contains information specific to Android packages. Compatibility fields are
+what the package declares, not what was tested: an app that never mentions a
+gamepad may still work with one.</p>
+
+</p>
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>package</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Application id, stable across versions of the same app</p>
+</td>
+</tr>
+<tr>
+<td><code>split</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Name of this split when the package is one part of an app</p>
+</td>
+</tr>
+<tr>
+<td><code>splitRequired</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> True when the app can&rsquo;t be installed without further split packages</p>
+</td>
+</tr>
+<tr>
+<td><code>versionCode</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> Internal version. The system refuses to update to a lower one.</p>
+</td>
+</tr>
+<tr>
+<td><code>versionName</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Version shown to users. Empty when it is a resource reference.</p>
+</td>
+</tr>
+<tr>
+<td><code>minSdk</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> Lowest API level the package installs on. Zero when undeclared.</p>
+</td>
+</tr>
+<tr>
+<td><code>targetSdk</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+<td><p><span class="tag">Optional</span> API level the package was built for</p>
+</td>
+</tr>
+<tr>
+<td><code>abis</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Directories under lib/, such as arm64-v8a. Empty means no native code,
+which runs on any architecture.</p>
+</td>
+</tr>
+<tr>
+<td><code>glesVersion</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Lowest OpenGL ES version the package requires, such as &ldquo;3.0&rdquo;</p>
+</td>
+</tr>
+<tr>
+<td><code>requiredFeatures</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Device features the package requires to install</p>
+</td>
+</tr>
+<tr>
+<td><code>optionalFeatures</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Device features the package can use but does not need</p>
+</td>
+</tr>
+<tr>
+<td><code>launcherActivity</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Fully qualified component to start</p>
+</td>
+</tr>
+<tr>
+<td><code>launcherCategories</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Launcher surfaces the package declares across its activities</p>
+</td>
+</tr>
+<tr>
+<td><code>orientation</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Screen orientation of the launcher activity, in manifest notation</p>
+</td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p><span class="tag">Optional</span> Permissions the package requests</p>
+</td>
+</tr>
+<tr>
+<td><code>debuggable</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> True for a debuggable build</p>
+</td>
+</tr>
+<tr>
+<td><code>playServices</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> True when the package links Google Play services, which some handhelds
+lack. It may still run without them.</p>
+</td>
+</tr>
+<tr>
+<td><code>signer</code></td>
+<td><code class="typename"><span class="type" data-tip-selector="#AndroidSigner__TypeHint">AndroidSigner</span></code></td>
+<td><p><span class="tag">Optional</span> Who signed the package. The system only updates an installed app from
+a package with the same signer.</p>
+</td>
+</tr>
+</table>
+
+
+<div id="AndroidInfo__TypeHint" class="tip-content">
+<p>AndroidInfo (struct) <a href="#/?id=androidinfo-struct">(Go to definition)</a></p>
+
+<p>
+<p>Contains information specific to Android packages. Compatibility fields are
+what the package declares, not what was tested: an app that never mentions a
+gamepad may still work with one.</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>package</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>split</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>splitRequired</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>versionCode</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>versionName</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>minSdk</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>targetSdk</code></td>
+<td><code class="typename"><span class="type builtin-type">number</span></code></td>
+</tr>
+<tr>
+<td><code>abis</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>glesVersion</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>requiredFeatures</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>optionalFeatures</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>launcherActivity</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>launcherCategories</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>orientation</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>permissions</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>debuggable</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>playServices</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+</tr>
+<tr>
+<td><code>signer</code></td>
+<td><code class="typename"><span class="type">AndroidSigner</span></code></td>
+</tr>
+</table>
+
+</div>
+
+### AndroidSigner (struct)
+
+
+<p>
+<p>AndroidSigner identifies the certificate that signed an Android package</p>
+
+</p>
+
+<p>
+<span class="header">Fields</span> 
+</p>
+
+
+<table class="field-table">
+<tr>
+<td><code>sha256</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> SHA-256 of the DER certificate, in hex. Empty when no certificate could
+be read. Nothing here checks the signature, and certificates are
+public, so a forged package can claim any signer. A mismatch means
+something, a match proves nothing: only the system&rsquo;s check at install
+time does.</p>
+</td>
+</tr>
+<tr>
+<td><code>subject</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+<td><p><span class="tag">Optional</span> Certificate subject</p>
+</td>
+</tr>
+<tr>
+<td><code>schemes</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+<td><p>Signature schemes present: &ldquo;v1&rdquo;, &ldquo;v2&rdquo;, &ldquo;v3&rdquo;, &ldquo;v3.1&rdquo;</p>
+</td>
+</tr>
+<tr>
+<td><code>debug</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
+<td><p><span class="tag">Optional</span> True for the certificate build tools generate per machine</p>
+</td>
+</tr>
+</table>
+
+
+<div id="AndroidSigner__TypeHint" class="tip-content">
+<p>AndroidSigner (struct) <a href="#/?id=androidsigner-struct">(Go to definition)</a></p>
+
+<p>
+<p>AndroidSigner identifies the certificate that signed an Android package</p>
+
+</p>
+
+<table class="field-table">
+<tr>
+<td><code>sha256</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>subject</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span></code></td>
+</tr>
+<tr>
+<td><code>schemes</code></td>
+<td><code class="typename"><span class="type builtin-type">string</span>[]</code></td>
+</tr>
+<tr>
+<td><code>debug</code></td>
+<td><code class="typename"><span class="type builtin-type">boolean</span></code></td>
 </tr>
 </table>
 
@@ -17166,6 +17476,14 @@ payload candidate carries it because the payload is nothing without it.</p>
 <td><code>"lwjgl"</code></td>
 <td></td>
 </tr>
+<tr>
+<td><code>"flutter"</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>"cordova"</code></td>
+<td></td>
+</tr>
 </table>
 
 
@@ -17269,6 +17587,12 @@ payload candidate carries it because the payload is nothing without it.</p>
 </tr>
 <tr>
 <td><code>"lwjgl"</code></td>
+</tr>
+<tr>
+<td><code>"flutter"</code></td>
+</tr>
+<tr>
+<td><code>"cordova"</code></td>
 </tr>
 </table>
 
@@ -20779,6 +21103,10 @@ can be taken while launching a game.</p>
 <td></td>
 </tr>
 <tr>
+<td><code>"android"</code></td>
+<td></td>
+</tr>
+<tr>
 <td><code>"unknown"</code></td>
 <td></td>
 </tr>
@@ -20798,6 +21126,9 @@ can be taken while launching a game.</p>
 </tr>
 <tr>
 <td><code>"linux"</code></td>
+</tr>
+<tr>
+<td><code>"android"</code></td>
 </tr>
 <tr>
 <td><code>"unknown"</code></td>

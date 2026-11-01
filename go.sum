@@ -111,6 +111,8 @@ github.com/itchio/boar v0.0.0-20261018052339-ac828bcb2bf6 h1:W4zZegi2ypcMZiouQYg
 github.com/itchio/boar v0.0.0-20261018052339-ac828bcb2bf6/go.mod h1:2zwB1kfmOiG7BTRhSIVf/1LIfEAxoukvuvrTSOObghE=
 github.com/itchio/dash v0.0.0-20261014004205-9eedde9ffa6f h1:5ta/yO5krJzWiW4aCByqMEC7/PaVvA8dYYG18NXe+8k=
 github.com/itchio/dash v0.0.0-20261014004205-9eedde9ffa6f/go.mod h1:gKZTJPFMtpLt/dNHdceWY09Q3488VE3sYsN5TbW8va0=
+github.com/itchio/dash v0.0.0-20261031060303-377390daf48f h1:TcqZgu7NoWU45EAmTnflQuT8qlbL7DzROzI3LM/Q0Qw=
+github.com/itchio/dash v0.0.0-20261031060303-377390daf48f/go.mod h1:gKZTJPFMtpLt/dNHdceWY09Q3488VE3sYsN5TbW8va0=
 github.com/itchio/dmcunrar-go v0.0.0-20260424162333-44c84bdd19dc h1:s6pwHaAe+FYht3rAJFS++vp17SizmGRK9gTpq6i5lxw=
 github.com/itchio/dmcunrar-go v0.0.0-20260424162333-44c84bdd19dc/go.mod h1:JPXUR7Whpf+BnJwFlSjOSdll/5CpERypOxGW0wCF408=
 github.com/itchio/dskompress v0.0.0-20190702113811-5e6f499be697 h1:u3Q2WkrIPYlGEw4fjcImSOrkivWd6SVb0BF0Ehoih9c=
@@ -130,6 +132,8 @@ github.com/itchio/httpkit v0.0.0-20261014203241-1452ce76013a h1:o7HIv/dtyPyD9sC8
 github.com/itchio/httpkit v0.0.0-20261014203241-1452ce76013a/go.mod h1:rbLr08UlPVYgoXuj3ZoCCZtWO8WtCtArM4/Eti+CXi4=
 github.com/itchio/hush v0.0.0-20261014190443-8dfa626388f6 h1:K0ADUm2UCH9HLeqVqvDQGJgB9fFyJZfELCslstqKhMw=
 github.com/itchio/hush v0.0.0-20261014190443-8dfa626388f6/go.mod h1:FqxkeHtZMGuSv7ee109PFismL9Aa1eYWRq/uEcSvtZk=
+github.com/itchio/hush v0.0.0-20261031061138-905d82ad7495 h1:Lml8c8licxUf0y1MNBBK4xMxI/yl3aYYFlCBQUDWkAg=
+github.com/itchio/hush v0.0.0-20261031061138-905d82ad7495/go.mod h1:FqxkeHtZMGuSv7ee109PFismL9Aa1eYWRq/uEcSvtZk=
 github.com/itchio/intact v0.0.0-20260226205519-5e171e94117d h1:kV/P1stWMCvoSmt+dxCY8xzQmoRSBKo3vqHM8u7OV9s=
 github.com/itchio/intact v0.0.0-20260226205519-5e171e94117d/go.mod h1:PCWTRtTQ1PUE6lmB+jDPxgA/wS59XYw48FqiovyjZYs=
 github.com/itchio/kompress v0.0.0-20200301155538-5c2eecce9e51 h1:jipXtdsZClshNO8fKK8ItiVyqE9bKA09as+qjW/yjG0=
@@ -142,6 +146,8 @@ github.com/itchio/mitch v0.0.0-20260924182058-8d1d0a6d9f9c h1:uKbOUOLrxH8VS/mzWG
 github.com/itchio/mitch v0.0.0-20260924182058-8d1d0a6d9f9c/go.mod h1:dFAkABHhy9jVYW8BY7rDmrL2yC4pYO0WEO2WN4lhIOI=
 github.com/itchio/ox v0.0.0-20260212201121-1e6be0bfd382 h1:FKGDIamOblBuLCYDxJkGEGCKZ5YG5gJvhCEXb6IcZA8=
 github.com/itchio/ox v0.0.0-20260212201121-1e6be0bfd382/go.mod h1:433sW0ck7/e5u7yycn9pmuK84/askPuhm3MqtwFl9zk=
+github.com/itchio/ox v0.0.0-20261031062239-e0424e822ab8 h1:xurGHuISJwC5gK28TqpwUZgCx5A8IU1noarmwft3K/Y=
+github.com/itchio/ox v0.0.0-20261031062239-e0424e822ab8/go.mod h1:433sW0ck7/e5u7yycn9pmuK84/askPuhm3MqtwFl9zk=
 github.com/itchio/pelican v0.0.0-20260929212652-db949c1f2a5a h1:l+6tXdhSUT1xtihdTygiswSVB6MpX/urz0wG7DtKfhM=
 github.com/itchio/pelican v0.0.0-20260929212652-db949c1f2a5a/go.mod h1:5myIRqGAjat0gT3qiK43Cv1puZhxn9bi17+JZFpJQMo=
 github.com/itchio/randsource v0.0.0-20260216215536-1b48147d46e5 h1:RWifjgxRQRPdICcmunL8C+F4T3FaXMcOH6SLXGOBEvE=
