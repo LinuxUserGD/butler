@@ -17,7 +17,7 @@ require (
 	github.com/helloeave/json v1.13.0
 	github.com/itchio/arkive v0.0.0-20260428180635-32e8e9c72151
 	github.com/itchio/boar v0.0.0-20261018052339-ac828bcb2bf6
-	github.com/itchio/dash v0.0.0-20261031060303-377390daf48f
+	github.com/itchio/dash v0.0.0-20261104234003-a7fc044cdc69
 	github.com/itchio/fresh-steamer v0.0.0-20260910204833-384b262158c8
 	github.com/itchio/go-itchio v0.0.0-20261029222946-880aeca7c32b
 	github.com/itchio/hades v0.0.0-20260923023924-c870c8c16344
@@ -28,7 +28,7 @@ require (
 	github.com/itchio/lake v0.0.0-20261014205523-683452196911
 	github.com/itchio/mitch v0.0.0-20260924182058-8d1d0a6d9f9c
 	github.com/itchio/ox v0.0.0-20261031062239-e0424e822ab8
-	github.com/itchio/pelican v0.0.0-20260929212652-db949c1f2a5a
+	github.com/itchio/pelican v0.0.0-20261104233745-f575d787f608
 	github.com/itchio/savior v0.0.0-20261014002740-9a7f4832f631
 	github.com/itchio/screw v0.0.0-20260221011136-e674b460b040
 	github.com/itchio/sevenzip-go v0.0.0-20261018052135-4aeb2247b776

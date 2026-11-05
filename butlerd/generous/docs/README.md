@@ -16664,7 +16664,36 @@ or installer packages.</p>
 </tr>
 <tr>
 <td><code>"archive"</code></td>
-<td><p>Self-extracting installers that 7-zip knows how to extract</p>
+<td><p>Any other self-extracting archive spellbook recognizes (Info-Zip,
+WinZip, InstallShield, WISE, &hellip;)</p>
+</td>
+</tr>
+<tr>
+<td><code>"7zip"</code></td>
+<td><p>7-Zip SFX module with a 7z archive appended</p>
+</td>
+</tr>
+<tr>
+<td><code>"winrar"</code></td>
+<td><p>WinRAR SFX module with a RAR or zip archive appended</p>
+</td>
+</tr>
+<tr>
+<td><code>"cab"</code></td>
+<td><p>Stub with a cabinet appended, such as RPG Maker XP/VX/VX Ace
+&ldquo;compress game data&rdquo; exports</p>
+</td>
+</tr>
+<tr>
+<td><code>"iexpress"</code></td>
+<td><p>IExpress (wextract) package, cabinet stored as a resource. GameMaker
+Studio 1.x &ldquo;single runtime executable&rdquo; exports are these: they
+extract to a temporary folder and run the game from there.</p>
+</td>
+</tr>
+<tr>
+<td><code>"clickteam"</code></td>
+<td><p>Clickteam Install Creator</p>
 </td>
 </tr>
 </table>
@@ -16690,6 +16719,21 @@ or installer packages.</p>
 </tr>
 <tr>
 <td><code>"archive"</code></td>
+</tr>
+<tr>
+<td><code>"7zip"</code></td>
+</tr>
+<tr>
+<td><code>"winrar"</code></td>
+</tr>
+<tr>
+<td><code>"cab"</code></td>
+</tr>
+<tr>
+<td><code>"iexpress"</code></td>
+</tr>
+<tr>
+<td><code>"clickteam"</code></td>
 </tr>
 </table>
 

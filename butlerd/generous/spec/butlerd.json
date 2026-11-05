@@ -9438,8 +9438,33 @@
         },
         {
           "name": "Archive",
-          "doc": "Self-extracting installers that 7-zip knows how to extract",
+          "doc": "Any other self-extracting archive spellbook recognizes (Info-Zip,\nWinZip, InstallShield, WISE, ...)",
           "value": "archive"
+        },
+        {
+          "name": "SevenZip",
+          "doc": "7-Zip SFX module with a 7z archive appended",
+          "value": "7zip"
+        },
+        {
+          "name": "WinRAR",
+          "doc": "WinRAR SFX module with a RAR or zip archive appended",
+          "value": "winrar"
+        },
+        {
+          "name": "Cab",
+          "doc": "Stub with a cabinet appended, such as RPG Maker XP/VX/VX Ace\n\"compress game data\" exports",
+          "value": "cab"
+        },
+        {
+          "name": "IExpress",
+          "doc": "IExpress (wextract) package, cabinet stored as a resource. GameMaker\nStudio 1.x \"single runtime executable\" exports are these: they\nextract to a temporary folder and run the game from there.",
+          "value": "iexpress"
+        },
+        {
+          "name": "Clickteam",
+          "doc": "Clickteam Install Creator",
+          "value": "clickteam"
         }
       ]
     },
