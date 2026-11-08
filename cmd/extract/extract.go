@@ -43,9 +43,9 @@ var fetch7zLibsForce *bool
 func doFetch7zLibs(ctx *mansion.Context) {
 	consumer := comm.NewStateConsumer()
 	if *fetch7zLibsForce {
-		ctx.Must(szextractor.InstallDeps(consumer))
+		ctx.Must(szextractor.InstallDeps(ctx.Ctx(), consumer))
 	} else {
-		ctx.Must(szextractor.EnsureDeps(consumer))
+		ctx.Must(szextractor.EnsureDeps(ctx.Ctx(), consumer))
 	}
 
 	lib, err := sz.NewLib()
@@ -80,7 +80,7 @@ func Do(ctx *mansion.Context, params ExtractParams) error {
 
 	consumer := params.Consumer
 
-	file, err := eos.Open(params.File, option.WithConsumer(consumer))
+	file, err := eos.Open(ctx.Ctx(), params.File, option.WithConsumer(consumer))
 	if err != nil {
 		return errors.Wrap(err, "opening archive file")
 	}

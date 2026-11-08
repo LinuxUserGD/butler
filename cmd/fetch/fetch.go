@@ -97,7 +97,7 @@ func Do(ctx *mansion.Context, specStr string, outPath string) error {
 	comm.Opf("Extracting into %s", outPath)
 
 	comm.StartProgress()
-	extractRes, err := boar.SimpleExtract(&boar.SimpleExtractParams{
+	extractRes, err := boar.SimpleExtract(ctx.Ctx(), &boar.SimpleExtractParams{
 		ArchivePath:       url,
 		Consumer:          consumer,
 		DestinationFolder: outPath,

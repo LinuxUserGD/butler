@@ -7,6 +7,7 @@ import (
 	"math"
 	"os"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/itchio/httpkit/eos"
@@ -129,7 +130,7 @@ func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion stri
 		walkOpts.AutoWrap(&buildPath, consumer)
 	}
 
-	go doWalk(buildPath, sourceContainerChan, walkErrs, fixPerms, walkOpts)
+	go doWalk(ctx.Ctx(), buildPath, sourceContainerChan, walkErrs, fixPerms, walkOpts)
 
 	spec, err := itchio.ParseSpec(specStr)
 	if err != nil {
@@ -204,7 +205,7 @@ func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion stri
 				return errors.Wrap(err, "getting previous build signature")
 			}
 
-			err = pwr.AssertValid(buildPath, sig)
+			err = pwr.AssertValid(ctx.Ctx(), buildPath, sig)
 			if err == nil {
 				comm.Statf("No changes and --if-changed used, not pushing anything")
 				pushResult(0, spec.Channel, false, true, "if-changed")
@@ -227,7 +228,7 @@ func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion stri
 	}
 
 	comm.Opf("Scanning launch targets...")
-	launchAnalysis := scanBuildLaunchAnalysis(buildPath, sourceContainer, consumer)
+	launchAnalysis := scanBuildLaunchAnalysis(ctx.Ctx(), buildPath, sourceContainer, dereference, consumer)
 
 	requestCtx, cancel := ctx.DefaultCtx()
 	newBuildRes, err := client.CreateBuild(requestCtx, itchio.CreateBuildParams{
@@ -278,11 +279,24 @@ func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion stri
 	newPatchRes := bothFiles.patchRes
 	newSignatureRes := bothFiles.signatureRes
 
-	patchWriter := uploader.NewResumableUpload(newPatchRes.File.UploadURL)
-	patchWriter.SetConsumer(consumer)
+	// an early return must stop both uploads, since the process may go
+	// on to push something else (steam-sync runs several in a row)
+	pushCtx, cancelPush := context.WithCancel(ctx.Ctx())
+	defer cancelPush()
 
-	signatureWriter := uploader.NewResumableUpload(newSignatureRes.File.UploadURL)
-	signatureWriter.SetConsumer(consumer)
+	// assigned below, once the counters it reads exist
+	var updateProgress func()
+	var patchUploadedBytes int64
+
+	patchWriter := uploader.NewResumableUpload(pushCtx, newPatchRes.File.UploadURL,
+		uploader.WithConsumer(consumer),
+		uploader.WithProgressListener(func(count int64) {
+			patchUploadedBytes = count
+			updateProgress()
+		}))
+
+	signatureWriter := uploader.NewResumableUpload(pushCtx, newSignatureRes.File.UploadURL,
+		uploader.WithConsumer(consumer))
 
 	comm.Debugf("Launching patch & signature channels")
 
@@ -296,10 +310,11 @@ func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion stri
 
 	var bytesPerSec float64
 	var lastUploadedBytes int64
-	var patchUploadedBytes int64
 
 	stopTicking := make(chan struct{})
-	updateProgress := func() {
+	stopTicker := sync.OnceFunc(func() { close(stopTicking) })
+	defer stopTicker()
+	updateProgress = func() {
 		// input bytes that aren't in output, for example:
 		//  - bytes that have been compressed away
 		//  - bytes that were in old build and were simply reused
@@ -336,13 +351,9 @@ func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion stri
 		comm.ProgressScale(float64(readBytes) / float64(sourceContainer.Size))
 	}
 
-	patchWriter.SetProgressListener(func(count int64) {
-		patchUploadedBytes = count
-		updateProgress()
-	})
-
 	go func() {
 		ticker := time.NewTicker(time.Second * time.Duration(2))
+		defer ticker.Stop()
 		for {
 			select {
 			case <-ticker.C:
@@ -379,14 +390,14 @@ func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion stri
 
 	comm.StartProgress()
 	comm.ProgressScale(0.0)
-	err = dctx.WritePatch(context.Background(), patchCounter, signatureCounter)
+	err = dctx.WritePatch(pushCtx, patchCounter, signatureCounter)
 	if err != nil {
 		return errors.Wrap(err, "computing and writing patch")
 	}
 
 	// close both files concurrently
 	{
-		errs := make(chan error)
+		errs := make(chan error, 2)
 
 		go func() {
 			errs <- patchWriter.Close()
@@ -404,12 +415,12 @@ func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion stri
 		}
 	}
 
-	close(stopTicking)
+	stopTicker()
 	comm.ProgressLabel("finalizing build")
 
 	// finalize both files concurrently
 	{
-		errs := make(chan error)
+		errs := make(chan error, 2)
 
 		doFinalize := func(fileID int64, fileSize int64, done chan error) {
 			requestCtx, cancel := ctx.DefaultCtx()
@@ -469,13 +480,12 @@ func Do(ctx *mansion.Context, buildPath string, specStr string, userVersion stri
 // reportBuildFailure marks a build as failed on the server so it doesn't
 // get stuck in "started" state forever. Best-effort: any error from the
 // API call is logged as a warning but does not shadow the original push
-// error. We use ctx.DefaultCtx (which is rooted in context.Background)
-// so an upstream cancellation doesn't prevent the failure from being
-// reported.
+// error. It uses ctx.DetachedCtx so an interrupted push still reports
+// the failure.
 func reportBuildFailure(ctx *mansion.Context, client *itchio.Client, buildID int64, channel string, pushErr error) {
 	msg := pushErr.Error()
 
-	requestCtx, cancel := ctx.DefaultCtx()
+	requestCtx, cancel := ctx.DetachedCtx()
 	_, err := client.CreateBuildFailure(requestCtx, itchio.CreateBuildFailureParams{
 		BuildID: buildID,
 		Message: msg,
@@ -528,7 +538,7 @@ func getSignature(ctx *mansion.Context, client *itchio.Client, consumer *state.C
 		FileID:  signatureFile.ID,
 	})
 
-	signatureReader, err := eos.Open(signatureURL, option.WithConsumer(consumer))
+	signatureReader, err := eos.Open(ctx.Ctx(), signatureURL, option.WithConsumer(consumer))
 	if err != nil {
 		return nil, errors.Wrap(err, "opening signature")
 	}
@@ -541,7 +551,7 @@ func getSignature(ctx *mansion.Context, client *itchio.Client, consumer *state.C
 		return nil, errors.Wrap(err, "opening signature")
 	}
 
-	signature, err := pwr.ReadSignature(context.Background(), signatureSource)
+	signature, err := pwr.ReadSignature(ctx.Ctx(), signatureSource)
 	if err != nil {
 		return nil, errors.Wrap(err, "reading signature")
 	}

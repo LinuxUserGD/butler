@@ -140,6 +140,8 @@ type getTargetsParams struct {
 	runtimes []dash.Flavor
 	// fill imports, glibc, SDL and display info on native candidates
 	deepProbe bool
+	// list an unpacked AppImage's AppRun instead of the image
+	unpackedAppImages bool
 }
 
 type getTargetsResult struct {
@@ -170,7 +172,7 @@ func getTargets(rc *butlerd.RequestContext, params getTargetsParams) (*getTarget
 		return nil, errors.WithStack(err)
 	}
 
-	verdict, err := configure.Do(configure.Params{
+	verdict, err := configure.Do(rc.Ctx, configure.Params{
 		Path:      installFolder,
 		NoFilter:  true,
 		DeepProbe: params.deepProbe,
@@ -192,7 +194,7 @@ func getTargets(rc *butlerd.RequestContext, params getTargetsParams) (*getTarget
 	contentUpload := upload != nil && isContentUploadType(upload.Type)
 
 	for _, host := range params.hosts {
-		hostTargets, err := getTargetsForHost(rc, upload, appManifest, verdict, info, host, params.runtimes)
+		hostTargets, err := getTargetsForHost(rc, upload, appManifest, verdict, info, host, params.runtimes, params.unpackedAppImages)
 		if err != nil {
 			if !contentUpload {
 				return nil, err
@@ -253,6 +255,7 @@ func getTargetsForHost(rc *butlerd.RequestContext,
 	info withInstallFolderInfo,
 	host manager.Host,
 	runtimes []dash.Flavor,
+	unpackedAppImages bool,
 ) ([]*butlerd.LaunchTarget, error) {
 	consumer := rc.Consumer
 	consumer.Opf("Seeking launch targets for host (%s)", host)
@@ -278,7 +281,7 @@ func getTargetsForHost(rc *butlerd.RequestContext,
 				return action, nil
 			}
 
-			verdict, err := dash.Configure(actionPath, dash.ConfigureParams{
+			verdict, err := dash.Configure(rc.Ctx, actionPath, dash.ConfigureParams{
 				Consumer: consumer,
 			})
 			if err != nil {
@@ -321,7 +324,7 @@ func getTargetsForHost(rc *butlerd.RequestContext,
 		actionsForHostCount = len(actions)
 
 		for _, action := range actions {
-			target, err := ActionToLaunchTarget(consumer, host, info.installFolder, action)
+			target, err := ActionToLaunchTarget(rc.Ctx, consumer, host, info.installFolder, action)
 			if err != nil {
 				failedActionCount++
 				if firstActionErr == nil {
@@ -331,7 +334,7 @@ func getTargetsForHost(rc *butlerd.RequestContext,
 				continue
 			}
 			if nativeHost {
-				target = runtimeTargetForAction(consumer, host, target, runtimes)
+				target = runtimeTargetForAction(rc.Ctx, consumer, host, target, runtimes)
 			}
 			targets = append(targets, target)
 			consumer.Logf("%s", target.Strategy.String())
@@ -362,6 +365,7 @@ func getTargetsForHost(rc *butlerd.RequestContext,
 	if nativeHost {
 		// the client's runtimes only exist on the machine it runs on
 		filterParams.Runtimes = runtimes
+		filterParams.UnpackedAppImages = unpackedAppImages
 	}
 
 	v2 := verdict.Filter(consumer, filterParams)

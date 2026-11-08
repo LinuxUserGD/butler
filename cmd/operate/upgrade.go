@@ -138,7 +138,7 @@ func applyPatch(oc *OperationContext, meta *MetaSubcontext, isub *InstallSubcont
 		UUID:        istate.DownloadSessionID,
 	})
 
-	patchSource, err := filesource.Open(patchURL, option.WithConsumer(consumer))
+	patchSource, err := filesource.Open(oc.Ctx(), patchURL, option.WithConsumer(consumer))
 	if err != nil {
 		return errors.Wrap(err, "opening remote patch")
 	}
@@ -200,12 +200,13 @@ func applyPatch(oc *OperationContext, meta *MetaSubcontext, isub *InstallSubcont
 	targetPool, err := pwr.NewSafeKeeper(pwr.SafeKeeperParams{
 		Inner: fspool.New(p.GetTargetContainer(), params.InstallFolder),
 		Open: func() (savior.SeekSource, error) {
-			return filesource.Open(parentSignatureURL, option.WithConsumer(consumer))
+			return filesource.Open(oc.Ctx(), parentSignatureURL, option.WithConsumer(consumer))
 		},
 	})
 	if err != nil {
 		return errors.WithMessage(err, "while creating safekeeper for patch")
 	}
+	defer targetPool.Close()
 
 	stageFolder := filepath.Join(params.StagingFolder, "patch-overlay")
 
@@ -255,6 +256,11 @@ func applyPatch(oc *OperationContext, meta *MetaSubcontext, isub *InstallSubcont
 	}
 
 	os.RemoveAll(checkpointPath)
+
+	err = targetPool.Close()
+	if err != nil {
+		return errors.WithMessage(err, "while closing target pool")
+	}
 
 	err = bowl.Commit()
 	if err != nil {

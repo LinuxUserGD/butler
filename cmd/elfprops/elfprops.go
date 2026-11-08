@@ -23,7 +23,7 @@ func Register(ctx *mansion.Context) {
 func do(ctx *mansion.Context) {
 	consumer := comm.NewStateConsumer()
 
-	f, err := eos.Open(args.path, option.WithConsumer(consumer))
+	f, err := eos.Open(ctx.Ctx(), args.path, option.WithConsumer(consumer))
 	ctx.Must(err)
 	defer f.Close()
 

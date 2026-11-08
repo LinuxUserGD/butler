@@ -18,25 +18,25 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/homelight/json v1.18.5
 	github.com/itchio/arkive v0.0.0-20260428180635-32e8e9c72151
-	github.com/itchio/boar v0.0.0-20260916011956-fec7e71978bc
-	github.com/itchio/dash v0.0.0-20261001200159-ec6afcdb5004
+	github.com/itchio/boar v0.0.0-20261018052339-ac828bcb2bf6
+	github.com/itchio/dash v0.0.0-20261104234003-a7fc044cdc69
 	github.com/itchio/fresh-steamer v0.0.0-20260910204833-384b262158c8
-	github.com/itchio/go-itchio v0.0.0-20260924174910-9da9e84dec25
+	github.com/itchio/go-itchio v0.0.0-20261029222946-880aeca7c32b
 	github.com/itchio/hades v0.0.0-20260923023924-c870c8c16344
 	github.com/itchio/headway v0.0.0-20251229214354-da882c8b5dd4
-	github.com/itchio/httpkit v0.0.0-20260213231528-25109ada88c9
-	github.com/itchio/hush v0.0.0-20260914200638-506e8e2c4b9c
+	github.com/itchio/httpkit v0.0.0-20261014203241-1452ce76013a
+	github.com/itchio/hush v0.0.0-20261031061138-905d82ad7495
 	github.com/itchio/intact v0.0.0-20260226205519-5e171e94117d
-	github.com/itchio/lake v0.0.0-20260916234156-ee7b9927c490
+	github.com/itchio/lake v0.0.0-20261014205523-683452196911
 	github.com/itchio/mitch v0.0.0-20260924182058-8d1d0a6d9f9c
-	github.com/itchio/ox v0.0.0-20260212201121-1e6be0bfd382
-	github.com/itchio/pelican v0.0.0-20260929212652-db949c1f2a5a
-	github.com/itchio/savior v0.0.0-20260914182353-072694f48327
+	github.com/itchio/ox v0.0.0-20261031062239-e0424e822ab8
+	github.com/itchio/pelican v0.0.0-20261104233745-f575d787f608
+	github.com/itchio/savior v0.0.0-20261014002740-9a7f4832f631
 	github.com/itchio/screw v0.0.0-20260221011136-e674b460b040
-	github.com/itchio/sevenzip-go v0.0.0-20260914192131-9ff04bb5e5ce
-	github.com/itchio/smaug v0.0.0-20260921222733-a186307fa238
+	github.com/itchio/sevenzip-go v0.0.0-20261018052135-4aeb2247b776
+	github.com/itchio/smaug v0.0.0-20261029175628-c947b35e2c41
 	github.com/itchio/spellbook v0.0.0-20260223022740-4f847d058148
-	github.com/itchio/wharf v0.0.0-20260509025649-e95738701284
+	github.com/itchio/wharf v0.0.0-20261014050436-8744bb1ea628
 	github.com/itchio/wizardry v0.0.0-20261001062802-f7d4b4b74500
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51
 	github.com/mdp/qrterminal/v3 v3.2.1
@@ -84,7 +84,7 @@ require (
 	github.com/hashicorp/golang-lru v1.0.2 // indirect
 	github.com/itchio/dmcunrar-go v0.0.0-20260424162333-44c84bdd19dc // indirect
 	github.com/itchio/dskompress v0.0.0-20190702113811-5e6f499be697 // indirect
-	github.com/itchio/go-brotli v0.0.0-20190702114328-3f28d645a45c // indirect
+	github.com/itchio/go-brotli v0.0.0-20261025215007-eae0c1b3416b // indirect
 	github.com/itchio/kompress v0.0.0-20200301155538-5c2eecce9e51 // indirect
 	github.com/itchio/lzma v0.0.0-20190703113020-d3e24e3e3d49 // indirect
 	github.com/itchio/randsource v0.0.0-20260216215536-1b48147d46e5 // indirect

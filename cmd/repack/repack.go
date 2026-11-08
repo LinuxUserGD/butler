@@ -1,6 +1,7 @@
 package repack
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -68,7 +69,7 @@ func do(ctx *mansion.Context) {
 					Quality:   quality,
 				}
 
-				ctx.Must(Do(&Params{
+				ctx.Must(Do(ctx.Ctx(), &Params{
 					InPath:      *args.inPath,
 					Compression: comp,
 				}))
@@ -77,7 +78,7 @@ func do(ctx *mansion.Context) {
 	} else {
 		// output!
 		comp := ctx.CompressionSettings()
-		ctx.Must(Do(&Params{
+		ctx.Must(Do(ctx.Ctx(), &Params{
 			InPath:      *args.inPath,
 			OutPath:     *args.outPath,
 			Compression: &comp,
@@ -85,11 +86,11 @@ func do(ctx *mansion.Context) {
 	}
 }
 
-func Do(params *Params) error {
+func Do(ctx context.Context, params *Params) error {
 	bench := params.OutPath == ""
 	consumer := comm.NewStateConsumer()
 
-	dr, err := eos.Open(params.InPath, option.WithConsumer(consumer))
+	dr, err := eos.Open(ctx, params.InPath, option.WithConsumer(consumer))
 	if err != nil {
 		return errors.WithStack(err)
 	}

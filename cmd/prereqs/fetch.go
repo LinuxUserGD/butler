@@ -34,6 +34,8 @@ type TaskStateConsumer struct {
 
 func (h *handler) FetchPrereqs(tsc *TaskStateConsumer, names []string) error {
 	consumer := h.consumer()
+	ctx, cancel := context.WithCancel(h.rc().Ctx)
+	defer cancel()
 
 	doPrereq := func(name string) error {
 		entry, err := h.GetEntry(name)
@@ -58,9 +60,6 @@ func (h *handler) FetchPrereqs(tsc *TaskStateConsumer, names []string) error {
 			return nil
 		}
 
-		// TODO: figure out if there's not a request context we can re-use instead
-		// how does cancellation even work in the current setup?
-		ctx := context.Background()
 		stagingFolder, err := ioutil.TempDir("", "prereqs-install-stage")
 		if err != nil {
 			return errors.Wrap(err, "creating temporary directory for prereqs installation")
@@ -108,6 +107,7 @@ func (h *handler) FetchPrereqs(tsc *TaskStateConsumer, names []string) error {
 		}
 
 		rcc := *h.rc()
+		rcc.Ctx = ctx
 		rcc.Conn = conn
 		rcc.Consumer = taskConsumer
 
@@ -151,14 +151,23 @@ func (h *handler) FetchPrereqs(tsc *TaskStateConsumer, names []string) error {
 
 	for i := 0; i < numWorkers; i++ {
 		go func() {
-			for name := range todo {
-				err := doPrereq(name)
-				if err != nil {
-					done <- errors.Wrapf(err, "handling prereq %s", name)
+			for {
+				select {
+				case name, ok := <-todo:
+					if !ok {
+						done <- nil
+						return
+					}
+					err := doPrereq(name)
+					if err != nil {
+						done <- errors.Wrapf(err, "handling prereq %s", name)
+						return
+					}
+				case <-ctx.Done():
+					done <- ctx.Err()
 					return
 				}
 			}
-			done <- nil
 		}()
 	}
 

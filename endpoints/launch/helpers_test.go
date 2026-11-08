@@ -1,6 +1,7 @@
 package launch
 
 import (
+	"context"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -38,7 +39,7 @@ func TestGetTargetsForHost_NativeAllManifestActionsFail(t *testing.T) {
 		},
 	}
 
-	_, err := getTargetsForHost(rc, nil, appManifest, &dash.Verdict{}, info, host, nil)
+	_, err := getTargetsForHost(rc, nil, appManifest, &dash.Verdict{}, info, host, nil, false)
 	if err == nil {
 		t.Fatalf("expected error when all native manifest actions fail")
 	}
@@ -75,7 +76,7 @@ func TestGetTargetsForHost_NonNativeAllManifestActionsFail(t *testing.T) {
 		},
 	}
 
-	targets, err := getTargetsForHost(rc, nil, appManifest, &dash.Verdict{}, info, host, nil)
+	targets, err := getTargetsForHost(rc, nil, appManifest, &dash.Verdict{}, info, host, nil, false)
 	if err != nil {
 		t.Fatalf("expected no error for non-native host when all manifest actions fail, got: %v", err)
 	}
@@ -115,7 +116,7 @@ func TestGetTargetsForHost_NativePartialManifestResolution(t *testing.T) {
 		},
 	}
 
-	targets, err := getTargetsForHost(rc, nil, appManifest, &dash.Verdict{}, info, host, nil)
+	targets, err := getTargetsForHost(rc, nil, appManifest, &dash.Verdict{}, info, host, nil, false)
 	if err != nil {
 		t.Fatalf("expected no error when at least one native action resolves, got: %v", err)
 	}
@@ -228,13 +229,13 @@ func TestGetTargetsForHost_Runtimes(t *testing.T) {
 	}
 	host := manager.Host{Runtime: runtime}
 
-	verdict, err := dash.Configure(installFolder, dash.ConfigureParams{Consumer: &state.Consumer{}})
+	verdict, err := dash.Configure(context.Background(), installFolder, dash.ConfigureParams{Consumer: &state.Consumer{}})
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// no runtimes: the lone payload falls back to the shell strategy, as before
-	targets, err := getTargetsForHost(rc, nil, nil, verdict, info, host, nil)
+	targets, err := getTargetsForHost(rc, nil, nil, verdict, info, host, nil, false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -243,7 +244,7 @@ func TestGetTargetsForHost_Runtimes(t *testing.T) {
 	}
 
 	// a runtime for another system changes nothing
-	targets, err = getTargetsForHost(rc, nil, nil, verdict, info, host, []dash.Flavor{"rom:gba"})
+	targets, err = getTargetsForHost(rc, nil, nil, verdict, info, host, []dash.Flavor{"rom:gba"}, false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -252,7 +253,7 @@ func TestGetTargetsForHost_Runtimes(t *testing.T) {
 	}
 
 	for _, runtimes := range [][]dash.Flavor{{"rom:nes"}, {"rom"}} {
-		targets, err = getTargetsForHost(rc, nil, nil, verdict, info, host, runtimes)
+		targets, err = getTargetsForHost(rc, nil, nil, verdict, info, host, runtimes, false)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -273,7 +274,7 @@ func TestGetTargetsForHost_Runtimes(t *testing.T) {
 
 	// a non-native host (wine, remote) does not get the client's runtimes
 	other := manager.Host{Runtime: ox.Runtime{Platform: ox.PlatformWindows, Is64: true}}
-	targets, err = getTargetsForHost(rc, nil, nil, verdict, info, other, []dash.Flavor{"rom"})
+	targets, err = getTargetsForHost(rc, nil, nil, verdict, info, other, []dash.Flavor{"rom"}, false)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -297,7 +298,7 @@ func TestConfigure_DeepProbe(t *testing.T) {
 	}
 
 	for _, deep := range []bool{false, true} {
-		verdict, err := configure.Do(configure.Params{
+		verdict, err := configure.Do(context.Background(), configure.Params{
 			Path:      installFolder,
 			NoFilter:  true,
 			DeepProbe: deep,
@@ -312,6 +313,33 @@ func TestConfigure_DeepProbe(t *testing.T) {
 		hasImports := len(verdict.Candidates[0].LinuxInfo.Imports) > 0
 		if hasImports != deep {
 			t.Fatalf("deepProbe=%v: imports present=%v", deep, hasImports)
+		}
+	}
+}
+
+func TestGetTargetsForHost_UnpackedAppImages(t *testing.T) {
+	t.Parallel()
+
+	runtime := ox.Runtime{Platform: ox.PlatformLinux, Is64: true}
+	rc := &butlerd.RequestContext{Consumer: &state.Consumer{}}
+	info := withInstallFolderInfo{installFolder: t.TempDir(), runtime: runtime}
+	host := manager.Host{Runtime: runtime}
+	verdict := &dash.Verdict{Candidates: []*dash.Candidate{
+		{Path: "Game.AppImage", Depth: 0, Flavor: dash.FlavorNativeLinux, Arch: dash.ArchAmd64, LinuxInfo: &dash.LinuxInfo{AppImage: true}},
+		{Path: "Game.AppImage.d/AppRun", Depth: 1, Flavor: dash.FlavorNativeLinux, Arch: dash.ArchAmd64, LinuxInfo: &dash.LinuxInfo{}},
+	}}
+
+	// the image wins the depth cut unless the client said it unpacks them
+	for _, tc := range []struct {
+		unpacked bool
+		want     string
+	}{{false, "Game.AppImage"}, {true, "Game.AppImage.d/AppRun"}} {
+		targets, err := getTargetsForHost(rc, nil, nil, verdict, info, host, nil, tc.unpacked)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(targets) != 1 || targets[0].Strategy.FullTargetPath != filepath.Join(info.installFolder, tc.want) {
+			t.Fatalf("unpackedAppImages=%v: expected %s, got %+v", tc.unpacked, tc.want, targets)
 		}
 	}
 }

@@ -35,7 +35,7 @@ func Do(ctx *mansion.Context, file string, dir string) error {
 	}
 
 	comm.StartProgress()
-	res, err := archiver.ExtractTar(file, dir, settings)
+	res, err := archiver.ExtractTar(ctx.Ctx(), file, dir, settings)
 	comm.EndProgress()
 
 	if err != nil {

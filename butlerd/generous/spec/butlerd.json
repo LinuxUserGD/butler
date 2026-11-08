@@ -2854,6 +2854,12 @@
             "doc": "Fill the dependency record of native candidates: imports, glibc\nversion, SDL version and how it is linked, display libraries\n(see LinuxInfo and WindowsInfo). Parses section tables of every\nnative executable in the install folder, so it costs more than\nthe default sniff; leave it off unless the client acts on it.",
             "type": "boolean",
             "optional": true
+          },
+          {
+            "name": "unpackedAppImages",
+            "doc": "The client runs an AppImage from a tree unpacked next to it\n(X.AppImage.d/AppRun) rather than mounting the image. An image\nwhose tree has an AppRun is left out of the targets so the AppRun\nis listed in its place.",
+            "type": "boolean",
+            "optional": true
           }
         ]
       },
@@ -2930,6 +2936,12 @@
             "name": "runtimes",
             "doc": "Payload flavors the client runs with a runtime of its own, as for\n@@LaunchGetTargetsParams. Matching payloads become targets with the\n@@LaunchStrategyRuntime strategy, which are launched by asking the\nclient (@@RuntimeLaunchParams). Pass the same list that produced the\ntarget being launched, or the target will not be found.",
             "type": "string[]",
+            "optional": true
+          },
+          {
+            "name": "unpackedAppImages",
+            "doc": "Pass the same value that produced the target being launched, see\n@@LaunchGetTargetsParams.",
+            "type": "boolean",
             "optional": true
           },
           {
@@ -7257,6 +7269,12 @@
           "optional": true
         },
         {
+          "name": "androidInfo",
+          "doc": "AndroidInfo contains information specific to Android packages",
+          "type": "AndroidInfo",
+          "optional": true
+        },
+        {
           "name": "loveInfo",
           "doc": "LoveInfo contains information specific to Love2D bundles (`.love` files)",
           "type": "LoveInfo",
@@ -7288,7 +7306,7 @@
         },
         {
           "name": "helper",
-          "doc": "Helper names the runtime a native belongs to when it is plumbing\nshipped next to the game rather than something a player launches:\n\"renpy\" for its python and zsync, \"electron\" or \"nwjs\" for crashpad\nand sandbox processes, \"dotnet\" for createdump, \"java\" for a bundled\nJRE, \"node\" for anything under node_modules, \"unity\" and \"unreal\"\nfor their crash handlers. Filter drops helpers.",
+          "doc": "Helper names the runtime a native belongs to when it is plumbing\nshipped next to the game rather than something a player launches:\n\"renpy\" for its python and zsync, \"electron\" or \"nwjs\" for crashpad\nand sandbox processes, \"dotnet\" for createdump, \"java\" for a bundled\nJRE, \"node\" for anything under node_modules, \"unity\" and \"unreal\"\nfor their crash handlers, \"android\" for a split package, which only\ninstalls along with its base. Filter drops helpers.",
           "type": "string",
           "optional": true
         }
@@ -7361,6 +7379,149 @@
       ]
     },
     {
+      "name": "AndroidInfo",
+      "doc": "Contains information specific to Android packages. Compatibility fields are\nwhat the package declares, not what was tested: an app that never mentions a\ngamepad may still work with one.",
+      "fields": [
+        {
+          "name": "package",
+          "doc": "Application id, stable across versions of the same app",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "split",
+          "doc": "Name of this split when the package is one part of an app",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "splitRequired",
+          "doc": "True when the app can't be installed without further split packages",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "versionCode",
+          "doc": "Internal version. The system refuses to update to a lower one.",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "versionName",
+          "doc": "Version shown to users. Empty when it is a resource reference.",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "minSdk",
+          "doc": "Lowest API level the package installs on. Zero when undeclared.",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "targetSdk",
+          "doc": "API level the package was built for",
+          "type": "number",
+          "optional": true
+        },
+        {
+          "name": "abis",
+          "doc": "Directories under lib/, such as arm64-v8a. Empty means no native code,\nwhich runs on any architecture.",
+          "type": "string[]",
+          "optional": true
+        },
+        {
+          "name": "glesVersion",
+          "doc": "Lowest OpenGL ES version the package requires, such as \"3.0\"",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "requiredFeatures",
+          "doc": "Device features the package requires to install",
+          "type": "string[]",
+          "optional": true
+        },
+        {
+          "name": "optionalFeatures",
+          "doc": "Device features the package can use but does not need",
+          "type": "string[]",
+          "optional": true
+        },
+        {
+          "name": "launcherActivity",
+          "doc": "Fully qualified component to start",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "launcherCategories",
+          "doc": "Launcher surfaces the package declares across its activities",
+          "type": "string[]",
+          "optional": true
+        },
+        {
+          "name": "orientation",
+          "doc": "Screen orientation of the launcher activity, in manifest notation",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "permissions",
+          "doc": "Permissions the package requests",
+          "type": "string[]",
+          "optional": true
+        },
+        {
+          "name": "debuggable",
+          "doc": "True for a debuggable build",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "playServices",
+          "doc": "True when the package links Google Play services, which some handhelds\nlack. It may still run without them.",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "signer",
+          "doc": "Who signed the package. The system only updates an installed app from\na package with the same signer.",
+          "type": "AndroidSigner",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "name": "AndroidSigner",
+      "doc": "AndroidSigner identifies the certificate that signed an Android package",
+      "fields": [
+        {
+          "name": "sha256",
+          "doc": "SHA-256 of the DER certificate, in hex. Empty when no certificate could\nbe read. Nothing here checks the signature, and certificates are\npublic, so a forged package can claim any signer. A mismatch means\nsomething, a match proves nothing: only the system's check at install\ntime does.",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "subject",
+          "doc": "Certificate subject",
+          "type": "string",
+          "optional": true
+        },
+        {
+          "name": "schemes",
+          "doc": "Signature schemes present: \"v1\", \"v2\", \"v3\", \"v3.1\"",
+          "type": "string[]"
+        },
+        {
+          "name": "debug",
+          "doc": "True for the certificate build tools generate per machine",
+          "type": "boolean",
+          "optional": true
+        }
+      ]
+    },
+    {
       "name": "LinuxInfo",
       "doc": "Contains information specific to native Linux executables",
       "fields": [
@@ -7380,6 +7541,12 @@
           "name": "abi",
           "doc": "Calling convention for 32-bit ARM, from the ELF header flags:\n\"eabihf\" (hard-float, what Raspberry Pi and armhf distributions\nbuild) or \"eabi\" (soft-float). Empty for other architectures.",
           "type": "string",
+          "optional": true
+        },
+        {
+          "name": "appImage",
+          "doc": "True when the executable is an AppImage: a runtime stub with the\napplication packed behind it. The rest of this record describes\nthe stub, not the application. Running it needs FUSE unless the\nimage is unpacked first.",
+          "type": "boolean",
           "optional": true
         },
         {
@@ -7421,6 +7588,12 @@
         {
           "name": "sdlDynamicApi",
           "doc": "True when a bundled SDL kept its dynamic API, the hook that lets a\nhost substitute its own SDL at load time (SDL_DYNAMIC_API).",
+          "type": "boolean",
+          "optional": true
+        },
+        {
+          "name": "sdlShipped",
+          "doc": "True when the SDL the executable imports ships with it, as a\nlibrary next to it or in a lib directory. Display then includes\nthat library's backends. Only filled when DeepProbe is set.",
           "type": "boolean",
           "optional": true
         },
@@ -9200,6 +9373,11 @@
           "name": "PlaydatePdx",
           "doc": "Playdate game bundle: the folder holding pdxinfo",
           "value": "playdate-pdx"
+        },
+        {
+          "name": "Android",
+          "doc": "Android application package (.apk)",
+          "value": "android"
         }
       ]
     },
@@ -9260,8 +9438,33 @@
         },
         {
           "name": "Archive",
-          "doc": "Self-extracting installers that 7-zip knows how to extract",
+          "doc": "Any other self-extracting archive spellbook recognizes (Info-Zip,\nWinZip, InstallShield, WISE, ...)",
           "value": "archive"
+        },
+        {
+          "name": "SevenZip",
+          "doc": "7-Zip SFX module with a 7z archive appended",
+          "value": "7zip"
+        },
+        {
+          "name": "WinRAR",
+          "doc": "WinRAR SFX module with a RAR or zip archive appended",
+          "value": "winrar"
+        },
+        {
+          "name": "Cab",
+          "doc": "Stub with a cabinet appended, such as RPG Maker XP/VX/VX Ace\n\"compress game data\" exports",
+          "value": "cab"
+        },
+        {
+          "name": "IExpress",
+          "doc": "IExpress (wextract) package, cabinet stored as a resource. GameMaker\nStudio 1.x \"single runtime executable\" exports are these: they\nextract to a temporary folder and run the game from there.",
+          "value": "iexpress"
+        },
+        {
+          "name": "Clickteam",
+          "doc": "Clickteam Install Creator",
+          "value": "clickteam"
         }
       ]
     },
@@ -9418,6 +9621,16 @@
           "name": "LWJGL",
           "doc": "",
           "value": "lwjgl"
+        },
+        {
+          "name": "Flutter",
+          "doc": "",
+          "value": "flutter"
+        },
+        {
+          "name": "Cordova",
+          "doc": "",
+          "value": "cordova"
         }
       ]
     },
@@ -9831,6 +10044,11 @@
           "name": "Linux",
           "doc": "",
           "value": "linux"
+        },
+        {
+          "name": "Android",
+          "doc": "",
+          "value": "android"
         },
         {
           "name": "Unknown",

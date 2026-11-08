@@ -77,7 +77,7 @@ func do(mc *mansion.Context) {
 	consumer := comm.NewStateConsumer()
 
 	consumer.Opf("Running diagnostics...")
-	ctx := context.Background()
+	ctx := mc.Ctx()
 
 	numProblems := 0
 
@@ -135,7 +135,7 @@ func do(mc *mansion.Context) {
 				return "", err
 			}
 
-			f, err := eos.Open(exe)
+			f, err := eos.Open(ctx, exe)
 			if err != nil {
 				return "", err
 			}
@@ -167,7 +167,7 @@ func do(mc *mansion.Context) {
 	}
 
 	if params.Speed {
-		testFileURL := "https://broth.itch.zone/speedtest/100mib/LATEST/archive/default"
+		testFileURL := "https://broth.itch.zone/speedtest/100mib/LATEST/archive/default?probe=true"
 
 		runTracker := func(contentLength int64, cancel context.CancelFunc, f func(t tracker.Tracker) error) (string, error) {
 			t := tracker.New(tracker.Opts{
@@ -203,7 +203,7 @@ func do(mc *mansion.Context) {
 		}
 
 		runTest("go https request", func() (string, error) {
-			req, err := http.NewRequest("GET", testFileURL, nil)
+			req, err := http.NewRequestWithContext(ctx, "GET", testFileURL, nil)
 			if err != nil {
 				return "", err
 			}
@@ -217,7 +217,7 @@ func do(mc *mansion.Context) {
 		})
 
 		runTest("eos Copy", func() (string, error) {
-			f, err := eos.Open(testFileURL)
+			f, err := eos.Open(ctx, testFileURL)
 			if err != nil {
 				return "", err
 			}
@@ -242,7 +242,7 @@ func do(mc *mansion.Context) {
 				return "", err
 			}
 
-			f, err := eos.Open(testFileURL)
+			f, err := eos.Open(ctx, testFileURL)
 			if err != nil {
 				return "", err
 			}
@@ -262,7 +262,7 @@ func do(mc *mansion.Context) {
 			}
 			defer os.RemoveAll(d)
 
-			f, err := eos.Open(testFileURL)
+			f, err := eos.Open(ctx, testFileURL)
 			if err != nil {
 				return "", err
 			}

@@ -92,7 +92,7 @@ func Do(ctx *mansion.Context, params *UnzipParams) error {
 
 	startTime := time.Now()
 
-	res, err := archiver.ExtractPath(params.File, params.Dir, settings)
+	res, err := archiver.ExtractPath(ctx.Ctx(), params.File, params.Dir, settings)
 	comm.EndProgress()
 
 	duration := time.Since(startTime)

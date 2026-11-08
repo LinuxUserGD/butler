@@ -51,7 +51,7 @@ func do(ctx *mansion.Context) error {
 	}
 	consumer.Opf("Writing with compression %s", compression)
 
-	patchSource, err := filesource.Open(args.patch)
+	patchSource, err := filesource.Open(ctx.Ctx(), args.patch)
 	if err != nil {
 		return err
 	}

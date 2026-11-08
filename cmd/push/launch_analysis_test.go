@@ -2,6 +2,7 @@ package push
 
 import (
 	"archive/zip"
+	"context"
 	"crypto/sha256"
 	"encoding/json"
 	"fmt"
@@ -152,13 +153,13 @@ func TestLaunchAnalysisUsesSeparatePool(t *testing.T) {
 			}
 			results := make(chan walkResult, 1)
 			errs := make(chan error, 1)
-			doWalk(src, results, errs, true, tlc.WalkOpts{Filter: filtering.FilterPaths})
+			doWalk(context.Background(), src, results, errs, true, tlc.WalkOpts{Filter: filtering.FilterPaths})
 			select {
 			case err := <-errs:
 				t.Fatal(err)
 			case result := <-results:
 				defer result.pool.Close()
-				if scanBuildLaunchAnalysis(src, result.container, &state.Consumer{}) == nil {
+				if scanBuildLaunchAnalysis(context.Background(), src, result.container, false, &state.Consumer{}) == nil {
 					t.Fatal("scan failed")
 				}
 				r, err := result.pool.GetReader(0)
@@ -199,11 +200,11 @@ func TestLaunchAnalysisClosesZipSpool(t *testing.T) {
 	if err := f.Close(); err != nil {
 		t.Fatal(err)
 	}
-	container, err := tlc.WalkAny(archivePath, tlc.WalkOpts{})
+	container, err := tlc.WalkAny(context.Background(), archivePath, tlc.WalkOpts{})
 	if err != nil {
 		t.Fatal(err)
 	}
-	report := scanBuildLaunchAnalysis(archivePath, container, &state.Consumer{})
+	report := scanBuildLaunchAnalysis(context.Background(), archivePath, container, false, &state.Consumer{})
 	if report == nil {
 		t.Fatal("scan failed")
 	}
@@ -276,7 +277,7 @@ func TestLaunchAnalysisDereferencedSymlink(t *testing.T) {
 	}
 	results := make(chan walkResult, 1)
 	errs := make(chan error, 1)
-	doWalk(root, results, errs, true, tlc.WalkOpts{Filter: filtering.FilterPaths, Dereference: true})
+	doWalk(context.Background(), root, results, errs, true, tlc.WalkOpts{Filter: filtering.FilterPaths, Dereference: true})
 	select {
 	case err := <-errs:
 		t.Fatal(err)
@@ -292,6 +293,15 @@ func TestLaunchAnalysisDereferencedSymlink(t *testing.T) {
 		}
 		if len(targets) != 1 || targets[0].Path != "index.html" || targets[0].Size != 4 {
 			t.Fatalf("unexpected targets: %s", report.LaunchTargets)
+		}
+
+		// push opens its own pool for the scan; it must dereference too
+		buildReport := scanBuildLaunchAnalysis(context.Background(), root, result.container, true, &state.Consumer{})
+		if buildReport == nil {
+			t.Fatal("build scan failed")
+		}
+		if string(buildReport.LaunchTargets) != string(report.LaunchTargets) {
+			t.Fatalf("build scan targets differ: %s", buildReport.LaunchTargets)
 		}
 	}
 }
