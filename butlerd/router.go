@@ -22,7 +22,7 @@ import (
 	"github.com/itchio/wharf/werrors"
 
 	"crawshaw.io/sqlite"
-	"github.com/helloeave/json"
+	"github.com/homelight/json"
 	"github.com/itchio/butler/database/dbpool"
 
 	"github.com/pkg/errors"

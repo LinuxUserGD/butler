@@ -13,6 +13,7 @@ import (
 	"github.com/itchio/butler/art"
 	"github.com/itchio/headway/state"
 	"github.com/olekukonko/tablewriter"
+	"github.com/olekukonko/tablewriter/tw"
 	"github.com/skratchdot/open-golang/open"
 )
 
@@ -125,10 +126,20 @@ func Notice(header string, lines []string) {
 			Logf("notice: %s", line)
 		}
 	} else {
-		table := tablewriter.NewWriter(os.Stdout)
-		table.SetAutoFormatHeaders(false)
-		table.SetColWidth(60)
-		table.SetHeader([]string{header})
+		table := tablewriter.NewTable(os.Stdout,
+			tablewriter.WithConfig(tablewriter.Config{
+				Row: tw.CellConfig{
+					Formatting: tw.CellFormatting{
+						AutoWrap:  tw.WrapNone,
+						Alignment: tw.AlignLeft,
+					},
+					Padding: tw.CellPadding{
+						Global: tw.Padding{Left: "", Right: "X"},
+					},
+				},
+			}),
+		)
+		table.Header([]string{header})
 		for _, line := range lines {
 			table.Append([]string{line})
 		}
