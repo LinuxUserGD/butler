@@ -9,7 +9,6 @@ require (
 	github.com/arbovm/levenshtein v0.0.0-20160628152529-48b4e1c0c4d0
 	github.com/dchest/safefile v0.0.0-20151022103144-855e8d98f185
 	github.com/dustinkirkland/golang-petname v0.0.0-20191129215211-8e5a1ed0cff0
-	github.com/efarrer/iothrottler v0.0.3
 	github.com/fatih/color v1.19.0
 	github.com/fatih/structtag v1.2.0
 	github.com/go-ole/go-ole v1.3.0
@@ -49,7 +48,7 @@ require (
 	github.com/skratchdot/open-golang v0.0.0-20200116055534-eef842397966
 	github.com/stretchr/testify v1.12.1
 	golang.org/x/crypto v0.58.0
-	golang.org/x/sync v0.24.0
+	golang.org/x/sync v0.25.0
 	golang.org/x/sys v0.49.0
 	golang.org/x/term v0.47.0
 	golang.org/x/text v0.43.0
